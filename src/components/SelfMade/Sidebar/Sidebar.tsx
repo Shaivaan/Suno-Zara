@@ -70,7 +70,7 @@ const EachMenu = ({ route }: MenuProp) => {
       <SidebarMenuButton
         onClick={navigationFn}
         className={cn(
-          "text-[1rem] px-[1rem] py-[1.5rem] font-medium hover:cursor-pointer rounded-[var(--border-radius-all)]",
+          "text-[1rem] px-[1rem] py-[1.5rem] font-medium hover:cursor-pointer rounded-[var(--border-radius-all)] hover:scale-104 transition duration-300 transform",
           isActive && "gradient-bg"
         )}
         isActive={isActive}

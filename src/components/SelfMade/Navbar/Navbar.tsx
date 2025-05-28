@@ -21,7 +21,7 @@ const NavbarComp = ()=>{
 const Logo = ()=>{
     return <div className="flex gap-3 items-center">
         <div className="gradient-bg rounded-[var(--border-radius-all)] p-1.5 border-1"><Music size={'1rem'}/></div>
-        <div className="gradient-bg text-clip text-[1.3rem] font-medium">{AppName}</div>
+        <div className="gradient-bg text-clip text-[1.3rem] font-bold">{AppName}</div>
     </div>
 }
 

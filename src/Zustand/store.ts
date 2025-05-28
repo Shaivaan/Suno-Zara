@@ -1,12 +1,11 @@
 import { create } from 'zustand';
 
 const useZustandStore = create<StateStoreType>((set) => ({
-  // State
   isSidebarVisible: false,
+  isVolumeAdjustOpen : false,
   
-  // Actions
-  toggleMobileMenu: () => 
-    set((state) => ({ isSidebarVisible: !state.isSidebarVisible })),
+  toggleMobileMenu: () =>set((state) => ({ isSidebarVisible: !state.isSidebarVisible })),
+  toggleVolume: () =>set((state) => ({ isVolumeAdjustOpen: !state.isVolumeAdjustOpen })),
 }));
 
 export default useZustandStore;
