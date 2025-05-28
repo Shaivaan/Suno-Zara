@@ -27,7 +27,7 @@ export const RouterComp = ()=>{
 }
 
 const DynamicRoute = ()=>{
-    return <div className={cn('mt-[var(--navbar-height)] p-4 lg:ml-[var(--side-bar-width)]')}>
+    return <div className={cn('mt-[var(--navbar-height)] mb-[100px] p-4 lg:ml-[var(--side-bar-width)]')}>
         <Routes>
             <Route path={home} element={<Explore/>}/>
             <Route path={library} element={'Music Library'}/>
