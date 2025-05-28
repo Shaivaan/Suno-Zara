@@ -1,14 +1,14 @@
 import { routes } from "@/lib/utils";
-import { AlignJustify, House, Library, Search } from "lucide-react";
+import { AlignJustify, Compass, House, Library, Search } from "lucide-react";
 
 const {home,library,queue,search} = routes;
 const sidebar_data = [home,search,queue,library];
 const getSidebar = (keyName:string)=>{
     switch(keyName){
-        case home: return {title:'Home',icon:House};
-        case library : return {title:'Library',icon:Search};
+        case home: return {title:'Explore',icon:Compass};
+        case library : return {title:'Library',icon:Library };
         case queue : return {title:'Queue',icon:AlignJustify};
-        case search : return {title:'Search',icon:Library};
+        case search : return {title:'Search',icon:Search};
         default : return {title:'Home',icon:House};
     }
 }
