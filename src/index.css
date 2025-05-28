@@ -265,3 +265,30 @@ h1 {
 .label-text{
   opacity: 0.7 !important;
 }
+
+.album_card{
+  border: 1px solid var( --glass-border);
+  background-color: var(--glass-bg);
+  overflow: hidden;
+  border-radius: var(--border-radius-all);
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.2rem;
+  padding: 1rem;
+  cursor: pointer;
+  width: 12rem;
+}
+
+.threeDot{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.album_card:hover{
+  border-color: var(--accent-purple);
+  transform: translateY(-5px);
+  transition: all 0.3s ease;
+  /* background:linear-gradient(135deg, var(--accent-purple), var(--accent-pink)); */
+  opacity: 1;
+}
