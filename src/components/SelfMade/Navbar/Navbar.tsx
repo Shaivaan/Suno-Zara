@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { AppName } from "@/lib/utils";
+import { AppName, cn } from "@/lib/utils";
 import useZustandStore from "@/Zustand/store";
 import { Menu, Music } from "lucide-react";
 import { memo } from "react";
 
 const NavbarComp = ()=>{
     const {toggleMobileMenu} = useZustandStore();
-    return <div className={`px-4 bg-glass-bg border-glass-border border-b-1 flex justify-between backdrop-blur-[40px] z-[var(--navbar-z-index)] fixed top-0 w-full items-center h-[var(--navbar-height)]`}>
+    return <div className={cn(`px-4 bg-glass-bg border-glass-border border-b-1 flex justify-between backdrop-blur-[40px] sm:z-[41] lg:z-[var(--navbar-z-index)] fixed top-0 w-full items-center h-[var(--navbar-height)]`)}>
         <div className="flex gap-2">
         <Button onClick={toggleMobileMenu} variant={"ghost"} className="cursor-pointer lg:hidden"><Menu/></Button>
         <Logo/>
