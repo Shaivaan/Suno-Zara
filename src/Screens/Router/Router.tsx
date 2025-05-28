@@ -2,7 +2,6 @@ import MusicBar from "@/components/SelfMade/MusicBar/MusicBar"
 import Navbar from "@/components/SelfMade/Navbar/Navbar"
 import Sidebar from "@/components/SelfMade/Sidebar/Sidebar"
 import { cn, routes } from "@/lib/utils"
-import useZustandStore from "@/Zustand/store"
 import { Route, Routes } from "react-router-dom"
 const {home,library,queue,search} = routes;
 
