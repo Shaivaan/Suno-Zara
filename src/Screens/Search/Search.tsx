@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { Heart, Play } from "lucide-react";
+import { Play } from "lucide-react";
 import { memo, useState } from "react";
 
 const placholderText = 'Search for songs, artists, albums...';
