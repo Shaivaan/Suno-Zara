@@ -3,7 +3,7 @@ import { LazyAvatar } from "../LazyAvatar/LazyAvatar"
 
 const ArtistCardComp = ()=>{
     return <div className="flex-col flex gap-2 artist_card">
-        <LazyAvatar className="w-[8rem] h-[8rem] rounded-[50%]"/>
+        <LazyAvatar className="w-[10rem] h-[10rem] rounded-[50%]"/>
         <div className="text-center">Arijit Singh</div>
     </div>
 }

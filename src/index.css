@@ -384,3 +384,9 @@ h1 {
   flex-shrink: 0;
   gap: 1rem;
 }
+
+.icons-hover:hover{
+  scale: 1.2;
+  transition: all 0.3s ease-in;
+  
+}

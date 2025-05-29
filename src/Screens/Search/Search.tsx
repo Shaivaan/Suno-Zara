@@ -1,11 +1,12 @@
 // import AlbumCard from "@/components/SelfMade/Cards/AlbumCard";
 // import ArtistCard from "@/components/SelfMade/Cards/ArtistCard";
+import FavIcon from "@/components/SelfMade/Icons/FavIcon";
 import { LazyAvatar } from "@/components/SelfMade/LazyAvatar/LazyAvatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { Play } from "lucide-react";
+import { Heart, Play } from "lucide-react";
 import { memo, useState } from "react";
 
 const placholderText = 'Search for songs, artists, albums...';
@@ -75,7 +76,8 @@ const SongItem = ()=>{
         <div className="flex gap-4 items-center">
             <div className="relative">
                 <LazyAvatar className="rounded-[var(--border-radius-all)] group-hover/song:opacity-40"/>
-                <Play className="absolute top-2 right-2 opacity-0 group-hover/song:opacity-100" size={'1rem'}/>
+                <Play className="absolute top-2 right-2 opacity-0 group-hover/song:opacity-100 icons-hover" size={'1rem'}/>
+                <FavIcon className="absolute top-2 right-12 opacity-0 group-hover/song:opacity-100" isFlagged/>
             </div>
             <div className="text-[0.94rem]">{title}</div>
         </div>
