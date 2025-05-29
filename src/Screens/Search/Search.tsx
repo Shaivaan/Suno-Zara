@@ -1,5 +1,5 @@
-import AlbumCard from "@/components/SelfMade/Cards/AlbumCard";
-import ArtistCard from "@/components/SelfMade/Cards/ArtistCard";
+// import AlbumCard from "@/components/SelfMade/Cards/AlbumCard";
+// import ArtistCard from "@/components/SelfMade/Cards/ArtistCard";
 import { LazyAvatar } from "@/components/SelfMade/LazyAvatar/LazyAvatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -85,27 +85,27 @@ const SongItem = ()=>{
     </div>
 }
 
-const AritistResultComp=()=>{
-    const artist_data = new Array(20).fill(0);
-    return <div className="flex flex-wrap gap-4"
-    >
-        {artist_data.map((_el)=><ArtistCard/>)}
-    </div>
-}
+// const AritistResultComp=()=>{
+//     const artist_data = new Array(20).fill(0);
+//     return <div className="flex flex-wrap gap-4"
+//     >
+//         {artist_data.map((_el)=><ArtistCard/>)}
+//     </div>
+// }
 
-const AlbumCardComp=()=>{
-    const artist_data = new Array(6).fill(0);
-    return <div className="flex flex-wrap gap-4"
-    >
-        {artist_data.map((_el)=><AlbumCard/>)}
-    </div>
-}
+// const AlbumCardComp=()=>{
+//     const artist_data = new Array(6).fill(0);
+//     return <div className="flex flex-wrap gap-4"
+//     >
+//         {artist_data.map((_el)=><AlbumCard/>)}
+//     </div>
+// }
 
 const SearchScreen = memo(SearchComp);
 const ButtonCategory = memo(ButtonCategoryComp);
 const InputContainer = memo(InputContainerComp);
 const SongsResult = memo(SongResultsComp);
-const AlbumResults = memo(AlbumCardComp);
-const ArtistResults = memo(AritistResultComp);
+// const AlbumResults = memo(AlbumCardComp);
+// const ArtistResults = memo(AritistResultComp);
 
 export default SearchScreen
