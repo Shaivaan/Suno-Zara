@@ -390,3 +390,24 @@ h1 {
   transition: all 0.3s ease-in;
   
 }
+
+.playing {
+    background: linear-gradient(135deg, 
+        rgba(139, 92, 246, 0.15), 
+        rgba(139, 92, 246, 0.25));
+    border: 2px solid var(--accent-purple);
+    border-radius: var(--border-radius-all);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+    animation: borderGlow 2s ease infinite alternate;
+}
+
+@keyframes borderGlow {
+    0% { 
+        border-color: var(--accent-purple);
+        box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+    }
+    100% { 
+        border-color: rgba(139, 92, 246, 0.7);
+        box-shadow: 0 0 25px rgba(139, 92, 246, 0.5);
+    }
+}

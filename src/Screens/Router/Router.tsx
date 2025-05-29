@@ -5,6 +5,7 @@ import { cn, routes } from "@/lib/utils"
 import { Route, Routes } from "react-router-dom"
 import Explore from "../Explore/Explore"
 import SearchScreen from "../Search/Search"
+import QueueScreen from "../Queue/Queue"
 const {home,library,queue,search} = routes;
 
 export const RouterComp = ()=>{
@@ -33,7 +34,7 @@ const DynamicRoute = ()=>{
             <Route path={home} element={<Explore/>}/>
             <Route path={search} element={<SearchScreen/>}/>
             <Route path={library} element={'Music Library'}/>
-            <Route path={queue} element={'Music Queue'}/>
+            <Route path={queue} element={<QueueScreen/>}/>
         </Routes>
     </div>
 }
