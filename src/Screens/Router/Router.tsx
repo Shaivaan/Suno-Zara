@@ -4,6 +4,7 @@ import Sidebar from "@/components/SelfMade/Sidebar/Sidebar"
 import { cn, routes } from "@/lib/utils"
 import { Route, Routes } from "react-router-dom"
 import Explore from "../Explore/Explore"
+import SearchScreen from "../Search/Search"
 const {home,library,queue,search} = routes;
 
 export const RouterComp = ()=>{
@@ -30,9 +31,9 @@ const DynamicRoute = ()=>{
     return <div className={cn('mt-[var(--navbar-height)] mb-[100px] p-4 lg:ml-[var(--side-bar-width)]')}>
         <Routes>
             <Route path={home} element={<Explore/>}/>
+            <Route path={search} element={<SearchScreen/>}/>
             <Route path={library} element={'Music Library'}/>
             <Route path={queue} element={'Music Queue'}/>
-            <Route path={search} element={'Music Search'}/>
         </Routes>
     </div>
 }

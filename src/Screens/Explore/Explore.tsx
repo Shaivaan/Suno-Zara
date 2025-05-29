@@ -14,7 +14,7 @@ const ExploreScreen = ()=>{
 
 const CarouselContainer = ()=>{
     return <div>
-        <div className="title_carousel text-clip w-fit">Quantum Hits</div>
+        <div className="title_carousel">Quantum Hits</div>
         <CarouselCardContainer/>  
     </div>
 }
@@ -37,7 +37,7 @@ const CarouselCardContainer = ()=>{
 
 const AlbumArtistContainer = ()=>{
     return <div>
-        <div className="title_carousel text-clip w-fit">Artist</div>
+        <div className="title_carousel">Artist</div>
         <AlbumArtistCardParent/>  
     </div>
 }

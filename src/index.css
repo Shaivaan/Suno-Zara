@@ -64,6 +64,9 @@
   --scroll-thumb: #4a4a4a;
 
 }
+button{
+  cursor: pointer;
+}
 
 a {
   font-weight: 500;
@@ -305,6 +308,8 @@ h1 {
     background: linear-gradient(135deg, var(--text-gen-color), var(--accent-purple));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    width: fit-content; 
 }
 
 
@@ -337,4 +342,45 @@ h1 {
 
 ::-webkit-scrollbar-corner {
   background: var(--scroll-bg);
+}
+
+.grid-container-songs{
+  display: grid;
+  grid-template-columns: 0.5fr 4fr 3fr 2fr 3fr; 
+  gap: 0.5rem; 
+  padding: 0.5rem 1rem;
+  align-items: center;
+  border-radius: var(--border-radius-all);
+}
+
+/* .play-icon-song{
+  display: none;
+} */
+
+.song_row:hover{
+  cursor: pointer;
+  background-color: var(--color-glass-bg);
+}
+
+.grid-container-songs > div:nth-child(5n+1) {
+    text-align: left; /* ID column */
+}
+.grid-container-songs > div:nth-child(5n+2) {
+    text-align: left; /* Name column */
+}
+.grid-container-songs > div:nth-child(5n+3) {
+    text-align: left; /* Age column */
+}
+.grid-container-songs > div:nth-child(5n+4) {
+    text-align: left; /* Email column */
+}
+.grid-container-songs > div:nth-child(5n+0) {
+    text-align: end; /* Status column */
+}
+
+.search_artist_albumn_parent{
+  display: flex;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  gap: 1rem;
 }
