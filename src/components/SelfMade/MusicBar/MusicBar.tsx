@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { memo, useRef, type ComponentProps, type ReactNode } from "react";
 import { LazyAvatar } from "../LazyAvatar/LazyAvatar";
-import { AlignJustify, Play, Repeat, Shuffle, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import { Play, Repeat, Shuffle, SkipBack, SkipForward, Volume2 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import useZustandStore from "@/Zustand/store";
 import useClickOutside from "@/CustomHook/useClickOutside";
+import Queue  from "@/Screens/Queue/Queue";
 
 const MusicBarComp = () => {
   return (
@@ -56,7 +57,7 @@ const PlayPauseReWindComp = () => {
   );
 };
 
-const MusicBarButton = ({ children, tooltip, className,...props }: MusicBarButtonType & ComponentProps<'button'>) => {
+export const MusicBarButton = ({ children, tooltip, className,...props }: MusicBarButtonType & ComponentProps<'button'>) => {
   return (
     <Button
       variant={"secondary"}
@@ -74,7 +75,8 @@ const MusicBarButtonComp = ()=>{
         <Separator orientation="vertical" className="text-sm !h-[3rem]"/>
         <MusicBarButton tooltip="Prev"><Shuffle /></MusicBarButton>
         <MusicBarButton tooltip="Prev"><Repeat /></MusicBarButton>
-        <MusicBarButton tooltip="Prev"><AlignJustify /></MusicBarButton>
+        {/* <MusicBarButton tooltip="Prev"><AlignJustify /></MusicBarButton> */}
+        <Queue/>
         <VolumeAdjust/>
     </div>
 };

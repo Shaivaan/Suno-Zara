@@ -6,6 +6,9 @@ const useZustandStore = create<StateStoreType>((set) => ({
   
   toggleMobileMenu: () =>set((state) => ({ isSidebarVisible: !state.isSidebarVisible })),
   toggleVolume: () =>set((state) => ({ isVolumeAdjustOpen: !state.isVolumeAdjustOpen })),
+
+  isQueueVisible:false,
+  toggleQueue:() =>set((state) => ({ isQueueVisible: !state.isQueueVisible }))
 }));
 
 export default useZustandStore;

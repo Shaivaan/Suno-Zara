@@ -4,4 +4,7 @@ interface StateStoreType {
 
     isVolumeAdjustOpen: boolean;
     toggleVolume: () => void;
+
+    isQueueVisible:boolean
+    toggleQueue:()=>void
 }

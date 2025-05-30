@@ -9,6 +9,7 @@
 
   --navbar-height: 3.6rem;
   --navbar-z-index : 10;
+  --queue-z-index : 50;
   --footer-z-index : 12;
   --side-bar-width : 18rem;
   --border-radius-all : 10px;
