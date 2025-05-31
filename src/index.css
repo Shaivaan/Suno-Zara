@@ -16,6 +16,8 @@
   --scale-general : 1.1;
   --body-background: radial-gradient(circle at 20% 50%, var(--accent-purple) 0%, transparent 50%),
                 radial-gradient(circle at 80% 20%, var(--accent-pink) 0%, transparent 50%);
+  --gradient-bg-gen : linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+              
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -230,7 +232,7 @@ h1 {
 } */
 
 .gradient-bg{
-  background:linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+  background:var(--gradient-bg-gen);
 }
 
 .text-clip{
@@ -244,7 +246,7 @@ h1 {
 }
 
 .custom-skeleton {
-  background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink)) !important;
+  background:var(--gradient-bg-gen) !important;
   position: relative;
   overflow: hidden;
   width: 100%;
@@ -300,8 +302,6 @@ h1 {
   border-color: var(--accent-purple);
   transform: translateY(-5px);
   transition: all 0.3s ease;
-  /* background:linear-gradient(135deg, var(--accent-purple), var(--accent-pink)); */
-  opacity: 1;
   cursor: pointer;
 }
 
