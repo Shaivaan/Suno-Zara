@@ -7,6 +7,7 @@ import Explore from "../Explore/Explore"
 import SearchScreen from "../Search/Search"
 import { Queue } from "../Queue/Queue"
 import PlayListScreen from "@/components/SelfMade/PlayList/PlayListScreen"
+import LibraryScreen from "../Library/Library"
 const {home,library,queue,search} = routes;
 
 export const RouterComp = ()=>{
@@ -34,8 +35,8 @@ const DynamicRoute = ()=>{
         <Routes>
             <Route path={home} element={<Explore/>}/>
             <Route path={search} element={<SearchScreen/>}/>
-            <Route path={library} element={<PlayListScreen/>}/>
             <Route path={queue} element={<Queue isScreen/>}/>
+            <Route path={library} element={<LibraryScreen/>}/>
         </Routes>
     </div>
 }

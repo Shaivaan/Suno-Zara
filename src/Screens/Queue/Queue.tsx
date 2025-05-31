@@ -67,8 +67,7 @@ const QueueSongsListComp = ()=>{
   return <>
       <QueueSongCard/>
       <QueueSongCard isPlaying/>
-      {queue_cards.map((el)=><QueueSongCard key={el}/>)}  
-      
+      {queue_cards.map((el)=><QueueSongCard key={el}/>)}   
   </>
 }
 
