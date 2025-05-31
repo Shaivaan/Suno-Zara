@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { memo, useRef, type ComponentProps, type ReactNode } from "react";
 import { LazyAvatar } from "../LazyAvatar/LazyAvatar";
-import { Play, Repeat, Shuffle, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import { AlignJustify, Play, Repeat, Shuffle, SkipBack, SkipForward, Volume2 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
@@ -71,11 +71,12 @@ export const MusicBarButton = ({ children, tooltip, className,...props }: MusicB
 };
 
 const MusicBarButtonComp = ()=>{
+  const {toggleQueue} = useZustandStore();
     return <div className="flex gap-4 items-center">
         <Separator orientation="vertical" className="text-sm !h-[3rem]"/>
         <MusicBarButton tooltip="Prev"><Shuffle /></MusicBarButton>
         <MusicBarButton tooltip="Prev"><Repeat /></MusicBarButton>
-        {/* <MusicBarButton tooltip="Prev"><AlignJustify /></MusicBarButton> */}
+        <MusicBarButton tooltip="Prev" onClick={toggleQueue}><AlignJustify /></MusicBarButton>
         <Queue/>
         <VolumeAdjust/>
     </div>

@@ -14,6 +14,8 @@
   --side-bar-width : 18rem;
   --border-radius-all : 10px;
   --scale-general : 1.1;
+  --body-background: radial-gradient(circle at 20% 50%, var(--accent-purple) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, var(--accent-pink) 0%, transparent 50%);
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -411,4 +413,9 @@ h1 {
         border-color: rgba(139, 92, 246, 0.7);
         box-shadow: 0 0 25px rgba(139, 92, 246, 0.5);
     }
+}
+
+.sticky-elem{
+  position: sticky;
+  top: 0;
 }
