@@ -391,7 +391,7 @@ h1 {
 .icons-hover:hover{
   scale: 1.2;
   transition: all 0.3s ease-in;
-  
+  cursor: pointer;
 }
 
 .playing {

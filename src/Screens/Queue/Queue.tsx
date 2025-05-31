@@ -36,10 +36,10 @@ interface QueueType{
   isScreen?:boolean
 }
 function QueueDrawerComp() {
-  const {isQueueVisible} = useZustandStore();
+  const {isQueueVisible, toggleQueue} = useZustandStore();
   return (
     <Sheet open={isQueueVisible}>
-      <SheetContent className="!w-[31rem] p-4 overflow-y-auto">
+      <SheetContent className="!w-[31rem] p-4 overflow-y-auto" onInteractOutside={toggleQueue}>
         <Queue />
       </SheetContent>
     </Sheet>
@@ -73,7 +73,7 @@ const QueueSongsListComp = ()=>{
 }
 
 const QueueCardComp = ({isPlaying=false}:IsPlayingType)=>{
-  return <div className={cn("w-full border-1 px-3 py-1 border-b-glass-border rounded-[var(--border-radius-all)] flex gap-4 items-center group/queue-song cursor-pointer",isPlaying && 'playing')}>
+  return <div className={cn("w-full border-1 px-3 py-1 border-b-glass-border rounded-[var(--border-radius-all)] flex gap-4 items-center group/queue-song cursor-pointer hover:border-1 hover:bg-glass-bg",isPlaying && 'playing')}>
     <div className="text-[0.7rem] rounded-[50%] border-1 p-2 py-[0.15rem]">1</div>
     <div className="relative">
         <LazyAvatar className={cn("rounded-[var(--border-radius-all)] !h-[2.7rem] !w-[2.7rem] group-hover/queue-song:opacity-40",isPlaying && 'opacity-40')}/>
