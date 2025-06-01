@@ -1,35 +1,61 @@
-import { search_playlist_api } from "@/api/api";
+import { allOriginsProxy, search_playlist_api, trending_now_api } from "@/api/api";
 import { SECTIONS_PART } from "@/api/query";
 // import ArtistCard from "@/components/SelfMade/Cards/ArtistCard";
 import useZustandStore from "@/Zustand/store";
 import { memo, useEffect } from "react";
 import ExploreParentCarousels from "./ExploreContent";
+import axios from 'axios';
+import { refactorTrendingData } from "./utils";
 
 const ExploreScreen = ()=>{
      const {handleIsLoadedScreen,handleExploreScreenData, isLoaded : {explore}} = useZustandStore();
-      const fetchAllPlaylists = async () => {
-      try {
-        const promises = SECTIONS_PART.map(({title,query}) => 
-          fetch(`${search_playlist_api}${encodeURIComponent(query)}`)
-            .then(res => {
-              if (!res.ok) throw new Error(`Failed to fetch ${query}`);
-              return res.json();
-            })
-            .then(data => ({ query, data, title }))
-        );
+const fetchAllPlaylists = async () => {
+  try {
+    // Convert all fetch calls to axios
+    const promises = SECTIONS_PART.map(({ title, query }) => 
+      axios.get(`${search_playlist_api}${encodeURIComponent(query)}`)
+        .then(res => {
+          // axios automatically parses JSON, so res.data contains the parsed response
+          return { query, data: res.data, title };
+        })
+        .catch(err => {
+          console.error(`Failed to fetch ${query}:`, err);
+          throw new Error(`Failed to fetch ${query}`);
+        })
+    );
+    
+    // Keep the trending API call as is (already using axios)
+    const trendingPromise = axios.get(
+      `${allOriginsProxy}${encodeURIComponent(trending_now_api)}`
+    ).then(response => {
+      const data = JSON.parse(response.data.contents);
+      return data;
+    });
+    
 
-        const results = await Promise.all(promises);
-        const playlistData:any = {};
-        results.forEach(({ title, data }) => {
-          playlistData[title] = data?.data?.results || [];
-        });
-        handleExploreScreenData(playlistData);
-      } catch (err) {
-      } finally {
-        handleIsLoadedScreen({explore:true});
-      }
-    };
+    const results = await Promise.all(promises);
+    const trendResp:{new_trending:TrendingElemType[]} = await trendingPromise;
+    const trendingRefactoredData = refactorTrendingData(trendResp?.new_trending || []);
+    
+    // Process playlist data
+    const playlistData:any = {};
+    results.forEach(({ title, data }) => {
+      playlistData[title] = data?.data?.results || [];
+    });
+    playlistData['Trending Now'] = trendingRefactoredData;
 
+    // playlistData[]
+
+
+    
+    handleExploreScreenData(playlistData);
+  } catch (err) {
+    console.error('Error fetching playlists:', err);
+  } finally {
+    handleIsLoadedScreen({ explore: true });
+  }
+};
+    
     useEffect(() => {
       if(!explore) fetchAllPlaylists();
     }, []);

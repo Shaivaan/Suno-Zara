@@ -1,4 +1,5 @@
 export const explore_titles_head = {
+  trending_now : 'Trending Now',
   recently_added: "Recently Added",
   fresh_releases: "Fresh Releases",
   top_albums: "Top Albums",
