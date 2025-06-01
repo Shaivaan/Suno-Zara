@@ -7,7 +7,7 @@ type keyType = keyof typeof explore_titles_head
 const ExploreParentCarousels = ()=>{
   const titles = Object.keys(explore_titles_head);
   return <>
-      {titles.map((title)=><ExploreCarouselMapper title={title as keyType}/>)}
+      {titles.map((title)=><ExploreCarouselMapper title={title as keyType} key={title}/>)}
   </>
 }
 
@@ -27,7 +27,7 @@ const ExploreCarouselComp = ({type}:AlbumPlaylistCarouseParentType)=>{
     const {exploreScreenData} = useZustandStore();
     const carouselArrayData = exploreScreenData[type];
     return <div className="flex overflow-x-auto overflow-y-hidden gap-4 w-full scroll-smooth py-2">
-        {carouselArrayData.map((card)=><AlbumCard {...card}/>)}
+        {carouselArrayData.map((card)=><AlbumCard {...card} key={card.id}/>)}
     </div>
 }
 
