@@ -4,10 +4,12 @@ import FavIcon from "../Icons/FavIcon";
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
 import { secondsToMMSS } from "@/Screens/Explore/utils";
+import useZustandStore from "@/Zustand/store";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const AlbumCardComp = ({image,name,songCount,type}:AlbumsCardType)=>{
     const imageUrl = image[2].url;
-    const isSong = type === 'song'
+    const isSong = type === 'song';
     const label2 = isSong ? secondsToMMSS(songCount) : songCount + ' Songs';
     return <div className="album_card relative group/album-song hover:shadow-2xl">
         <LazyAvatar image={imageUrl} className='w-full h-[10rem] rounded-[var(--border-radius-all)] group-hover/album-song:opacity-60'/>
@@ -18,7 +20,17 @@ const AlbumCardComp = ({image,name,songCount,type}:AlbumsCardType)=>{
     </div>
 }
 
+const SkeletonAlbumCard = ()=>{
+    return <div className="album_card relative group/album-song hover:shadow-2xl">
+        <LazyAvatar className='w-full h-[10rem] rounded-[var(--border-radius-all)] group-hover/album-song:opacity-60'/>
+        <div className="w-full font-bold text-[1.1rem] threeDot">{'...'}</div>
+        <CardLabelSection label1={'...'} label2={'...'}/>
+    </div>
+}
+
 const CardLabelSectionComp = ({label1,label2}:CardLabelSectionCompType)=>{
+    const {exploreScreenData:{isLoading}} = useZustandStore();
+    if(isLoading) return <Skeleton className="w-full h-5"/>
     return <div className="w-full justify-between label-text text-[0.8rem] flex">
             <div className="flex-2 threeDot capitalize">{label1}</div>
             <div className="flex-1.5">{label2}</div>    
@@ -28,3 +40,4 @@ const CardLabelSectionComp = ({label1,label2}:CardLabelSectionCompType)=>{
 const AlbumCard = memo(AlbumCardComp);
 const CardLabelSection = memo(CardLabelSectionComp);
 export default AlbumCard;
+export {SkeletonAlbumCard};

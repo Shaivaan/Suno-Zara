@@ -4,15 +4,17 @@ import { create } from 'zustand';
 const {all_time_hits,chill_vibes,editor_picks,fresh_releases,party_anthems,recently_added,top_albums,trending_now} = explore_titles_head;
 interface ExploreScreenDataType{
     exploreScreenData : {
-
-      [all_time_hits]: AlbumsCardType[]
-      [chill_vibes]: AlbumsCardType[]
-      [editor_picks]: AlbumsCardType[]
-      [fresh_releases]: AlbumsCardType[]
-      [party_anthems]: AlbumsCardType[]
-      [recently_added]: AlbumsCardType[]
-      [top_albums]: AlbumsCardType[]
-      [trending_now] : AlbumsCardType[]
+      carouselData : {
+        [all_time_hits]: AlbumsCardType[]
+        [chill_vibes]: AlbumsCardType[]
+        [editor_picks]: AlbumsCardType[]
+        [fresh_releases]: AlbumsCardType[]
+        [party_anthems]: AlbumsCardType[]
+        [recently_added]: AlbumsCardType[]
+        [top_albums]: AlbumsCardType[]
+        [trending_now] : AlbumsCardType[]
+      },
+      isLoading:boolean
     }
 };
 
@@ -34,6 +36,7 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
 
 
   exploreScreenData : {
+    carouselData:{
       [all_time_hits]: [],
       [chill_vibes]: [],
       [editor_picks]: [],
@@ -42,8 +45,10 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
       [recently_added]: [],
       [top_albums]: [],
       [trending_now] : []
+    },
+    isLoading:true  
   },
-  handleExploreScreenData : (data) =>set(() => ({exploreScreenData : data as unknown as ExploreScreenDataType['exploreScreenData']}))
+  handleExploreScreenData : (data) =>set((state) => ({exploreScreenData : {...state.exploreScreenData,...data as unknown as ExploreScreenDataType['exploreScreenData']}}))
 }));
 
 export default useZustandStore;

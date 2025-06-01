@@ -5,11 +5,9 @@ import { memo } from "react";
 
 
 
-const images = 'https://github.com/shadcn.png';
-
-const LazyAvatarComp = ({image=images,className}:LazyAvatarType)=>{
+const LazyAvatarComp = ({image,className}:LazyAvatarType)=>{
     return <Avatar className={className}>
-  <AvatarImage src={image} alt="Music Album Image" />
+  <AvatarImage src={image} alt="Music Album Image"/>
   <AvatarFallback><Skeleton className="custom-skeleton flex items-center justify-center" ><Music2/></Skeleton></AvatarFallback>
 </Avatar>
 }
