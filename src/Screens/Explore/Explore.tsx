@@ -1,12 +1,12 @@
 import { search_playlist_api } from "@/api/api";
 import { SECTIONS_PART } from "@/api/query";
-import AlbumCard from "@/components/SelfMade/Cards/AlbumCard";
-import ArtistCard from "@/components/SelfMade/Cards/ArtistCard";
+// import ArtistCard from "@/components/SelfMade/Cards/ArtistCard";
 import useZustandStore from "@/Zustand/store";
 import { memo, useEffect } from "react";
+import ExploreParentCarousels from "./ExploreContent";
 
 const ExploreScreen = ()=>{
-     const {handleIsLoadedScreen,handleExploreScreenData} = useZustandStore();
+     const {handleIsLoadedScreen,handleExploreScreenData, isLoaded : {explore}} = useZustandStore();
       const fetchAllPlaylists = async () => {
       try {
         const promises = SECTIONS_PART.map(({title,query}) => 
@@ -30,58 +30,38 @@ const ExploreScreen = ()=>{
       }
     };
 
-    useEffect(() => {fetchAllPlaylists()}, []);
+    useEffect(() => {
+      if(!explore) fetchAllPlaylists();
+    }, []);
 
     return <div className="flex flex-col !gap-y-5">
-        <CarouselContainer/>
-        <CarouselContainer/>
-        <CarouselContainer/>
-        <AlbumArtistContainer/>
-        <CarouselContainer/>
+          <ExploreParentCarousels/>
     </div>
 }
 
-const CarouselContainer = ()=>{
-    return <div>
-        <div className="title_carousel">Quantum Hits</div>
-        <CarouselCardContainer/>  
-    </div>
-}
 
-const CarouselCardContainer = ()=>{
-    return <div className="flex overflow-x-auto overflow-y-hidden gap-4 w-full scroll-smooth py-2">
-        <AlbumCard/>
-        <AlbumCard/>
-        <AlbumCard/>
-        <AlbumCard/>
-        <AlbumCard/>
-        <AlbumCard/>
-        <AlbumCard/>
-        <AlbumCard/>
-        <AlbumCard/>
-        <AlbumCard/>
-        <AlbumCard/>
-    </div>
-}
 
-const AlbumArtistContainer = ()=>{
-    return <div>
-        <div className="title_carousel">Artist</div>
-        <AlbumArtistCardParent/>  
-    </div>
-}
-const AlbumArtistCardParent = ()=>{
-    return <div className="flex overflow-x-auto overflow-y-hidden gap-4 w-full scroll-smooth py-2">
-        <ArtistCard/>
-        <ArtistCard/>
-        <ArtistCard/>
-        <ArtistCard/>
-        <ArtistCard/>
-        <ArtistCard/>
-        <ArtistCard/>
-        <ArtistCard/>
-    </div>
-}
+
+
+
+// const AlbumArtistContainer = ()=>{
+//     return <div>
+//         <div className="title_carousel">Artist</div>
+//         <AlbumArtistCardParent/>  
+//     </div>
+// }
+// const AlbumArtistCardParent = ()=>{
+//     return <div className="flex overflow-x-auto overflow-y-hidden gap-4 w-full scroll-smooth py-2">
+//         <ArtistCard/>
+//         <ArtistCard/>
+//         <ArtistCard/>
+//         <ArtistCard/>
+//         <ArtistCard/>
+//         <ArtistCard/>
+//         <ArtistCard/>
+//         <ArtistCard/>
+//     </div>
+// }
 
 const Explore = memo(ExploreScreen);
 export default Explore;

@@ -4,20 +4,21 @@ import FavIcon from "../Icons/FavIcon";
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
 
-const AlbumCardComp = ()=>{
+const AlbumCardComp = ({data :{image,name,songCount,type}}:AlbumsCardType)=>{
+    const imageUrl = image[2].url;
     return <div className="album_card relative group/album-song hover:shadow-2xl">
-        <LazyAvatar className='w-full h-[10rem] rounded-[var(--border-radius-all)] group-hover/album-song:opacity-80'/>
-        <div className="w-full font-bold text-[1.1rem] threeDot">Main Ghar Nhi Jaana</div>
-        <CardLabelSection/>
+        <LazyAvatar image={imageUrl} className='w-full h-[10rem] rounded-[var(--border-radius-all)] group-hover/album-song:opacity-60'/>
+        <div className="w-full font-bold text-[1.1rem] threeDot">{name}</div>
+        <CardLabelSection label1={type} label2={songCount + ''}/>
         <FavIcon className="absolute top-2 right-2 group-hover/album-song:opacity-160 opacity-0 size-[1.5rem]"/>
-        <Button variant={'ghost'} className="cursor-pointer border-1 rounded-[var(--border-radius-all)] absolute bottom-17 right-4 hover:bg-glass-border bg-[var(--gradient-bg-gen)] opacity-0  group-hover/album-song:opacity-100"><Play/></Button>
+        <Button variant={'ghost'} className="cursor-pointer bg-[var(--accent-purple)] rounded-[var(--border-radius-all)] absolute bottom-17 right-4 hover:bg-glass-borde opacity-0 icons-hover  group-hover/album-song:opacity-100"><Play className="fill-[var(--text-gen-color)] text-[var(--accent-purple)] size-5"/></Button>
     </div>
 }
 
-const CardLabelSectionComp = ()=>{
+const CardLabelSectionComp = ({label1,label2}:CardLabelSectionCompType)=>{
     return <div className="w-full justify-between label-text text-[0.8rem] flex">
-            <div className="flex-2 threeDot">Sanam Puri</div>
-            <div className="flex-1">23 Songs</div>    
+            <div className="flex-2 threeDot capitalize">{label1}</div>
+            <div className="flex-1.5">{label2} Songs</div>    
         </div>
 }
 

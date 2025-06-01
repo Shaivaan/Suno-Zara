@@ -11,7 +11,6 @@ const useClickOutside = <T extends HTMLElement = HTMLElement>(
     
     const handleClick = (event: MouseEvent) => {
         if (ref.current && !ref.current.contains(event.target as Node)) {
-        console.log('sdsad')  
         callback();
       }
     };
