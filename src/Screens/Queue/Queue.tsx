@@ -48,7 +48,7 @@ function QueueDrawerComp() {
 
 const QueueComp = ({isScreen=false}:QueueType)=>{
   const {toggleQueue} = useZustandStore();
-  return <div className={cn("flex flex-col gap-2",!isScreen && ' bg-inherit')}>
+  return <div className={cn("flex flex-col col-gap-val",!isScreen && ' bg-inherit')}>
           <div className= {cn("",!isScreen && '!top-[-1.2rem] sticky-elem z-1 bg-inherit')}>
             <div className="flex flex-row justify-between items-center w-full">
               <div className="title_carousel">Queue</div>

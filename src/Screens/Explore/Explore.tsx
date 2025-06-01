@@ -1,8 +1,37 @@
+import { search_playlist_api } from "@/api/api";
+import { SECTIONS_PART } from "@/api/query";
 import AlbumCard from "@/components/SelfMade/Cards/AlbumCard";
 import ArtistCard from "@/components/SelfMade/Cards/ArtistCard";
-import { memo } from "react";
+import useZustandStore from "@/Zustand/store";
+import { memo, useEffect } from "react";
 
 const ExploreScreen = ()=>{
+     const {handleIsLoadedScreen,handleExploreScreenData} = useZustandStore();
+      const fetchAllPlaylists = async () => {
+      try {
+        const promises = SECTIONS_PART.map(({title,query}) => 
+          fetch(`${search_playlist_api}${encodeURIComponent(query)}`)
+            .then(res => {
+              if (!res.ok) throw new Error(`Failed to fetch ${query}`);
+              return res.json();
+            })
+            .then(data => ({ query, data, title }))
+        );
+
+        const results = await Promise.all(promises);
+        const playlistData:any = {};
+        results.forEach(({ title, data }) => {
+          playlistData[title] = data?.data?.results || [];
+        });
+        handleExploreScreenData(playlistData);
+      } catch (err) {
+      } finally {
+        handleIsLoadedScreen({explore:true});
+      }
+    };
+
+    useEffect(() => {fetchAllPlaylists()}, []);
+
     return <div className="flex flex-col !gap-y-5">
         <CarouselContainer/>
         <CarouselContainer/>

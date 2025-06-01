@@ -9,7 +9,7 @@ const placholderText = 'Search for songs, artists, albums...';
 const button_data = ['songs','artists','albums','playlists'];
 
 const SearchComp=()=>{
-    return <div className="flex flex-col gap-5">
+    return <div className="flex flex-col col-gap-val">
 
        <div className="title_carousel">Search</div>
        <InputContainer/>

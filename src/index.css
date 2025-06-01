@@ -419,3 +419,7 @@ h1 {
   position: sticky;
   top: 0;
 }
+
+.col-gap-val{
+  gap: 1rem;
+}
