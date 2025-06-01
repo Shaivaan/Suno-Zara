@@ -50,7 +50,7 @@ const fetchAllPlaylists = async () => {
     
     handleExploreScreenData(playlistData);
   } catch (err) {
-    console.error('Error fetching playlists:', err);
+    // console.error('Error fetching playlists:', err);
   } finally {
     handleIsLoadedScreen({ explore: true });
   }
