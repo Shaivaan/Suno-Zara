@@ -23,14 +23,17 @@ const AlbumCardComp = ({image,name,songCount,type}:AlbumsCardType)=>{
 const SkeletonAlbumCard = ()=>{
     return <div className="album_card relative group/album-song hover:shadow-2xl">
         <LazyAvatar className='w-full h-[10rem] rounded-[var(--border-radius-all)] group-hover/album-song:opacity-60'/>
-        <div className="w-full font-bold text-[1.1rem] threeDot">{'...'}</div>
         <CardLabelSection label1={'...'} label2={'...'}/>
     </div>
 }
 
 const CardLabelSectionComp = ({label1,label2}:CardLabelSectionCompType)=>{
     const {exploreScreenData:{isLoading}} = useZustandStore();
-    if(isLoading) return <Skeleton className="w-full h-5"/>
+    if(isLoading) return <>
+        <Skeleton className="w-full h-5  my-1"/>
+        <Skeleton className="w-full h-5"/>
+    </> 
+
     return <div className="w-full justify-between label-text text-[0.8rem] flex">
             <div className="flex-2 threeDot capitalize">{label1}</div>
             <div className="flex-1.5">{label2}</div>    
