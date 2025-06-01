@@ -6,7 +6,7 @@ import { Route, Routes } from "react-router-dom"
 import Explore from "../Explore/Explore"
 import SearchScreen from "../Search/Search"
 import { Queue } from "../Queue/Queue"
-import PlayListScreen from "@/components/SelfMade/PlayList/PlayListScreen"
+// import PlayListScreen from "@/components/SelfMade/PlayList/PlayListScreen"
 import LibraryScreen from "../Library/Library"
 const {home,library,queue,search} = routes;
 
