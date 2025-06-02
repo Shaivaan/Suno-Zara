@@ -4,7 +4,6 @@ import FavIcon from "../Icons/FavIcon";
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
 import { secondsToMMSS } from "@/Screens/Explore/utils";
-import useZustandStore from "@/Zustand/store";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const AlbumCardComp = ({image,name,songCount,type}:AlbumsCardType)=>{
