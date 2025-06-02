@@ -3,11 +3,11 @@ export const explore_titles_head = {
   recently_added: "Recently Added",
   fresh_releases: "Fresh Releases",
   top_albums: "Top Albums",
+  trending_artist : 'Top Artists',
   editor_picks: "Editor's Picks",
   chill_vibes: "Chill Vibes",
   party_anthems: "Party Anthems",
   all_time_hits: "All Time Hits",
-  trending_artist : 'Top Artists'
 };
 
 const {

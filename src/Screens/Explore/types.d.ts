@@ -57,9 +57,9 @@ interface TrendingElemType{
 }
 
 interface ArtistCardType{
-  artistid: string
+  artistid?: string
   name: string
   image: string
-  follower_count: number
-  is_followed: boolean
+  follower_count?: number
+  is_followed?: boolean
 }

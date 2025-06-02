@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { LazyAvatar } from "../LazyAvatar/LazyAvatar"
 import FavIcon from "../Icons/FavIcon";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ArtistCardComp = ({image, name}: ArtistCardType)=>{
     return <div className="flex-col flex gap-2 artist_card group/album-song hover:shadow-2xl relative">
@@ -10,5 +11,13 @@ const ArtistCardComp = ({image, name}: ArtistCardType)=>{
     </div>
 }
 
+const ArtistSkeletonCardComp = ()=>{
+    return <div className="flex-col flex gap-2 artist_card group/album-song hover:shadow-2xl relative">
+        <LazyAvatar className="w-[10rem] h-[10rem] rounded-[50%]  group-hover/album-song:opacity-80 "/>
+        <Skeleton className="h-5 w-full" />
+    </div>
+}
+
 const ArtistCard = memo(ArtistCardComp);
 export default ArtistCard;
+export {ArtistSkeletonCardComp};
