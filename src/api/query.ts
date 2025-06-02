@@ -7,6 +7,7 @@ export const explore_titles_head = {
   chill_vibes: "Chill Vibes",
   party_anthems: "Party Anthems",
   all_time_hits: "All Time Hits",
+  trending_artist : 'Top Artists'
 };
 
 const {

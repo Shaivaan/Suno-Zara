@@ -1,11 +1,14 @@
-import { allOriginsProxy, search_playlist_api, trending_now_api } from "@/api/api";
-import { SECTIONS_PART } from "@/api/query";
+import { allOriginsProxy, search_playlist_api, trending_artist_api, trending_now_api } from "@/api/api";
+import { explore_titles_head, SECTIONS_PART } from "@/api/query";
 // import ArtistCard from "@/components/SelfMade/Cards/ArtistCard";
 import useZustandStore from "@/Zustand/store";
 import { memo, useEffect } from "react";
 import ExploreParentCarousels from "./ExploreContent";
 import axios from 'axios';
 import { refactorTrendingData } from "./utils";
+
+const {trending_now,trending_artist} = explore_titles_head;
+
 
 const ExploreScreen = ()=>{
     const {handleIsLoadedScreen,handleExploreScreenData, isLoaded : {explore}} = useZustandStore();
@@ -32,17 +35,25 @@ const ExploreScreen = ()=>{
           return data;
         });
         
+        const trendingArtistPromise = axios.get(
+          `${allOriginsProxy}${encodeURIComponent(trending_artist_api)}`
+        ).then(response => {
+          const data = JSON.parse(response.data.contents);
+          return data;
+        });
 
         const results = await Promise.all(promises);
         const trendResp:{new_trending:TrendingElemType[]} = await trendingPromise;
         const trendingRefactoredData = refactorTrendingData(trendResp?.new_trending || []);
+        const trendingArtistRes:{top_artists:ArtistCardType[]} = await trendingArtistPromise;
         
         // Process playlist data
         const playlistData:any = {};
         results.forEach(({ title, data }) => {
           playlistData[title] = data?.data?.results || [];
         });
-        playlistData['Trending Now'] = trendingRefactoredData;
+        playlistData[trending_now] = trendingRefactoredData;
+        playlistData[trending_artist] = trendingArtistRes?.top_artists || [];
 
         // playlistData[]
 
@@ -66,29 +77,6 @@ const ExploreScreen = ()=>{
     </div>
 }
 
-
-
-
-
-
-// const AlbumArtistContainer = ()=>{
-//     return <div>
-//         <div className="title_carousel">Artist</div>
-//         <AlbumArtistCardParent/>  
-//     </div>
-// }
-// const AlbumArtistCardParent = ()=>{
-//     return <div className="flex overflow-x-auto overflow-y-hidden gap-4 w-full scroll-smooth py-2">
-//         <ArtistCard/>
-//         <ArtistCard/>
-//         <ArtistCard/>
-//         <ArtistCard/>
-//         <ArtistCard/>
-//         <ArtistCard/>
-//         <ArtistCard/>
-//         <ArtistCard/>
-//     </div>
-// }
 
 const Explore = memo(ExploreScreen);
 export default Explore;

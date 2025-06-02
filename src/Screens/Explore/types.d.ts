@@ -56,3 +56,10 @@ interface TrendingElemType{
   button_tooltip_info: Array<any>
 }
 
+interface ArtistCardType{
+  artistid: string
+  name: string
+  image: string
+  follower_count: number
+  is_followed: boolean
+}
