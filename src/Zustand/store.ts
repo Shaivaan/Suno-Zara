@@ -1,13 +1,12 @@
 import { explore_titles_head } from '@/api/query';
 import { create } from 'zustand';
 
-const {all_time_hits,chill_vibes,editor_picks,fresh_releases,party_anthems,recently_added,top_albums,trending_now,trending_artist} = explore_titles_head;
+const {all_time_hits,chill_vibes,fresh_releases,party_anthems,recently_added,top_albums,trending_now,trending_artist} = explore_titles_head;
 interface ExploreScreenDataType{
     exploreScreenData : {
       carouselData : {
         [all_time_hits]: AlbumsCardType[]
         [chill_vibes]: AlbumsCardType[]
-        [editor_picks]: AlbumsCardType[]
         [fresh_releases]: AlbumsCardType[]
         [party_anthems]: AlbumsCardType[]
         [recently_added]: AlbumsCardType[]
@@ -40,7 +39,6 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
     carouselData:{
       [all_time_hits]: [],
       [chill_vibes]: [],
-      [editor_picks]: [],
       [fresh_releases]: [],
       [party_anthems]: [],
       [recently_added]: [],

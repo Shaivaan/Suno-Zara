@@ -14,12 +14,11 @@ const ExploreParentCarousels = ()=>{
 }
 
 const ExploreCarouselMapperComp = ({title}:{title : keyType})=>{
-    const {exploreScreenData:{carouselData,isLoading}} = useZustandStore();
+    const {exploreScreenData:{carouselData}} = useZustandStore();
     const type = explore_titles_head[title as keyType];
     const carouselArrayData = carouselData[type];
+    if(!carouselArrayData?.length) return <ExploreLoadingCarousels title={title}/>
     if(type === trending_artist) return <AlbumArtistCarousel/>;
-    if(isLoading) return <ExploreLoadingCarousels title={title}/>
-    if(!carouselArrayData.length) return null;
 
     return <div>
         <div className="title_carousel">{explore_titles_head[title as keyType]}</div>
@@ -61,7 +60,7 @@ const AlbumArtistCardParentComp = ()=>{
     const loadArray = new Array(10).fill(10);
     return <div className="flex overflow-x-auto overflow-y-hidden gap-4 w-full scroll-smooth py-2">
         {isLoading && loadArray.map((_el,indx)=><ArtistSkeletonCardComp key={indx}/>)}
-        {artistData.map((artist) => <ArtistCard {...artist}/>)}
+        {!isLoading && artistData.map((artist) => <ArtistCard {...artist}/>)}
     </div>
 }
 

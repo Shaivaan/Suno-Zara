@@ -28,8 +28,7 @@ const SkeletonAlbumCard = ()=>{
 }
 
 const CardLabelSectionComp = ({label1,label2}:CardLabelSectionCompType)=>{
-    const {exploreScreenData:{isLoading}} = useZustandStore();
-    if(isLoading) return <>
+    if(label1 === '...' && label2 === '...') return <>
         <Skeleton className="w-full h-5  my-1"/>
         <Skeleton className="w-full h-5"/>
     </> 

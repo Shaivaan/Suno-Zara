@@ -12,61 +12,50 @@ const {trending_now,trending_artist} = explore_titles_head;
 
 const ExploreScreen = ()=>{
     const {handleIsLoadedScreen,handleExploreScreenData, isLoaded : {explore}} = useZustandStore();
-    const fetchAllPlaylists = async () => {
-      try {
-        // Convert all fetch calls to axios
-        const promises = SECTIONS_PART.map(({ title, query }) => 
-          axios.get(`${search_playlist_api}${encodeURIComponent(query)}`)
-            .then(res => {
-              // axios automatically parses JSON, so res.data contains the parsed response
-              return { query, data: res.data, title };
-            })
-            .catch(err => {
-              console.error(`Failed to fetch ${query}:`, err);
-              throw new Error(`Failed to fetch ${query}`);
-            })
-        );
-        
-        // Keep the trending API call as is (already using axios)
-        const trendingPromise = axios.get(
-          `${allOriginsProxy}${encodeURIComponent(trending_now_api)}`
-        ).then(response => {
-          const data = JSON.parse(response.data.contents);
-          return data;
-        });
-        
-        const trendingArtistPromise = axios.get(
-          `${allOriginsProxy}${encodeURIComponent(trending_artist_api)}`
-        ).then(response => {
-          const data = JSON.parse(response.data.contents);
-          return data;
-        });
 
-        const results = await Promise.all(promises);
-        const trendResp:{new_trending:TrendingElemType[]} = await trendingPromise;
-        const trendingRefactoredData = refactorTrendingData(trendResp?.new_trending || []);
-        const trendingArtistRes:{top_artists:ArtistCardType[]} = await trendingArtistPromise;
-        
-        // Process playlist data
-        const playlistData:any = {};
-        results.forEach(({ title, data }) => {
-          playlistData[title] = data?.data?.results || [];
-        });
-        playlistData[trending_now] = trendingRefactoredData;
-        playlistData[trending_artist] = trendingArtistRes?.top_artists || [];
+const fetchAllPlaylists = async () => {
+  const playlistData:any = {};
+  handleExploreScreenData({ isLoading: true, carouselData: {} });
 
-        // playlistData[]
+  const fetchSafe = async (fn:()=>void, fallback = []) => {
+    try { return await fn(); } 
+    catch (err) { console.error(err); return fallback; }
+  };
 
+  const updateData = () => handleExploreScreenData({ carouselData: { ...playlistData }, isLoading: true });
 
-        
-        handleExploreScreenData({carouselData: playlistData});
-      } catch (err) {
-        // console.error('Error fetching playlists:', err);
-      } finally {
-        handleIsLoadedScreen({ explore: true });
-        handleExploreScreenData({isLoading:false});
-      }
-    };
+  try {
+    // Fetch playlists sequentially
+    for (const { title, query } of SECTIONS_PART) {
+      playlistData[title] = await fetchSafe(async () => {
+        const res = await axios.get(`${search_playlist_api}${encodeURIComponent(query)}`);
+        return res.data?.data?.results || [];
+      });
+      updateData();
+    }
+
+    // Fetch trending data
+    playlistData[trending_now] = await fetchSafe(async () => {
+      const res = await axios.get(`${allOriginsProxy}${encodeURIComponent(trending_now_api)}`);
+      const data = JSON.parse(res.data.contents);
+      return refactorTrendingData(data?.new_trending || []);
+    });
+    updateData();
+
+    // Fetch trending artists
+    playlistData[trending_artist] = await fetchSafe(async () => {
+      const res = await axios.get(`${allOriginsProxy}${encodeURIComponent(trending_artist_api)}`);
+      const data = JSON.parse(res.data.contents);
+      return data?.top_artists || [];
+    });
+
+  } catch (err) {
+    console.error('Critical error:', err);
+  } finally {
+    handleExploreScreenData({ carouselData: playlistData, isLoading: false });
+    handleIsLoadedScreen({ explore: true });
+  }
+};
     
     useEffect(() => {
       if(!explore) fetchAllPlaylists();
