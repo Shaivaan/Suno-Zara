@@ -3,10 +3,11 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import { Search, X } from "lucide-react"
 import { Button } from "./button"
-import useZustandStore from "@/Zustand/store"
+import useZustandStore, { init_search_data } from "@/Zustand/store"
 
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   const {handleSearchScreenData} = useZustandStore();
+  const clearInputAndData = ()=>handleSearchScreenData({searchQuery:'',...init_search_data});
   return (
     <div className="relative">
       <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
@@ -21,7 +22,7 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
         )}
         {...props}
       />
-      <Button className="absolute rounded-[50%] !p-[0.5rem] right-3 top-1/2 -translate-y-1/2 cursor-pointer" variant={'ghost'} onClick={()=>handleSearchScreenData({searchQuery:''})}>
+      <Button className="absolute rounded-[50%] !p-[0.5rem] right-3 top-1/2 -translate-y-1/2 cursor-pointer" variant={'ghost'} onClick={clearInputAndData}>
           <X  />
       </Button>
     </div>

@@ -8,7 +8,12 @@ const init_search_loading = {
           playlists:false,
           albums: false
       };
-
+const init_search_data = {
+  albumsData:[],
+  artistData:[],
+  playlistData:[],
+  songData:[]
+}
 
 interface ExploreScreenDataType{
     exploreScreenData : {
@@ -61,10 +66,7 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
       searchScreenData : {
         searchQuery : '',
         activeSection : 'songs',
-        songData : [],
-        artistData : [],
-        albumsData : [],
-        playlistData : [],
+        ...init_search_data,
         isLoading : init_search_loading
     },
 
@@ -72,4 +74,4 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
 }));
 
 export default useZustandStore;
-export {init_search_loading};
+export {init_search_loading,init_search_data};

@@ -47,7 +47,7 @@ const InputContainerComp = ()=>{
             getResults(value);
         } ,debounceTime);
     }
-    useEffect(()=>setSearchText(searchQuery),[searchQuery])
+    useEffect(()=>setSearchText(searchQuery),[searchQuery]);
     return  <Input value={searchText} onChange={handleChange} className="p-[1.5rem] rounded-[var(--border-radius-all)]" placeholder={placholderText}/>
 }
 
