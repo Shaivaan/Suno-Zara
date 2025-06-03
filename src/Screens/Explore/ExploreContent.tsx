@@ -60,7 +60,7 @@ const AlbumArtistCardParentComp = ()=>{
     const loadArray = new Array(10).fill(10);
     return <div className="flex overflow-x-auto overflow-y-hidden gap-4 w-full scroll-smooth py-2">
         {isLoading && loadArray.map((_el,indx)=><ArtistSkeletonCardComp key={indx}/>)}
-        {!isLoading && artistData.map((artist) => <ArtistCard {...artist}/>)}
+        {!isLoading && artistData.map((artist,indx) => <ArtistCard key={indx} {...artist}/>)}
     </div>
 }
 

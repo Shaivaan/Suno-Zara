@@ -16,4 +16,17 @@ interface StateStoreType {
     handleIsLoadedScreen : (isLoadedObj : IsLoadedTypes) =>void
 
     handleExploreScreenData : (data:unknown)=>void
+
+    searchScreenData : {
+        searchQuery : string
+        activeSection : ActiveSectionType
+        songData : SongListType[]
+        artistData : ArtistCardType[]
+        albumsData : AlbumsCardType[]
+        playlistData : AlbumsCardType[]
+        isLoading : Record<ActiveSectionType,boolean>
+    }
+    handleSearchScreenData : (data:Partial<StateStoreType['searchScreenData']>)=>void
 }
+
+type ActiveSectionType = 'songs' | 'artists' | 'albums' | 'playlists'

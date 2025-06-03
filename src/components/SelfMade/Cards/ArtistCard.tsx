@@ -4,9 +4,9 @@ import FavIcon from "../Icons/FavIcon";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const ArtistCardComp = ({image, name}: ArtistCardType)=>{
-    return <div className="flex-col flex gap-2 artist_card group/album-song hover:shadow-2xl relative">
+    return <div className="w-[10rem] flex-col flex gap-2 artist_card group/album-song hover:shadow-2xl relative">
         <LazyAvatar image={image} className="w-[10rem] h-[10rem] rounded-[50%]  group-hover/album-song:opacity-80 "/>
-        <div className="text-center">{name}</div>
+        <div className="text-center threeDot">{name}</div>
         <FavIcon className="absolute top-[-5px] right-1 group-hover/album-song:opacity-160 opacity-0 size-[1.5rem] "/>
     </div>
 }

@@ -2,6 +2,14 @@ import { explore_titles_head } from '@/api/query';
 import { create } from 'zustand';
 
 const {all_time_hits,chill_vibes,fresh_releases,party_anthems,recently_added,top_albums,trending_now,trending_artist} = explore_titles_head;
+const init_search_loading = {
+          songs:false,
+          artists:false,
+          playlists:false,
+          albums: false
+      };
+
+
 interface ExploreScreenDataType{
     exploreScreenData : {
       carouselData : {
@@ -18,7 +26,7 @@ interface ExploreScreenDataType{
     }
 };
 
-
+export const debounceTime = 500;
 const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => ({
   isSidebarVisible: false,
   isVolumeAdjustOpen : false,
@@ -46,9 +54,22 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
       [trending_now] : [],
       [trending_artist] : []
     },
-    isLoading:true  
+    isLoading:true  ,
   },
-  handleExploreScreenData : (data) =>set((state) => ({exploreScreenData : {...state.exploreScreenData,...data as unknown as ExploreScreenDataType['exploreScreenData']}}))
+  handleExploreScreenData : (data) =>set((state) => ({exploreScreenData : {...state.exploreScreenData,...data as unknown as ExploreScreenDataType['exploreScreenData']}})),
+
+      searchScreenData : {
+        searchQuery : '',
+        activeSection : 'songs',
+        songData : [],
+        artistData : [],
+        albumsData : [],
+        playlistData : [],
+        isLoading : init_search_loading
+    },
+
+    handleSearchScreenData : (data:Partial<StateStoreType['searchScreenData']>) =>set((state) => ({searchScreenData : {...state.searchScreenData,...data}})),
 }));
 
 export default useZustandStore;
+export {init_search_loading};

@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const AlbumCardComp = ({image,name,songCount,type}:AlbumsCardType)=>{
     const imageUrl = image[2].url;
     const isSong = type === 'song';
-    const label2 = isSong ? secondsToMMSS(songCount) : songCount + ' Songs';
+    const label2 = isSong ? secondsToMMSS(songCount) : songCount ? (songCount + ' Songs') : '';
     return <div className="album_card relative group/album-song hover:shadow-2xl">
         <LazyAvatar image={imageUrl} className='w-full h-[10rem] rounded-[var(--border-radius-all)] group-hover/album-song:opacity-60'/>
         <div className="w-full font-bold text-[1.1rem] threeDot">{name}</div>
