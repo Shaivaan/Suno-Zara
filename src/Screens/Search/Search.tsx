@@ -2,7 +2,7 @@ import ArtistCard from "@/components/SelfMade/Cards/ArtistCard";
 import SongsList from "@/components/SelfMade/SongList/SongList";
 import { ButtonMenu, MenuButton } from "@/components/SelfMade/Wrapper/ButtonMenu";
 import { Input } from "@/components/ui/input";
-import useZustandStore, { debounceTime, load_true } from "@/Zustand/store";
+import useZustandStore, { debounceTime, init_search_data, init_search_loading, load_true } from "@/Zustand/store";
 import { memo, useEffect, useRef, useState } from "react";
 import useSearch from "@/CustomHook/useSearch";
 import AlbumCard from "@/components/SelfMade/Cards/AlbumCard";
@@ -40,7 +40,10 @@ const InputContainerComp = ()=>{
     const timer = useRef<NodeJS.Timeout>(null);
     const handleChange = (event:React.ChangeEvent<HTMLInputElement>)=>{
         const value = event.target.value;
+
         if(value) handleSearchScreenData({isLoading:load_true});
+        else handleSearchScreenData({isLoading:init_search_loading,...init_search_data})
+
         setSearchText(value);
         if(timer.current) clearTimeout(timer.current);
         timer.current = setTimeout(()=>{
