@@ -15,6 +15,13 @@ const init_search_data = {
   songData:[]
 }
 
+const load_true = {
+    albums:true,
+    artists:true,
+    playlists:true,
+    songs:true
+};
+
 interface ExploreScreenDataType{
     exploreScreenData : {
       carouselData : {
@@ -74,4 +81,4 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
 }));
 
 export default useZustandStore;
-export {init_search_loading,init_search_data};
+export {init_search_loading,init_search_data,load_true};

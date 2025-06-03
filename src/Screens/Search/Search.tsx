@@ -2,7 +2,7 @@ import ArtistCard from "@/components/SelfMade/Cards/ArtistCard";
 import SongsList from "@/components/SelfMade/SongList/SongList";
 import { ButtonMenu, MenuButton } from "@/components/SelfMade/Wrapper/ButtonMenu";
 import { Input } from "@/components/ui/input";
-import useZustandStore, { debounceTime } from "@/Zustand/store";
+import useZustandStore, { debounceTime, load_true } from "@/Zustand/store";
 import { memo, useEffect, useRef, useState } from "react";
 import useSearch from "@/CustomHook/useSearch";
 import AlbumCard from "@/components/SelfMade/Cards/AlbumCard";
@@ -34,27 +34,33 @@ const ButtonCategoryComp = ()=>{
 }
 
 const InputContainerComp = ()=>{
-    const {searchScreenData:{searchQuery},handleSearchScreenData} = useZustandStore();
+    const {searchScreenData:{searchQuery,activeSection,isLoading},handleSearchScreenData} = useZustandStore();
     const {getResults} = useSearch();
     const [searchText,setSearchText] = useState(searchQuery);
     const timer = useRef<NodeJS.Timeout>(null);
     const handleChange = (event:React.ChangeEvent<HTMLInputElement>)=>{
         const value = event.target.value;
+        if(value) handleSearchScreenData({isLoading:load_true});
         setSearchText(value);
         if(timer.current) clearTimeout(timer.current);
         timer.current = setTimeout(()=>{
-            handleSearchScreenData({searchQuery:value,isLoading:{albums:true,artists:true,playlists:true,songs:true}});
+            handleSearchScreenData({searchQuery:value});
             getResults(value);
         } ,debounceTime);
     }
     useEffect(()=>setSearchText(searchQuery),[searchQuery]);
+    useEffect(()=>{
+    if(searchQuery && isLoading[activeSection]) getResults(searchQuery);
+    },[activeSection])
     return  <Input value={searchText} onChange={handleChange} className="p-[1.5rem] rounded-[var(--border-radius-all)]" placeholder={placholderText}/>
 }
 
 
 
 const SearchSectionHandleComp = ()=>{
-    const {searchScreenData:{activeSection,songData}} = useZustandStore();
+    const {searchScreenData:{activeSection,songData,isLoading}} = useZustandStore();
+    if(isLoading[activeSection]) return 'Loading...'
+
     switch(activeSection){
         case 'songs' : return <SongsList songs={songData}/>;
         case 'albums' : return <AlbumResults/>

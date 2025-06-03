@@ -13,7 +13,8 @@ const useSearch = ()=> {
             }catch(err){
 
             }finally{
-                handleSearchScreenData({isLoading:{[activeSection]:false,...isLoading}});
+                const loading = {...isLoading,[activeSection]:false};
+                handleSearchScreenData({isLoading:loading});
             }
         } 
         return {getResults};
