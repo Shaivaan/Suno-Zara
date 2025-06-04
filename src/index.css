@@ -423,3 +423,8 @@ h1 {
 .col-gap-val{
   gap: 1rem;
 }
+
+a,a:hover{
+  text-decoration: none;
+  color: inherit;
+}

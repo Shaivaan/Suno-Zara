@@ -5,6 +5,7 @@ import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { secondsToMMSS } from "@/Screens/Explore/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 const table_columns = ['#','title','artist','album','duration'];
 
 const SongResultsComp = ({songs}:{songs :SongListType[]})=>{
@@ -40,5 +41,8 @@ const SongItem = ({isPlaying=false,song,indx}:{isPlaying?:boolean} & {song:SongL
         <div className="label-text text-[0.9rem]">{secondsToMMSS(duration)}</div>
     </div>
 }
+
+const SongItemSkeleton = ()=><Skeleton className="h-10 w-full !rounded-[var(--border-radius-all)]"/>
 const SongsList = memo(SongResultsComp);
-export default SongsList
+export default SongsList;
+export {SongItemSkeleton};

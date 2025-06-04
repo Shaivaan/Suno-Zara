@@ -27,6 +27,24 @@ interface StateStoreType {
         isLoading : Record<ActiveSectionType,boolean>
     }
     handleSearchScreenData : (data:Partial<StateStoreType['searchScreenData']>)=>void
+
+    albumPlayListScreenData : AlbumPlayListScreen
+    handleAlbumPlayListScreenData : (data:Partial<StateStoreType['albumPlayListScreenData']>)=>void
+
 }
+
+
+type NullString = null | string;
+interface AlbumPlayListScreen{
+        data : SongListType[]
+        isLoading : boolean
+        details : {
+            id : NullString
+            name : NullString
+            duration : NullString
+            type : NullString
+            image : NullString
+        }
+    }
 
 type ActiveSectionType = 'songs' | 'artists' | 'albums' | 'playlists'

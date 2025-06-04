@@ -6,9 +6,9 @@ import { Route, Routes } from "react-router-dom"
 import Explore from "../Explore/Explore"
 import SearchScreen from "../Search/Search"
 import { Queue } from "../Queue/Queue"
-// import PlayListScreen from "@/components/SelfMade/PlayList/PlayListScreen"
 import LibraryScreen from "../Library/Library"
-const {home,library,queue,search} = routes;
+import PlayListAlbumScreen from "../PlayList/PlayListScreen"
+const {home,library,queue,search, genre} = routes;
 
 export const RouterComp = ()=>{
       // Toggle dark mode by adding/removing 'dark' class to document
@@ -31,12 +31,13 @@ export const RouterComp = ()=>{
 }
 
 const DynamicRoute = ()=>{
-    return <div className={cn('mt-[var(--navbar-height)] mb-[100px] p-4 lg:ml-[var(--side-bar-width)]')}>
+    return <div className={cn('mt-[var(--navbar-height)] !pb-[105px] p-4 lg:ml-[var(--side-bar-width)]')}>
         <Routes>
             <Route path={home} element={<Explore/>}/>
             <Route path={search} element={<SearchScreen/>}/>
             <Route path={queue} element={<Queue isScreen/>}/>
             <Route path={library} element={<LibraryScreen/>}/>
+            <Route path={genre} element={<PlayListAlbumScreen/>} />
         </Routes>
     </div>
 }

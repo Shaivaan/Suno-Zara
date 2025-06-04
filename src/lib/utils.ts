@@ -11,5 +11,8 @@ export const routes = {
   home : '/',
   search : '/search',
   library : '/library',
-  queue : '/queue'
+  queue : '/queue',
+  genre : '/genre'
 };
+
+export const loadArray = new Array(15).fill(0);
