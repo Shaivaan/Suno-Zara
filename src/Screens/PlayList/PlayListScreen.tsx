@@ -10,6 +10,7 @@ import { SongSkeletonParent } from "../Search/Search";
 import AlbumCard from "@/components/SelfMade/Cards/AlbumCard";
 import { ButtonMenu, MenuButton } from "@/components/SelfMade/Wrapper/ButtonMenu";
 import FailedFallBack from "@/components/SelfMade/Cards/FailedFallBack";
+import CarouselWrapperWithHead from "@/components/SelfMade/CarouselWrapper/CarouselWrapper";
 
 const getApiAccordingly = (screen:ScreenType)=>{
     switch (screen){
@@ -78,12 +79,8 @@ const SongsListHandlerComp = ()=>{
     return <div className="flex gap-2 flex-col">
     <ArtistButtonCategory/>
 
-    {section === 'albums' ? <div>
-        <div className="title_carousel">Top Albums</div>
-        <div className="flex overflow-x-auto overflow-y-hidden gap-4 w-full scroll-smooth py-2">
-        {(artistAlbumData as unknown as AlbumsCardType[]).map((card)=><AlbumCard {...card} key={card.id}/>)}
-        </div>
-    </div> : <SongsList songs={data}/>}
+    {section === 'albums' ? 
+    <CarouselWrapperWithHead carouselHeading="Top Albums">{(artistAlbumData as unknown as AlbumsCardType[]).map((card)=><AlbumCard {...card} key={card.id}/>)}</CarouselWrapperWithHead> : <SongsList songs={data}/>}
     </div>
 }
 

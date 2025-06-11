@@ -1,6 +1,7 @@
 import { explore_titles_head } from "@/api/query";
 import AlbumCard, { SkeletonAlbumCard } from "@/components/SelfMade/Cards/AlbumCard";
 import ArtistCard, { ArtistSkeletonCardComp } from "@/components/SelfMade/Cards/ArtistCard";
+import CarouselWrapperWithHead, { CarouselWrapper } from "@/components/SelfMade/CarouselWrapper/CarouselWrapper";
 import useZustandStore from "@/Zustand/store";
 import { memo } from "react";
 const {trending_artist} = explore_titles_head;
@@ -30,21 +31,18 @@ const ExploreCarouselMapperComp = ({title}:{title : keyType})=>{
 const ExploreCarouselComp = ({type}:AlbumPlaylistCarouseParentType)=>{
     const {exploreScreenData:{carouselData}} = useZustandStore();
     const carouselArrayData = carouselData[type];
-    return <div className="flex overflow-x-auto overflow-y-hidden gap-4 w-full scroll-smooth py-2">
+    return <CarouselWrapper>
         {(carouselArrayData as unknown as AlbumsCardType[]).map((card)=><AlbumCard {...card} key={card.id}/>)}
-    </div>
+    </CarouselWrapper>
 }
 
 const ExploreLoadingCarousels = ({title}:{title:string})=>{
     const loadeData = new Array(10).fill(10);
     const type = explore_titles_head[title as keyType];
 
-    return <div>
-        <div className="title_carousel">{type}</div>
-        <div className="flex overflow-x-auto overflow-y-hidden gap-4 w-full scroll-smooth py-2">
+    return <CarouselWrapperWithHead carouselHeading={type}>
         {loadeData.map((_elem,indx)=><SkeletonAlbumCard key={indx}/>)}
-    </div>
-    </div>
+    </CarouselWrapperWithHead>
 }
 
 
@@ -58,10 +56,10 @@ const AlbumArtistCardParentComp = ()=>{
     const {exploreScreenData:{carouselData,isLoading}} = useZustandStore();
     const artistData = carouselData[trending_artist] as ArtistCardType[];
     const loadArray = new Array(10).fill(10);
-    return <div className="flex overflow-x-auto overflow-y-hidden gap-4 w-full scroll-smooth py-2">
+    return <CarouselWrapper>
         {isLoading && loadArray.map((_el,indx)=><ArtistSkeletonCardComp key={indx}/>)}
         {!isLoading && artistData.map((artist,indx) => <ArtistCard key={indx} {...artist}/>)}
-    </div>
+    </CarouselWrapper>
 }
 
 const ExploreCarousel = memo(ExploreCarouselComp);
