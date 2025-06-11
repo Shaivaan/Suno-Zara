@@ -26,7 +26,7 @@ const SongsHead=()=>{
 
 
 const SongItem = ({isPlaying=false,song,indx}:{isPlaying?:boolean} & {song:SongListType} & {indx:number})=>{
-    const {album,artists,duration,image,name,id,artistId,albumId} = song;
+    const {album,artists,duration,image,name,artistId,albumId} = song;
     return <div className={cn("grid-container-songs song_row group/song",isPlaying && 'playing')}>
         <div className="label-text text-[0.9rem]">{indx}</div>
         <div className="flex gap-4 items-center">
