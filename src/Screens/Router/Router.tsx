@@ -2,15 +2,19 @@ import MusicBar from "@/components/SelfMade/MusicBar/MusicBar"
 import Navbar from "@/components/SelfMade/Navbar/Navbar"
 import Sidebar from "@/components/SelfMade/Sidebar/Sidebar"
 import { cn, routes } from "@/lib/utils"
-import { Route, Routes } from "react-router-dom"
+import { Route, Routes, useLocation } from "react-router-dom"
 import Explore from "../Explore/Explore"
 import SearchScreen from "../Search/Search"
 import { Queue } from "../Queue/Queue"
 import LibraryScreen from "../Library/Library"
 import PlayListAlbumScreen from "../PlayList/PlayListScreen"
+import useScrollToTop from "@/CustomHook/useScroll"
+import { useEffect } from "react"
 const {home,library,queue,search, genre} = routes;
 
 export const RouterComp = ()=>{
+    const scrollToTop = useScrollToTop();
+    const {pathname} = useLocation();
       // Toggle dark mode by adding/removing 'dark' class to document
   // const toggleDarkMode = () => {
   //   const newIsDark = !isDark;
@@ -21,6 +25,10 @@ export const RouterComp = ()=>{
   //     document.documentElement.classList.remove('dark');
   //   }
   // };
+
+    useEffect(()=>{
+        scrollToTop();
+    },[pathname])
 
     return <>
         <Navbar/>

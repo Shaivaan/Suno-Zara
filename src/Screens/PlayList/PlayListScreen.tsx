@@ -7,7 +7,6 @@ import { get_album_using_id, get_artist_using_id, get_playlist_using_id } from "
 import { refactorSongList } from "../Search/utils";
 import useZustandStore, { playlist_init_details } from "@/Zustand/store";
 import { SongSkeletonParent } from "../Search/Search";
-import useScrollToTop from "@/CustomHook/useScroll";
 import AlbumCard from "@/components/SelfMade/Cards/AlbumCard";
 import { ButtonMenu, MenuButton } from "@/components/SelfMade/Wrapper/ButtonMenu";
 import FailedFallBack from "@/components/SelfMade/Cards/FailedFallBack";
@@ -28,7 +27,6 @@ const PlayListAlbumScreenComp = ()=>{
     const type = searchParams.get('type') as unknown as ScreenType;
     const id = searchParams.get('id');
     const {albumPlayListScreenData:{isLoading,isFailedLoading},handleAlbumPlayListScreenData} = useZustandStore();
-    const scrollToTop = useScrollToTop();
     
     const getData = async()=>{
         const api = getApiAccordingly(type) + id;
@@ -59,7 +57,6 @@ const PlayListAlbumScreenComp = ()=>{
     const handleFail = ()=>handleAlbumPlayListScreenData({data:[],artistAlbumData:[],details : playlist_init_details,isFailedLoading:true})
 
     useEffect(()=>{
-        scrollToTop();
         handleAlbumPlayListScreenData({isLoading:true,isFailedLoading:false});
         getData();
     },[type,id])
