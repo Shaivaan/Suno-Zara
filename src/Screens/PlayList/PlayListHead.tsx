@@ -5,12 +5,20 @@ import { Button } from "@/components/ui/button";
 import FavIcon from "../../components/SelfMade/Icons/FavIcon";
 import useZustandStore from "@/Zustand/store";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSearchParams } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 const PlayListHead = ()=>{
+    const [searchParams] = useSearchParams();
+    const type = searchParams.get('type') as unknown as ScreenType;
+    const isArtist = useMemo(()=>type === 'artist',[type]);
     const {albumPlayListScreenData:{details:{image},isLoading}} = useZustandStore();
     const imageLink = useMemo(()=>isLoading ? null : image ,[isLoading]);
     return <div className="flex gap-4">
-        <LazyAvatar image={imageLink as string} className="!h-[14rem] !w-[14rem] rounded-[var(--border-radius-all)]" />
+        <LazyAvatar
+          image={imageLink as string}
+          className={cn(!isArtist ? "rounded-[var(--border-radius-all)]" : "rounded-[50%]" ,'!h-[14rem] !w-[14rem]')} 
+        />
         <PlayListText/>  
     </div>
 }
@@ -38,7 +46,7 @@ const PlayListSongsAndTime = ()=>{
               <Dot/>
               <div>{data.length} songs</div>
               <Dot/>
-              <div>{duration}</div>
+              <div className="capitalize">{duration}</div>
             </div>
 }
 

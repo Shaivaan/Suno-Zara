@@ -7,6 +7,8 @@ interface AlbumPlaylistResponse {
   playCount: any
   language: string
   explicitContent: boolean
+  dominantLanguage: string
+  dominantType: string
   url: string
   songCount: number
   artists: {
@@ -38,6 +40,8 @@ interface AlbumPlaylistResponse {
     quality: string
     url: string
   }>
+  topSongs:[]
+  topAlbums:[]
   songs: Array<{
     id: string
     name: string
@@ -93,3 +97,5 @@ interface AlbumPlaylistResponse {
     }>
   }>
 }
+
+type ScreenType = 'album' | 'playlist' | 'artist'

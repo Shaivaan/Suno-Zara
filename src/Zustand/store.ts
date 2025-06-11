@@ -15,6 +15,14 @@ const init_search_data = {
   songData:[]
 }
 
+const playlist_init_details = {
+        duration:null,
+        id : null,
+        image : null,
+        name : null,
+        type : null
+}
+
 const load_true = {
     albums:true,
     artists:true,
@@ -82,16 +90,13 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
     albumPlayListScreenData : {
       data:[],
       isLoading:false,
-      details : {
-        duration:null,
-        id : null,
-        image : null,
-        name : null,
-        type : null
-      }
+      section:'songs',
+      artistAlbumData:[],
+      details : playlist_init_details,
+      isFailedLoading:false
     },
     handleAlbumPlayListScreenData : (data:Partial<StateStoreType['albumPlayListScreenData']>) =>set((state) => ({albumPlayListScreenData : {...state.albumPlayListScreenData,...data}})),
 }));
 
 export default useZustandStore;
-export {init_search_loading,init_search_data,load_true};
+export {init_search_loading,init_search_data,playlist_init_details,load_true};

@@ -428,3 +428,7 @@ a,a:hover{
   text-decoration: none;
   color: inherit;
 }
+
+.underline:hover{
+  text-decoration: underline;
+}

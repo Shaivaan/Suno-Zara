@@ -2,10 +2,11 @@ import { Play } from "lucide-react";
 import { LazyAvatar } from "../LazyAvatar/LazyAvatar";
 import FavIcon from "../Icons/FavIcon";
 import { memo } from "react";
-import { cn } from "@/lib/utils";
+import { cn, routes } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { secondsToMMSS } from "@/Screens/Explore/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Link } from "react-router-dom";
 const table_columns = ['#','title','artist','album','duration'];
 
 const SongResultsComp = ({songs}:{songs :SongListType[]})=>{
@@ -25,7 +26,7 @@ const SongsHead=()=>{
 
 
 const SongItem = ({isPlaying=false,song,indx}:{isPlaying?:boolean} & {song:SongListType} & {indx:number})=>{
-    const {album,artists,duration,image,name} = song;
+    const {album,artists,duration,image,name,id,artistId,albumId} = song;
     return <div className={cn("grid-container-songs song_row group/song",isPlaying && 'playing')}>
         <div className="label-text text-[0.9rem]">{indx}</div>
         <div className="flex gap-4 items-center">
@@ -36,8 +37,8 @@ const SongItem = ({isPlaying=false,song,indx}:{isPlaying?:boolean} & {song:SongL
             </div>
             <div className="text-[0.94rem]">{name}</div>
         </div>
-        <div className="label-text text-[0.9rem]">{artists}</div>
-        <div className="label-text text-[0.9rem]">{album}</div>
+        <Link className="underline" to={routes.genre + `?id=${artistId}&type=artist`}><div className="label-text text-[0.9rem]">{artists}</div></Link> 
+        <Link className="underline" to={routes.genre + `?id=${albumId}&type=album`}><div className="label-text text-[0.9rem]">{album}</div></Link>
         <div className="label-text text-[0.9rem]">{secondsToMMSS(duration)}</div>
     </div>
 }

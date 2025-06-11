@@ -35,9 +35,12 @@ interface StateStoreType {
 
 
 type NullString = null | string;
+type ArtistSectionType = 'songs' | 'albums'
 interface AlbumPlayListScreen{
         data : SongListType[]
+        artistAlbumData : []
         isLoading : boolean
+        section : ArtistSectionType
         details : {
             id : NullString
             name : NullString
@@ -45,6 +48,7 @@ interface AlbumPlayListScreen{
             type : NullString
             image : NullString
         }
+        isFailedLoading:boolean
     }
 
 type ActiveSectionType = 'songs' | 'artists' | 'albums' | 'playlists'

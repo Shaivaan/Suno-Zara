@@ -3,7 +3,9 @@ function refactorSongList (data: SongResType[]):SongListType[]{
         const {id,name,image,album,artists,duration,url} = song;
         const imageLink = image[2]?.url;
         const albumName = album?.name;
-        const artistName = artists?.primary[0]?.name
+        const artistName = artists?.primary[0]?.name;
+        const artistId = artists?.primary[0]?.id;
+        const albumId = album?.id;
         return {
             id,
             album:albumName,
@@ -11,7 +13,9 @@ function refactorSongList (data: SongResType[]):SongListType[]{
             duration,
             image:imageLink,
             name,
-            url
+            url,
+            artistId,
+            albumId
         }
     })
     return songList;

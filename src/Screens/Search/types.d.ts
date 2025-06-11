@@ -87,4 +87,6 @@ interface SongListType{
   image:string
   id:string
   url:string
+  artistId:string
+  albumId:string
 }
