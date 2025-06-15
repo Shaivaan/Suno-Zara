@@ -31,6 +31,8 @@ interface StateStoreType {
     albumPlayListScreenData : AlbumPlayListScreen
     handleAlbumPlayListScreenData : (data:Partial<StateStoreType['albumPlayListScreenData']>)=>void
 
+    librarySection : LibrarySectionType
+    handleLibrarySection : (section : LibrarySectionType) => void;
 }
 
 

@@ -96,6 +96,9 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
       isFailedLoading:false
     },
     handleAlbumPlayListScreenData : (data:Partial<StateStoreType['albumPlayListScreenData']>) =>set((state) => ({albumPlayListScreenData : {...state.albumPlayListScreenData,...data}})),
+
+    librarySection : 'playlist',
+    handleLibrarySection : (section : LibrarySectionType) => set((_state) => ({librarySection : section}))
 }));
 
 export default useZustandStore;

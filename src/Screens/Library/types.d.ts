@@ -1,0 +1,1 @@
+type LibrarySectionType = 'playlist' | 'artist' | 'album';
