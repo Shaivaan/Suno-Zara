@@ -2,6 +2,10 @@ interface AlbumPlaylistCarouseParentType{
     type : string
 }
 
+interface IsLikedCardType{
+  isLikedSongsAlbum? : boolean
+}
+
 type AlbumsCardType = {
       id: string
       name: string

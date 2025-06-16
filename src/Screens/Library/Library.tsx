@@ -13,9 +13,9 @@ const Library = ()=>{
 }
 
 const LibraryButtonContainerComp = ()=>{
-    const librarySection = useZustandStore((store)=> store.librarySection);
-    const handleLibrarySection = useZustandStore((store)=> store.handleLibrarySection);
-    const handleSection = (section:string)=> handleLibrarySection(section as unknown as LibrarySectionType)
+    const librarySection = useZustandStore((store)=> store.libraryData.section);
+    const handleLibrarySection = useZustandStore((store)=> store.handleLibraryData);
+    const handleSection = (section:string)=> handleLibrarySection({section:section as LibrarySectionType})
     return <ButtonMenu>
         {library_cat_data.map((el)=><MenuButton isActive={librarySection === el} onClick={()=>handleSection(el)}>{el}</MenuButton>)}
     </ButtonMenu>
@@ -23,7 +23,7 @@ const LibraryButtonContainerComp = ()=>{
 
 
 const LibrarySectionHandler = ()=>{
-    const librarySection = useZustandStore(state => state.librarySection);
+    const librarySection = useZustandStore(state => state.libraryData.section);
     switch(librarySection){
         case 'playlist': return <PlaylistSection/>
         case 'artist': return <ArtistSection/>

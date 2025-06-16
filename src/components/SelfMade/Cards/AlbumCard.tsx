@@ -8,19 +8,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { routes } from "@/lib/utils";
 import CardLinkWrapper from "./CardLinkWrapper";
 
-const AlbumCardComp = ({image,name,songCount,type,id}:AlbumsCardType)=>{
-    const imageUrl = image[2].url;
+const AlbumCardComp = ({image,name,songCount,type,id,isLikedSongsAlbum=false}:AlbumsCardType & IsLikedCardType)=>{
+    const imageUrl = image?.[2]?.url;
     const isSong = type === 'song';
     const label2 = isSong ? secondsToMMSS(songCount) : songCount ? (songCount + ' Songs') : '';
-    const urlToNavigate = useMemo(()=> !isSong ? (routes.genre + `?id=${id}&type=${type}`) : null ,[type]);
+    const urlToNavigate = useMemo(()=> isLikedSongsAlbum ? '#' :  (!isSong ? (routes.genre + `?id=${id}&type=${type}`) : null) ,[type]);
     
 
     return <CardLinkWrapper navigateTo={urlToNavigate}>
         <div className="album_card relative group/album-song hover:shadow-2xl">
-            <LazyAvatar image={imageUrl} className='w-full h-[10rem] rounded-[var(--border-radius-all)] group-hover/album-song:opacity-60'/>
+            <LazyAvatar image={imageUrl} className='w-full h-[10rem] rounded-[var(--border-radius-all)] group-hover/album-song:opacity-60' isLikedSongsAlbum={isLikedSongsAlbum}/>
             <div className="w-full font-bold text-[1.1rem] threeDot">{name}</div>
             <CardLabelSection label1={type} label2={label2 + ''}/>
-            <FavIcon className="absolute top-2 right-2 group-hover/album-song:opacity-160 opacity-0 size-[1.5rem]"/>
+            {!isLikedSongsAlbum && <FavIcon className="absolute top-2 right-2 group-hover/album-song:opacity-160 opacity-0 size-[1.5rem]"/>}
             {isSong && <Button variant={'ghost'} className="cursor-pointer bg-[var(--accent-purple)] rounded-[var(--border-radius-all)] absolute bottom-17 right-4 hover:bg-glass-borde opacity-0 icons-hover  group-hover/album-song:opacity-100"><Play className="fill-[var(--text-gen-color)] text-[var(--accent-purple)] size-5"/></Button>}
         </div>
     </CardLinkWrapper>

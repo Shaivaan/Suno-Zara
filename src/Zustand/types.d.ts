@@ -2,6 +2,13 @@ interface IsLoadedTypes{
     explore : boolean
 }
 
+interface LibraryType{
+  section: LibrarySectionType
+  playlist : []
+  album : []
+  artist : []
+}
+
 interface StateStoreType {
     isSidebarVisible: boolean;
     toggleMobileMenu: () => void;
@@ -31,8 +38,9 @@ interface StateStoreType {
     albumPlayListScreenData : AlbumPlayListScreen
     handleAlbumPlayListScreenData : (data:Partial<StateStoreType['albumPlayListScreenData']>)=>void
 
-    librarySection : LibrarySectionType
-    handleLibrarySection : (section : LibrarySectionType) => void;
+    libraryData : LibraryType
+    handleLibraryData : (data : Partial<LibraryType>) => void;
+
 }
 
 

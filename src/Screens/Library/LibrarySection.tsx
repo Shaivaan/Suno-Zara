@@ -1,7 +1,13 @@
+import AlbumCard from "@/components/SelfMade/Cards/AlbumCard"
 import { memo } from "react"
 
+const FlexWrapParent = ({children}:ChildrenType)=><div className="flex flex-wrap gap-4">{children}</div>;
+
+
 const PlaylistSectionComp = ()=>{
-    return <div>Playlist Section</div>
+    return <FlexWrapParent>
+        <AlbumCard name="Liked Song" songCount={2} type="Liked Songs" isLikedSongsAlbum {...{} as any}/>
+    </FlexWrapParent>
 }
 
 const ArtistSectionComp = ()=>{
