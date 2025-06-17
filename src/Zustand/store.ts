@@ -104,7 +104,20 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
       artist : [],
       playlist :[]
     },
-    handleLibraryData : (data)=> set((state)=>({libraryData : {...state.libraryData,...data}}))
+    handleLibraryData : (data)=> set((state)=>({libraryData : {...state.libraryData,...data}})),
+
+    musicPlayerData:{
+      id : null,
+      audioUrl:'http://aac.saavncdn.com/229/7fc987d1ebb83718baca32d86fbfdf78_320.mp4',
+      image : null,
+      currentTime : 0,
+      duration : 152,
+      isPlaying:false,
+      sliderValue : [0],
+      name : null,
+      artist : null
+    }, 
+    handleMusicPlayer: (data)=>set((state)=>({musicPlayerData : {...state.musicPlayerData,...data}}))
 }));
 
 export default useZustandStore;

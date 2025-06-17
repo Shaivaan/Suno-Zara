@@ -41,6 +41,20 @@ interface StateStoreType {
     libraryData : LibraryType
     handleLibraryData : (data : Partial<LibraryType>) => void;
 
+    musicPlayerData : MusicBarType
+    handleMusicPlayer : (data : Partial<MusicBarType>)=>void
+}
+
+interface MusicBarType{
+    duration : number
+    isPlaying : boolean
+    sliderValue : number[]
+    currentTime : number
+    audioUrl : string | null
+    image : string | null
+    id : null | string
+    name : string | null,
+    artist : string | null
 }
 
 

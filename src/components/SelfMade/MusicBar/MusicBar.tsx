@@ -1,25 +1,28 @@
 import { Button } from "@/components/ui/button";
-import { memo, useRef, type ComponentProps, type ReactNode } from "react";
+import { memo, useEffect, useRef, type ComponentProps, type ReactNode } from "react";
 import { LazyAvatar } from "../LazyAvatar/LazyAvatar";
-import { AlignJustify, Play, Repeat, Shuffle, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import { AlignJustify, Pause, Play, Repeat, Shuffle, SkipBack, SkipForward, Volume2 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import useZustandStore from "@/Zustand/store";
 import useClickOutside from "@/CustomHook/useClickOutside";
 import Queue  from "@/Screens/Queue/Queue";
+import { formatTime } from "./utils";
+import useMusicBar from "@/hooks/use-musicbar";
 
 const MusicBarComp = () => {
+  const {artist,name, image} = useZustandStore((state)=>state.musicPlayerData);
   return (
     <>
     <div
       className={`p-4 fixed bottom-0 w-full border-t-1 border-glass-border bg-glass-bg backdrop-blur-[40px] z-[var(--navbar-z-index)] flex justify-between items-center`}
     >
       <div className="flex gap-4 items-center">
-        <LazyAvatar className="rounded-[var(--border-radius-all)] h-[3rem] w-[3rem]" />
+        <LazyAvatar className="rounded-[var(--border-radius-all)] h-[3rem] w-[3rem]"  image={image as string}/>
         <div>
-          <div className="text-[0.95rem] font-medium">Sanam Re..</div>
-          <div className="text-[0.7rem] label-text">Arijit Singh</div>
+          <div className="text-[0.95rem] font-medium">{name}</div>
+          <div className="text-[0.7rem] label-text">{artist}</div>
         </div>
         <Separator orientation="vertical" className="text-sm !h-[3rem]"/>
       </div>
@@ -38,20 +41,57 @@ interface MusicBarButtonType {
 }
 
 const PlayPauseReWindComp = () => {
+  const {handleMusicSlider,togglePlayPause,updateTime,isPlaying, currentTime, sliderValue, duration, audioUrl, updateDuration} = useMusicBar();
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const togglePlayer = ()=>togglePlayPause(audioRef.current);
+  const handleSlider = (value:number[])=>handleMusicSlider(audioRef.current,value);
+
+
+  useEffect(()=>{
+  const audio = audioRef.current;
+    if (!audio) return;
+    const updateTimeFigure = ()=> {
+      const current = audio.currentTime;
+      updateTime(current);
+    };
+    const updateDurationListener = ()=>updateDuration(audio.duration);
+    // Add event listeners
+    audio.addEventListener('timeupdate', updateTimeFigure);
+    audio.addEventListener('loadedmetadata', updateDurationListener);
+
+    // Cleanup function - remove listeners when component unmounts
+    return () => {
+      audio.removeEventListener('timeupdate', updateTimeFigure);
+      audio.removeEventListener('loadedmetadata', updateDurationListener);
+    };
+  },[duration])
+
+
   return (
     <div className="flex flex-col gap-y-[0.5rem] items-center justify-center">
+      <audio 
+        ref={audioRef} 
+        src={audioUrl as string}
+        preload="metadata"
+      />
         <div className="flex gap-5 items-center">
         <MusicBarButton tooltip="Prev"><SkipBack /></MusicBarButton>
-        <MusicBarButton tooltip="Play" className="!px-[1.25rem] py-[1.25rem] gradient-bg"><Play /></MusicBarButton>
+        <MusicBarButton onClick={togglePlayer} tooltip="Play" className="!px-[1.25rem] py-[1.25rem] gradient-bg">
+          {isPlaying ? <Pause/> : <Play />}
+        </MusicBarButton>
         <MusicBarButton tooltip="Next"><SkipForward /></MusicBarButton>
         </div>
 
         <div className="flex gap-4 items-center label-text">
-            <div className="text-[0.8rem] label-text">1:19</div>
+            <div className="text-[0.8rem] label-text">{formatTime(currentTime)}</div>
             <Slider 
-                defaultValue={[50]} max={100} step={1} className="cursor-pointer w-[25rem] relative mt-[0.2rem]"
+                value={sliderValue}
+                onValueChange={handleSlider}
+                max={100} 
+                step={0.1}
+                className="cursor-pointer w-[25rem] relative mt-[0.2rem]"
             />
-            <div className="text-[0.8rem] label-text">3:47</div>
+            <div className="text-[0.8rem] label-text">{formatTime(duration)}</div>
         </div>
     </div>
   );
