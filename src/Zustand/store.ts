@@ -108,10 +108,10 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
 
     musicPlayerData:{
       id : null,
-      audioUrl:'http://aac.saavncdn.com/229/7fc987d1ebb83718baca32d86fbfdf78_320.mp4',
+      audioUrl:null,
       image : null,
       currentTime : 0,
-      duration : 152,
+      duration : 0,
       isPlaying:false,
       sliderValue : [0],
       name : null,

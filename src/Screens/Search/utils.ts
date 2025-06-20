@@ -1,11 +1,12 @@
 function refactorSongList (data: SongResType[]):SongListType[]{
     const songList:SongListType[] = data.map((song)=>{
-        const {id,name,image,album,artists,duration,url} = song;
+        const {id,name,image,album,artists,duration, downloadUrl} = song;
         const imageLink = image[2]?.url;
         const albumName = album?.name;
         const artistName = artists?.primary[0]?.name;
         const artistId = artists?.primary[0]?.id;
         const albumId = album?.id;
+        const url = downloadUrl?.[2]?.url
         return {
             id,
             album:albumName,

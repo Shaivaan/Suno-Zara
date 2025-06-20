@@ -75,7 +75,6 @@ const SongsListHandlerComp = ()=>{
     const [searchParams] = useSearchParams();
     const type = searchParams.get('type') as unknown as ScreenType;
     const {albumPlayListScreenData:{data,section,artistAlbumData}} = useZustandStore();
-    console.log(data,artistAlbumData)
     if( type !== 'artist') return <SongsList songs={data}/>;
     return <div className="flex gap-2 flex-col">
     <ArtistButtonCategory/>

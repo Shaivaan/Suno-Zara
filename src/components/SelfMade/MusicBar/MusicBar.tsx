@@ -12,10 +12,9 @@ import { formatTime } from "./utils";
 import useMusicBar from "@/hooks/use-musicbar";
 
 const MusicBarComp = () => {
-  const {artist,name, image} = useZustandStore((state)=>state.musicPlayerData);
-  return (
-    <>
-    <div
+  const {artist,name, image,id} = useZustandStore((state)=>state.musicPlayerData);
+  if(!id) return <></>;
+  return <div
       className={`p-4 fixed bottom-0 w-full border-t-1 border-glass-border bg-glass-bg backdrop-blur-[40px] z-[var(--navbar-z-index)] flex justify-between items-center`}
     >
       <div className="flex gap-4 items-center">
@@ -26,12 +25,9 @@ const MusicBarComp = () => {
         </div>
         <Separator orientation="vertical" className="text-sm !h-[3rem]"/>
       </div>
-
       <PlayPausRewind />
       <MusicBarButtons/>
-    </div>
-    </>
-  );
+    </div>;
 };
 
 interface MusicBarButtonType {
@@ -41,9 +37,9 @@ interface MusicBarButtonType {
 }
 
 const PlayPauseReWindComp = () => {
-  const {handleMusicSlider,togglePlayPause,updateTime,isPlaying, currentTime, sliderValue, duration, audioUrl, updateDuration} = useMusicBar();
+  const {handleMusicSlider,togglePlayPause,updateTime,isPlaying, currentTime, sliderValue, duration, audioUrl, updateDuration, id} = useMusicBar();
   const audioRef = useRef<HTMLAudioElement>(null);
-  const togglePlayer = ()=>togglePlayPause(audioRef.current);
+  const togglePlayer = ()=>togglePlayPause(!isPlaying);
   const handleSlider = (value:number[])=>handleMusicSlider(audioRef.current,value);
 
 
@@ -65,6 +61,13 @@ const PlayPauseReWindComp = () => {
       audio.removeEventListener('loadedmetadata', updateDurationListener);
     };
   },[duration])
+
+  useEffect(()=>{
+    const audio = audioRef.current;
+    if(!audio) return;
+    if(isPlaying) audio?.play();
+    else audio?.pause();
+  },[isPlaying,id]);
 
 
   return (

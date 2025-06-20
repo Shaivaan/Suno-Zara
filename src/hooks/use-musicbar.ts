@@ -1,15 +1,9 @@
 import useZustandStore from "@/Zustand/store"
 
 const useMusicBar = ()=>{
-    const {duration,isPlaying,currentTime,sliderValue, audioUrl} = useZustandStore((state)=>state.musicPlayerData);
+    const {duration,isPlaying,currentTime,sliderValue, audioUrl,id} = useZustandStore((state)=>state.musicPlayerData);
     const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
-    
-    const togglePlayPause = (audio:HTMLAudioElement | null):void=>{
-        if(!audio) return;
-        if(isPlaying) audio.pause();
-        else audio.play();
-        handleMusicPlayer({isPlaying: !isPlaying});
-    }
+    const togglePlayPause = (isPlaying=false):void=>handleMusicPlayer({isPlaying});
 
     const handleMusicSlider = (audio:HTMLAudioElement | null, value:number[])=>{
         if(!audio) return;
@@ -28,7 +22,7 @@ const useMusicBar = ()=>{
         handleMusicPlayer({duration: audioDuration || duration});
     }
 
-    return {togglePlayPause, handleMusicSlider, updateTime,isPlaying, currentTime, sliderValue, duration, audioUrl, updateDuration}
+    return {togglePlayPause, handleMusicSlider, updateTime,isPlaying, currentTime, sliderValue, duration, audioUrl, updateDuration , id}
 }
 
 export default useMusicBar;
