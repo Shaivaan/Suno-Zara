@@ -15,4 +15,7 @@ export const routes = {
   genre : '/genre'
 };
 
+
+export const stopPropagation = (event:React.MouseEvent<any>)=>event.stopPropagation();
+
 export const loadArray = new Array(15).fill(0);

@@ -2,7 +2,7 @@ import { Play } from "lucide-react";
 import { LazyAvatar } from "../LazyAvatar/LazyAvatar";
 import FavIcon from "../Icons/FavIcon";
 import { memo } from "react";
-import { cn, routes } from "@/lib/utils";
+import { cn, routes, stopPropagation } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { secondsToMMSS } from "@/Screens/Explore/utils";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -46,8 +46,8 @@ const SongItem = ({isPlaying=false,song,indx}:{isPlaying?:boolean} & {song:SongL
             </div>
             <div className="text-[0.94rem]">{name}</div>
         </div>
-        <Link className="underline" to={routes.genre + `?id=${artistId}&type=artist`}><div className="label-text text-[0.9rem]">{artists}</div></Link> 
-        <Link className="underline" to={routes.genre + `?id=${albumId}&type=album`}><div className="label-text text-[0.9rem]">{album}</div></Link>
+        <Link onClick={stopPropagation} className="underline" to={routes.genre + `?id=${artistId}&type=artist`}><div className="label-text text-[0.9rem]">{artists}</div></Link> 
+        <Link onClick={stopPropagation} className="underline" to={routes.genre + `?id=${albumId}&type=album`}><div className="label-text text-[0.9rem]">{album}</div></Link>
         <div className="label-text text-[0.9rem]">{secondsToMMSS(duration)}</div>
     </div>
 }

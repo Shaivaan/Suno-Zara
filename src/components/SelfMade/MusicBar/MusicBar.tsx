@@ -30,8 +30,8 @@ const SongNameWithAvatarComp = () => {
   return <div className="flex gap-4 items-center">
     <LazyAvatar className="rounded-[var(--border-radius-all)] h-[3rem] w-[3rem]" image={image as string} />
     <div className="max-w-full">
-      <div className="threeDot text-[0.95rem] font-medium">{name}</div>
-      <div className="threeDot text-[0.7rem] label-text">{artist}</div>
+      <div className="sm:hidden md:block threeDot text-[0.95rem] font-medium">{name}</div>
+      <div className="sm:hidden md:block threeDot text-[0.7rem] label-text">{artist}</div>
     </div>
     <Separator orientation="vertical" className="text-sm !h-[3rem]" />
   </div>
