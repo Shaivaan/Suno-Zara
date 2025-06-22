@@ -15,6 +15,7 @@ import { CirclePause, Play, XIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import useZustandStore from "@/Zustand/store";
+import { useCurrentSongCheck } from "@/hooks/use-musicbar";
 
 const queue_button_data = ["all", "recently added", "recently played"];
 
@@ -73,7 +74,8 @@ const QueueSongsListComp = ()=>{
 }
 
 
-const QueueCardComp = ({isPlaying=false,id,image,name,artists,index}:IsPlayingType & SongListType & IndexType)=>{
+const QueueCardComp = ({id,image,name,artists,index}: SongListType & IndexType)=>{
+  const isPlaying = useCurrentSongCheck(id);
   return <div className={cn("w-full border-1 px-3 py-1 border-b-glass-border rounded-[var(--border-radius-all)] flex gap-4 items-center group/queue-song cursor-pointer hover:border-1 hover:bg-glass-bg",isPlaying && 'playing')}>
     <div className="text-[0.7rem] rounded-[50%] border-1 p-2 py-[0.15rem]">{index}</div>
     <div className="relative">

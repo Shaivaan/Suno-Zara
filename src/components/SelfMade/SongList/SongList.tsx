@@ -1,4 +1,4 @@
-import { Play } from "lucide-react";
+import { Pause, Play } from "lucide-react";
 import { LazyAvatar } from "../LazyAvatar/LazyAvatar";
 import FavIcon from "../Icons/FavIcon";
 import { memo } from "react";
@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { secondsToMMSS } from "@/Screens/Explore/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
-import useMusicBar from "@/hooks/use-musicbar";
+import useMusicBar, { useCurrentSongCheck, usePlaySong } from "@/hooks/use-musicbar";
 const table_columns = ['#','title','artist','album','duration'];
 
 const SongResultsComp = ({songs}:{songs :SongListType[]})=>{
@@ -26,17 +26,23 @@ const SongsHead=()=>{
 }
 
 
-const SongItem = ({isPlaying=false,song,indx}:{isPlaying?:boolean} & {song:SongListType} & {indx:number})=>{
-    const {album,artists,duration,image,name,artistId,albumId} = song;
-    const {createNewQueueAndPlay} = useMusicBar();
-    const playSong = ()=> createNewQueueAndPlay([song]); 
+const SongItem = ({song,indx}:{song:SongListType} & {indx:number})=>{
+    const {album,artists,duration,image,name,artistId,albumId, id} = song;
+    const isCurrentSongPlaying = useCurrentSongCheck(id);
+    const {isPlaying} = useMusicBar();
+    const {handleSongAndQueue} = usePlaySong(id)
+    const playSong = () => handleSongAndQueue(); 
 
-    return <div className={cn("grid-container-songs song_row group/song",isPlaying && 'playing')} onClick={playSong}>
+    return <div className={cn("grid-container-songs song_row group/song",isCurrentSongPlaying && 'playing')} onClick={playSong}>
         <div className="label-text text-[0.9rem]">{indx}</div>
         <div className="flex gap-4 items-center">
             <div className="relative">
                 <LazyAvatar image={image} className="rounded-[var(--border-radius-all)] size-8 group-hover/song:opacity-40"/>
-                <Play className="absolute top-2 right-2 opacity-0 group-hover/song:opacity-100 icons-hover" size={'1rem'}/>
+                {!isCurrentSongPlaying || !isPlaying ?
+                 <Play className="absolute top-2 right-2 opacity-0 group-hover/song:opacity-100 icons-hover" size={'1rem'}/> :
+                 <Pause className="absolute top-2 right-2 opacity-0 group-hover/song:opacity-100 icons-hover" size={'1rem'}/>
+                }
+                
                 <FavIcon className="absolute top-2 right-12 opacity-0 group-hover/song:opacity-100" isFlagged/>
             </div>
             <div className="text-[0.94rem]">{name}</div>

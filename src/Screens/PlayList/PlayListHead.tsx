@@ -7,7 +7,7 @@ import useZustandStore from "@/Zustand/store";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import useMusicBar from "@/hooks/use-musicbar";
+import { usePlaySong } from "@/hooks/use-musicbar";
 
 const PlayListHead = ()=>{
     const [searchParams] = useSearchParams();
@@ -52,9 +52,8 @@ const PlayListSongsAndTime = ()=>{
 }
 
 const PlayButtonComp = ()=>{
-    const albumSongs = useZustandStore((state)=>state.albumPlayListScreenData.data);
-    const {createNewQueueAndPlay} = useMusicBar();
-    const playSongs = ()=>createNewQueueAndPlay(albumSongs);
+    const {handleSongAndQueue} = usePlaySong();
+    const playSongs = ()=> handleSongAndQueue();
     return <Button onClick={playSongs} className="gen-scale hover:bg-[var(--accent-purple)] bg-[var(--accent-purple)] rounded-[var(--border-radius-all)] w-fit text-[var(--text-gen-color)] text-[1.2rem]"><Play/>Play</Button>
 }
 
