@@ -4,10 +4,9 @@ import { useCallback, useMemo } from "react";
 const useMusicBar = ()=>{
     const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
     const {isPlaying,currentTime,sliderValue,} = useZustandStore((state)=>state.musicPlayerData);
-    const currentSongIndex = useZustandStore((state)=>state.musicPlayerData.queueSongIndex) || 0;
+    const currentSongId = useZustandStore((state)=>state.musicPlayerData.currentSongId);
     const queueSongs = useZustandStore((state)=>state.queueSongs);
-    const currentSong = queueSongs?.[currentSongIndex];
-    const currentSongId = currentSong?.id;
+    const currentSong = queueSongs.find(({id})=> id === currentSongId ) as SongListType;
     const [duration, audioUrl, id, image, artist, name] = [currentSong?.duration, currentSong?.url, currentSong?.id, currentSong?.image, currentSong?.artists, currentSong?.name];
     const togglePlayPause = (isPlaying=false):void=>handleMusicPlayer({isPlaying});
     
@@ -30,7 +29,7 @@ const useMusicBar = ()=>{
     // }
 
     const isCurrentSong = useCallback((id : string)=> currentSongId === id,[currentSongId]);
-    return {isCurrentSong ,togglePlayPause, handleMusicSlider, updateTime,isPlaying, currentTime, sliderValue, duration, audioUrl , id, image , name, artist,currentSongIndex, currentSongId}
+    return {isCurrentSong ,togglePlayPause, handleMusicSlider, updateTime,isPlaying, currentTime, sliderValue, duration, audioUrl , id, image , name, artist, currentSongId}
 }
 
 
@@ -51,17 +50,20 @@ const usePlaySong = (id='') =>{
     const handleSongAndQueue =  useCallback(()=>{
       if(isCurrentSongPlaying) {
         togglePlayPause(!isPlaying);
-        return
+        return;
       } 
       let readyQueue:SongListType[] = [];
-      if(!id) readyQueue = currentPlaylistData;
+      if(!id){
+        readyQueue = currentPlaylistData;
+        id = currentPlaylistData[0].id;
+      }  
       else {
         const selectedSong = currentPlaylistData.filter(({id:songId})=>id === songId);
         const upcomingSongs = currentPlaylistData.filter(({id:songId})=>id !== songId);
         readyQueue = [...selectedSong,...upcomingSongs];
       }
       handleQueueSongs(readyQueue);
-      handleMusicPlayer({queueSongIndex : 0});
+      handleMusicPlayer({currentSongId : id});
       togglePlayPause(true);
     },[isCurrentSongPlaying,currentPlaylistData,isPlaying,id])
 

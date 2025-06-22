@@ -56,7 +56,7 @@ interface MusicBarType{
     isPlaying : boolean
     sliderValue : number[]
     currentTime : number
-    queueSongIndex : number
+    currentSongId : string | null
 }
 
 
