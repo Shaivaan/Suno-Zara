@@ -107,17 +107,15 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
     handleLibraryData : (data)=> set((state)=>({libraryData : {...state.libraryData,...data}})),
 
     musicPlayerData:{
-      id : null,
-      audioUrl:null,
-      image : null,
       currentTime : 0,
-      duration : 0,
       isPlaying:false,
       sliderValue : [0],
-      name : null,
-      artist : null
+      queueSongIndex : 0
     }, 
-    handleMusicPlayer: (data)=>set((state)=>({musicPlayerData : {...state.musicPlayerData,...data}}))
+    handleMusicPlayer: (data)=>set((state)=>({musicPlayerData : {...state.musicPlayerData,...data}})),
+
+    queueSongs : [],
+    handleQueueSongs : (data)=>set(()=>({queueSongs : data})),
 }));
 
 export default useZustandStore;

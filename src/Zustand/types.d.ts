@@ -2,6 +2,10 @@ interface IsLoadedTypes{
     explore : boolean
 }
 
+interface IndexType{
+    index:number
+}
+
 interface LibraryType{
   section: LibrarySectionType
   playlist : []
@@ -43,18 +47,16 @@ interface StateStoreType {
 
     musicPlayerData : MusicBarType
     handleMusicPlayer : (data : Partial<MusicBarType>)=>void
+
+    queueSongs : SongListType[]
+    handleQueueSongs : (data : SongListType[])=>void
 }
 
 interface MusicBarType{
-    duration : number
     isPlaying : boolean
     sliderValue : number[]
     currentTime : number
-    audioUrl : string | null
-    image : string | null
-    id : null | string
-    name : string | null,
-    artist : string | null
+    queueSongIndex : number
 }
 
 

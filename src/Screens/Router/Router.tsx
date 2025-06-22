@@ -10,6 +10,7 @@ import LibraryScreen from "../Library/Library"
 import PlayListAlbumScreen from "../PlayList/PlayListScreen"
 import useScrollToTop from "@/CustomHook/useScroll"
 import { useEffect } from "react"
+import useZustandStore from "@/Zustand/store"
 const {home,library,queue,search, genre} = routes;
 
 export const RouterComp = ()=>{

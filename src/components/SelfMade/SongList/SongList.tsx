@@ -7,7 +7,6 @@ import { Separator } from "@/components/ui/separator";
 import { secondsToMMSS } from "@/Screens/Explore/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
-import useZustandStore from "@/Zustand/store";
 import useMusicBar from "@/hooks/use-musicbar";
 const table_columns = ['#','title','artist','album','duration'];
 
@@ -28,15 +27,11 @@ const SongsHead=()=>{
 
 
 const SongItem = ({isPlaying=false,song,indx}:{isPlaying?:boolean} & {song:SongListType} & {indx:number})=>{
-    const {album,artists,duration,image,name,artistId,albumId,id,url} = song;
-    const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
-    const {togglePlayPause} = useMusicBar();
-    const handleMusic =  ()=> {
-        handleMusicPlayer({artist:artists,audioUrl:url,duration,id:id,image,name,currentTime:0,sliderValue:[0],isPlaying : true});
-        togglePlayPause(true);
-    }; 
+    const {album,artists,duration,image,name,artistId,albumId} = song;
+    const {createNewQueueAndPlay} = useMusicBar();
+    const playSong = ()=> createNewQueueAndPlay([song]); 
 
-    return <div className={cn("grid-container-songs song_row group/song",isPlaying && 'playing')} onClick={handleMusic}>
+    return <div className={cn("grid-container-songs song_row group/song",isPlaying && 'playing')} onClick={playSong}>
         <div className="label-text text-[0.9rem]">{indx}</div>
         <div className="flex gap-4 items-center">
             <div className="relative">

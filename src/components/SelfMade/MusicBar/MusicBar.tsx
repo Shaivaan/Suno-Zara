@@ -12,8 +12,8 @@ import { formatTime } from "./utils";
 import useMusicBar from "@/hooks/use-musicbar";
 
 const MusicBarComp = () => {
-  const { id } = useZustandStore((state) => state.musicPlayerData);
-  if (!id) return <></>;
+  const queue = useZustandStore((state) => state.queueSongs);
+  if (!queue.length) return <></>;
   return <div
     className={`p-4 fixed bottom-0 w-full border-t-1 border-glass-border bg-glass-bg backdrop-blur-[40px] z-[var(--navbar-z-index)]
        grid grid-cols-5 items-center
@@ -26,7 +26,7 @@ const MusicBarComp = () => {
 };
 
 const SongNameWithAvatarComp = () => {
-  const { artist, name, image } = useZustandStore((state) => state.musicPlayerData);
+  const { artist, name, image } = useMusicBar();
   return <div className="flex gap-4 items-center">
     <LazyAvatar className="rounded-[var(--border-radius-all)] h-[3rem] w-[3rem]" image={image as string} />
     <div className="max-w-full">
@@ -45,7 +45,7 @@ interface MusicBarButtonType {
 }
 
 const PlayPauseReWindComp = () => {
-  const { handleMusicSlider, togglePlayPause, updateTime, isPlaying, currentTime, sliderValue, duration, audioUrl, updateDuration, id } = useMusicBar();
+  const { handleMusicSlider, togglePlayPause, updateTime, isPlaying, currentTime, sliderValue, duration, audioUrl, id } = useMusicBar();
   const audioRef = useRef<HTMLAudioElement>(null);
   const togglePlayer = () => togglePlayPause(!isPlaying);
   const handleSlider = (value: number[]) => handleMusicSlider(audioRef.current, value);
@@ -58,15 +58,15 @@ const PlayPauseReWindComp = () => {
       const current = audio.currentTime;
       updateTime(current);
     };
-    const updateDurationListener = () => updateDuration(audio.duration);
+    // const updateDurationListener = () => updateDuration(audio.duration);
     // Add event listeners
     audio.addEventListener('timeupdate', updateTimeFigure);
-    audio.addEventListener('loadedmetadata', updateDurationListener);
+    // audio.addEventListener('loadedmetadata', updateDurationListener);
 
     // Cleanup function - remove listeners when component unmounts
     return () => {
       audio.removeEventListener('timeupdate', updateTimeFigure);
-      audio.removeEventListener('loadedmetadata', updateDurationListener);
+      // audio.removeEventListener('loadedmetadata', updateDurationListener);
     };
   }, [duration])
 
