@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { memo, useEffect, useRef, type ComponentProps, type ReactNode } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, type ComponentProps, type ReactNode } from "react";
 import { LazyAvatar } from "../LazyAvatar/LazyAvatar";
-import { AlignJustify, Pause, Play, Repeat, Shuffle, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import { AlignJustify, Pause, Play, Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume2 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
@@ -122,16 +122,45 @@ export const MusicBarButton = ({ children, tooltip, className, ...props }: Music
 };
 
 const MusicBarButtonComp = () => {
-  const { toggleQueue } = useZustandStore();
+  const toggleQueue = useZustandStore((state)=>state.toggleQueue);
+  const repeatMode = useZustandStore((state)=>state.repeatMode);
+  const handleRepeatMode = useZustandStore((state)=>state.handleRepeatMode);
+  console.log(repeatMode);
+  
+  const handleMode = useCallback(()=>{
+    switch(repeatMode){
+      case 'normal' : handleRepeatMode('repeatOne'); break;
+      case 'repeatOne' : handleRepeatMode('repeat'); break;
+      case 'repeat' : handleRepeatMode('normal'); break;
+    }
+  },[repeatMode]);
+
+  const getModeToolTip = useCallback(()=>{
+    switch(repeatMode){
+      case 'normal' : return 'Repeat off';
+      case 'repeatOne' : return 'Repeat One';
+      default : return 'Repeat on';
+    }
+  },[repeatMode]);
+
   return <div className="flex gap-4 items-center">
     <Separator orientation="vertical" className="text-sm !h-[3rem]" />
-    <MusicBarButton tooltip="Prev"><Shuffle /></MusicBarButton>
-    <MusicBarButton tooltip="Prev"><Repeat /></MusicBarButton>
-    <MusicBarButton tooltip="Prev" onClick={toggleQueue}><AlignJustify /></MusicBarButton>
+    <MusicBarButton tooltip="Shuffle"><Shuffle /></MusicBarButton>
+    <MusicBarButton tooltip={getModeToolTip()} onClick={handleMode}><SongModeHandlerComp/></MusicBarButton>
+    <MusicBarButton tooltip="Queue" onClick={toggleQueue}><AlignJustify /></MusicBarButton>
     <Queue />
     <VolumeAdjust />
   </div>
 };
+
+const SongModeHandlerComp = ()=>{
+  const repeatMode = useZustandStore((state)=>state.repeatMode);
+  const isRepeatMode = useMemo(()=>repeatMode === 'repeat',[repeatMode]);
+  switch(repeatMode){
+    case 'repeatOne' : return <Repeat1 className='text-[var(--accent-pink)]'/>;
+    default : return <Repeat className={cn(isRepeatMode && 'text-[var(--accent-pink)]')}/>;
+  }
+}
 
 const VolumeAdjustComp = () => {
   const { isVolumeAdjustOpen, toggleVolume } = useZustandStore();

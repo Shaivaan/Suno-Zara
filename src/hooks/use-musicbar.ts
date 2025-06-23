@@ -22,11 +22,11 @@ const useMusicBar = ()=>{
 
     const updateTime = (current:number): void => {
       const progress = (current / duration) * 100;
-      if(progress >= 100) handleNextSongAsPerMode();
+      if(progress >= 100) handleNextSongAsPerMode(repeatMode);
       handleMusicPlayer({currentTime:current,sliderValue:[progress]});
     };
 
-    const handleNextSongAsPerMode = ()=>{
+    const handleNextSongAsPerMode = (repeatMode : RepeatModeType)=> {
       if(repeatMode === 'repeat') playCurrentSongAgain();
       else playNextPrev();
     }
@@ -68,13 +68,13 @@ const usePlaySong = (songId = '') => {
   /**
    * Creates a queue with the selected song first, followed by remaining songs
    */
-  const createSongQueue = useCallback((selectedSongId: string, playlist: SongListType[]): SongListType[] => {
-    return playlist;
-    // if (!selectedSongId || !playlist?.length) return playlist || [];
-    // const selectedSong = playlist.find(song => song.id === selectedSongId);
-    // const remainingSongs = playlist.filter(song => song.id !== selectedSongId);
-    // return selectedSong ? [selectedSong, ...remainingSongs] : playlist;
-  }, []);
+  // const createSongQueue = useCallback((selectedSongId: string, playlist: SongListType[]): SongListType[] => {
+  //   return playlist;
+  //   // if (!selectedSongId || !playlist?.length) return playlist || [];
+  //   // const selectedSong = playlist.find(song => song.id === selectedSongId);
+  //   // const remainingSongs = playlist.filter(song => song.id !== selectedSongId);
+  //   // return selectedSong ? [selectedSong, ...remainingSongs] : playlist;
+  // }, []);
 
   /**
    * Handles song playback for Genre screen
@@ -87,12 +87,12 @@ const usePlaySong = (songId = '') => {
     handleQueueSongs(queue);
     handleMusicPlayer({ currentSongId: songToPlay });
     togglePlayPause(true);
-  }, [playlistData, createSongQueue, handleQueueSongs, handleMusicPlayer, togglePlayPause]);
+  }, [playlistData, handleQueueSongs, handleMusicPlayer, togglePlayPause]);
 
   /**
    * Handles song playback for Search screen
    */
-  const handleSearchScreenPlayback = useCallback((targetSongId: string) => {
+  const handleSearchScreenPlayback = useCallback((_targetSongId: string) => {
     // TODO: Implement search screen logic
     console.warn('Search screen playback not yet implemented');
   }, []);

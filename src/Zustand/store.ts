@@ -117,7 +117,8 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
     queueSongs : [],
     handleQueueSongs : (data)=>set(()=>({queueSongs : data})),
 
-    repeatMode : 'normal'
+    repeatMode : 'normal',
+    handleRepeatMode : (repeatMode: RepeatModeType)=>set(()=>({repeatMode})),
 }));
 
 export default useZustandStore;

@@ -8,9 +8,6 @@ const useCurrentScreen = ()=>{
         case(routes.genre) : return 'Genre';
         default : return 'Other';
     }
-    // const currentScreen = useCallback(() =>{
-    // },[pathname])   
-    // return currentScreen;
 }
 
 export default useCurrentScreen;

@@ -52,6 +52,7 @@ interface StateStoreType {
     handleQueueSongs : (data : SongListType[])=>void
 
     repeatMode : RepeatModeType
+    handleRepeatMode : (mode : RepeatModeType) =>void
 }
 
 interface MusicBarType{
