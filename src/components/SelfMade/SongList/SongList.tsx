@@ -30,7 +30,7 @@ const SongItem = ({song,indx}:{song:SongListType} & {indx:number})=>{
     const {album,artists,duration,image,name,artistId,albumId, id} = song;
     const isCurrentSongPlaying = useCurrentSongCheck(id);
     const {isPlaying} = useMusicBar();
-    const {handleSongAndQueue} = usePlaySong(id)
+    const {handleSongAndQueue} = usePlaySong(id);
     const playSong = () => handleSongAndQueue(); 
 
     return <div className={cn("grid-container-songs song_row group/song",isCurrentSongPlaying && 'playing')} onClick={playSong}>

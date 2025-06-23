@@ -45,7 +45,7 @@ interface MusicBarButtonType {
 }
 
 const PlayPauseReWindComp = () => {
-  const { handleMusicSlider, togglePlayPause, updateTime, isPlaying, currentTime, sliderValue, duration, audioUrl, id } = useMusicBar();
+  const { handleMusicSlider, togglePlayPause, updateTime, isPlaying, currentTime, sliderValue, duration, audioUrl, id, playNextPrev } = useMusicBar();
   const audioRef = useRef<HTMLAudioElement>(null);
   const togglePlayer = () => togglePlayPause(!isPlaying);
   const handleSlider = (value: number[]) => handleMusicSlider(audioRef.current, value);
@@ -86,11 +86,11 @@ const PlayPauseReWindComp = () => {
         preload="metadata"
       />
       <div className="flex gap-5 items-center">
-        <MusicBarButton tooltip="Prev"><SkipBack /></MusicBarButton>
+        <MusicBarButton tooltip="Prev" onClick={()=>playNextPrev(true)}><SkipBack /></MusicBarButton>
         <MusicBarButton onClick={togglePlayer} tooltip="Play" className="!px-[1.25rem] py-[1.25rem] gradient-bg">
           {isPlaying ? <Pause /> : <Play />}
         </MusicBarButton>
-        <MusicBarButton tooltip="Next"><SkipForward /></MusicBarButton>
+        <MusicBarButton tooltip="Next" onClick={()=>playNextPrev()}><SkipForward /></MusicBarButton>
       </div>
 
       <div className="flex gap-4 items-center label-text">

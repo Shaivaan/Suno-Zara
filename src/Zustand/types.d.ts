@@ -50,6 +50,8 @@ interface StateStoreType {
 
     queueSongs : SongListType[]
     handleQueueSongs : (data : SongListType[])=>void
+
+    repeatMode : RepeatModeType
 }
 
 interface MusicBarType{
@@ -78,3 +80,4 @@ interface AlbumPlayListScreen{
     }
 
 type ActiveSectionType = 'songs' | 'artists' | 'albums' | 'playlists'
+type RepeatModeType = 'normal' | 'repeat' | 'repeatOne'
