@@ -20,11 +20,11 @@ const useMusicBar = ()=>{
         handleMusicPlayer({currentTime:newTime,sliderValue:value});
     }
 
-    const updateTime = (current:number): void => {
+    const updateTime = useCallback((current:number): void => {
       const progress = (current / duration) * 100;
       if(progress >= 100) handleNextSongAsPerMode(repeatMode);
       handleMusicPlayer({currentTime:current,sliderValue:[progress]});
-    };
+    },[repeatMode,duration]);
 
     const handleNextSongAsPerMode = (repeatMode : RepeatModeType)=> {
       if(repeatMode === 'repeat') playCurrentSongAgain();
@@ -65,20 +65,7 @@ const usePlaySong = (songId = '') => {
   const handleMusicPlayer = useZustandStore((state) => state.handleMusicPlayer);
   const currentScreen = useCurrentScreen();
 
-  /**
-   * Creates a queue with the selected song first, followed by remaining songs
-   */
-  // const createSongQueue = useCallback((selectedSongId: string, playlist: SongListType[]): SongListType[] => {
-  //   return playlist;
-  //   // if (!selectedSongId || !playlist?.length) return playlist || [];
-  //   // const selectedSong = playlist.find(song => song.id === selectedSongId);
-  //   // const remainingSongs = playlist.filter(song => song.id !== selectedSongId);
-  //   // return selectedSong ? [selectedSong, ...remainingSongs] : playlist;
-  // }, []);
 
-  /**
-   * Handles song playback for Genre screen
-   */
   const handleGenreScreenPlayback = useCallback((targetSongId: string) => {
     if (!playlistData?.length) return;
     const songToPlay = targetSongId || playlistData[0]?.id;

@@ -68,7 +68,7 @@ const PlayPauseReWindComp = () => {
       audio.removeEventListener('timeupdate', updateTimeFigure);
       // audio.removeEventListener('loadedmetadata', updateDurationListener);
     };
-  }, [duration])
+  }, [duration, updateTime])
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -125,7 +125,6 @@ const MusicBarButtonComp = () => {
   const toggleQueue = useZustandStore((state)=>state.toggleQueue);
   const repeatMode = useZustandStore((state)=>state.repeatMode);
   const handleRepeatMode = useZustandStore((state)=>state.handleRepeatMode);
-  console.log(repeatMode);
   
   const handleMode = useCallback(()=>{
     switch(repeatMode){
