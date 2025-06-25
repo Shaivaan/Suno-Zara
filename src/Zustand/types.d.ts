@@ -60,6 +60,7 @@ interface MusicBarType{
     sliderValue : number[]
     currentTime : number
     currentSongId : string | null
+    duration : null | number
 }
 
 

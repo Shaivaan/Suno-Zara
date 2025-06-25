@@ -4,12 +4,13 @@ import useCurrentScreen from "./use-currentscreen";
 
 const useMusicBar = ()=>{
     const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
+    const duration = useZustandStore((state)=>state.musicPlayerData).duration as number;
     const repeatMode = useZustandStore((state)=>state.repeatMode);
     const {isPlaying,currentTime,sliderValue} = useZustandStore((state)=>state.musicPlayerData);
     const currentSongId = useZustandStore((state)=>state.musicPlayerData.currentSongId);
     const queueSongs = useZustandStore((state)=>state.queueSongs);
     const currentSong = queueSongs.find(({id})=> id === currentSongId ) as SongListType;
-    const [duration, audioUrl, id, image, artist, name] = [currentSong?.duration, currentSong?.url, currentSong?.id, currentSong?.image, currentSong?.artists, currentSong?.name];
+    const [audioUrl, id, image, artist, name] = [currentSong?.url, currentSong?.id, currentSong?.image, currentSong?.artists, currentSong?.name];
     const togglePlayPause = (isPlaying=false):void=>handleMusicPlayer({isPlaying});
     
 

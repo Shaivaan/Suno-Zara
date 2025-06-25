@@ -110,7 +110,8 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
       currentTime : 0,
       isPlaying:false,
       sliderValue : [0],
-      currentSongId : null
+      currentSongId : null,
+      duration: null
     }, 
     handleMusicPlayer: (data)=>set((state)=>({musicPlayerData : {...state.musicPlayerData,...data}})),
 

@@ -45,7 +45,8 @@ interface MusicBarButtonType {
 }
 
 const PlayPauseReWindComp = () => {
-  const { handleMusicSlider, togglePlayPause, updateTime, isPlaying, currentTime, sliderValue, duration, audioUrl, id, playNextPrev } = useMusicBar();
+  const { handleMusicSlider, togglePlayPause, updateTime, isPlaying, currentTime, sliderValue, audioUrl, id, playNextPrev, duration } = useMusicBar();
+  const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
   const audioRef = useRef<HTMLAudioElement>(null);
   const togglePlayer = () => togglePlayPause(!isPlaying);
   const handleSlider = (value: number[]) => handleMusicSlider(audioRef.current, value);
@@ -58,15 +59,15 @@ const PlayPauseReWindComp = () => {
       const current = audio.currentTime;
       updateTime(current);
     };
-    // const updateDurationListener = () => updateDuration(audio.duration);
+    const updateDurationListener = () => handleMusicPlayer({duration : audio.duration});
     // Add event listeners
     audio.addEventListener('timeupdate', updateTimeFigure);
-    // audio.addEventListener('loadedmetadata', updateDurationListener);
+    audio.addEventListener('loadedmetadata', updateDurationListener);
 
     // Cleanup function - remove listeners when component unmounts
     return () => {
       audio.removeEventListener('timeupdate', updateTimeFigure);
-      // audio.removeEventListener('loadedmetadata', updateDurationListener);
+      audio.removeEventListener('loadedmetadata', updateDurationListener);
     };
   }, [duration, updateTime])
 
