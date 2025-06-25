@@ -116,13 +116,30 @@ const usePlaySong = (songId = '') => {
     handleSearchScreenPlayback
   ]);
 
+
+  const handleSongWithQueueUntouched = ()=>{
+    if(isCurrentSongPlaying) {
+      togglePlayPause(!isPlaying);
+      return;
+    }
+    handleMusicPlayer({currentSongId:songId,isPlaying:true});
+  }
+
   return {
     handleSongAndQueue,
-    // Expose additional utilities if needed
     isCurrentSongPlaying,
-    canPlay: Boolean(playlistData?.length || currentScreen === 'Search')
+    canPlay: Boolean(playlistData?.length || currentScreen === 'Search'),
+    handleSongWithQueueUntouched
   };
 };
 
+
+const useQueue = ()=>{
+  const queueSongs = useZustandStore((state)=>state.queueSongs);  
+  const {currentSongId} = useMusicBar();
+  const currentSongNumber = useMemo(()=> queueSongs.findIndex(({id})=> id === currentSongId) + 1  ,[currentSongId,queueSongs])
+  return {queueLength: queueSongs.length, currentSongNumber, queueSongs}
+}
+
 export default useMusicBar;
-export {useCurrentSongCheck , usePlaySong};
+export {useCurrentSongCheck , usePlaySong, useQueue};

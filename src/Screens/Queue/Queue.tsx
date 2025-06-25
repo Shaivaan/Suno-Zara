@@ -2,7 +2,7 @@ import {
   ButtonMenu,
   MenuButton,
 } from "@/components/SelfMade/Wrapper/ButtonMenu";
-import { memo, useMemo, useState } from "react";
+import { memo, useState } from "react";
 import { MusicBarButton } from "@/components/SelfMade/MusicBar/MusicBar"
 import {
   Sheet,
@@ -15,14 +15,13 @@ import { CirclePause, Play, XIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import useZustandStore from "@/Zustand/store";
-import { useCurrentSongCheck } from "@/hooks/use-musicbar";
+import useMusicBar, { usePlaySong, useQueue } from "@/hooks/use-musicbar";
 
 const queue_button_data = ["all", "recently added", "recently played"];
 
 const QueueButtonContainerComp = () => {
   const [queueOption, setQueueOption] = useState(queue_button_data[0]);
-  const queueSongs = useZustandStore((state)=>state.queueSongs);
-  const queueLength = useMemo(()=>queueSongs.length,[queueSongs.length]);
+  const {queueLength,currentSongNumber} = useQueue();
   
   return (
     <div className="flex justify-between">
@@ -31,7 +30,7 @@ const QueueButtonContainerComp = () => {
           <MenuButton isActive={queueOption === el} onClick={() => setQueueOption(el)} key={el}>{el}</MenuButton>
         ))}
       </ButtonMenu>
-      {queueLength !== 0 && <Badge variant={'secondary'}>5 of {queueLength}</Badge>}
+      {queueLength !== 0 && <Badge variant={'secondary'}>{currentSongNumber} of {queueLength}</Badge>}
     </div>
   );
 };
@@ -75,13 +74,16 @@ const QueueSongsListComp = ()=>{
 
 
 const QueueCardComp = ({id,image,name,artists,index}: SongListType & IndexType)=>{
-  const isPlaying = useCurrentSongCheck(id);
-  return <div className={cn("w-full border-1 px-3 py-1 border-b-glass-border rounded-[var(--border-radius-all)] flex gap-4 items-center group/queue-song cursor-pointer hover:border-1 hover:bg-glass-bg",isPlaying && 'playing')}>
+  const {handleSongWithQueueUntouched,isCurrentSongPlaying} = usePlaySong(id);
+  const {isPlaying} = useMusicBar();
+  return <div onClick={handleSongWithQueueUntouched} className={cn("w-full border-1 px-3 py-1 border-b-glass-border rounded-[var(--border-radius-all)] flex gap-4 items-center group/queue-song cursor-pointer hover:border-1 hover:bg-glass-bg",isCurrentSongPlaying && 'playing')}>
     <div className="text-[0.7rem] rounded-[50%] border-1 p-2 py-[0.15rem]">{index}</div>
     <div className="relative">
-        <LazyAvatar className={cn("rounded-[var(--border-radius-all)] !h-[2.7rem] !w-[2.7rem] group-hover/queue-song:opacity-40",isPlaying && 'opacity-40')} image={image}/>
-        {!isPlaying &&  <Play className="absolute top-3 right-2.5 opacity-0 group-hover/queue-song:opacity-100 icons-hover" size={'1.3rem'}/>}
-        {isPlaying && <CirclePause className="absolute top-3 right-2.5 icons-hover" size={'1.3rem'}/>}
+        <LazyAvatar className={cn("rounded-[var(--border-radius-all)] !h-[2.7rem] !w-[2.7rem] group-hover/queue-song:opacity-40",isCurrentSongPlaying && 'opacity-40')} image={image}/>
+        {!isCurrentSongPlaying || !isPlaying ? 
+          <Play className="absolute top-3 right-2.5 opacity-0 group-hover/queue-song:opacity-100 icons-hover" size={'1.3rem'}/> : 
+          <CirclePause className="absolute top-3 right-2.5 icons-hover" size={'1.3rem'}/>
+        }
     </div>
     <div className="flex flex-col flex-1 overflow-hidden">
       <div className="text-[0.85rem] threeDot">{name}</div>
