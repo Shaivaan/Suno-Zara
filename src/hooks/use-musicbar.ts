@@ -10,7 +10,7 @@ const useMusicBar = ()=>{
     const currentSongId = useZustandStore((state)=>state.musicPlayerData.currentSongId);
     const queueSongs = useZustandStore((state)=>state.queueSongs);
     const currentSong = queueSongs.find(({id})=> id === currentSongId ) as SongListType;
-    const [audioUrl, id, image, artist, name] = [currentSong?.url, currentSong?.id, currentSong?.image, currentSong?.artists, currentSong?.name];
+    const [audioUrl, image, artist, name] = [currentSong?.url, currentSong?.image, currentSong?.artists, currentSong?.name];
     const togglePlayPause = (isPlaying=false):void=>handleMusicPlayer({isPlaying});
     
 
@@ -48,7 +48,7 @@ const playCurrentSongAgain = ()=>{
 }
 
     const isCurrentSong = useCallback((id : string)=> currentSongId === id,[currentSongId]);
-    return {isCurrentSong ,togglePlayPause, handleMusicSlider, updateTime, playNextPrev, isPlaying, currentTime, sliderValue, duration, audioUrl , id, image , name, artist, currentSongId}
+    return {isCurrentSong ,togglePlayPause, handleMusicSlider, updateTime, playNextPrev, isPlaying, currentTime, sliderValue, duration, audioUrl , image , name, artist, currentSongId}
 }
 
 

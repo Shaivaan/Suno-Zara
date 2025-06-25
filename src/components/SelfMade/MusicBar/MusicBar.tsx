@@ -45,7 +45,7 @@ interface MusicBarButtonType {
 }
 
 const PlayPauseReWindComp = () => {
-  const { handleMusicSlider, togglePlayPause, updateTime, isPlaying, currentTime, sliderValue, audioUrl, id, playNextPrev, duration } = useMusicBar();
+  const { handleMusicSlider, togglePlayPause, updateTime, isPlaying, currentTime, sliderValue, audioUrl, playNextPrev, duration, currentSongId } = useMusicBar();
   const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
   const audioRef = useRef<HTMLAudioElement>(null);
   const togglePlayer = () => togglePlayPause(!isPlaying);
@@ -76,7 +76,7 @@ const PlayPauseReWindComp = () => {
     if (!audio) return;
     if (isPlaying) audio?.play();
     else audio?.pause();
-  }, [isPlaying, id]);
+  }, [isPlaying, currentSongId]);
 
 
   return (
