@@ -40,10 +40,11 @@ const useMusicBar = ()=>{
       if (newSongId) handleMusicPlayer({currentSongId: newSongId});
     }, [queueSongs, currentSongId, handleMusicPlayer]);
 
-    const playCurrentSongAgain = ()=>{
-     togglePlayPause(false);
-     setTimeout(()=> togglePlayPause(true))
-    } 
+const playCurrentSongAgain = ()=>{
+    const originalId = currentSongId;
+    handleMusicPlayer({currentSongId: null, isPlaying: false,currentTime: 0,sliderValue: [0]});
+    setTimeout(() => handleMusicPlayer({currentSongId: originalId, isPlaying: true,currentTime: 0,sliderValue: [0]}), 0);
+}
 
     const isCurrentSong = useCallback((id : string)=> currentSongId === id,[currentSongId]);
     return {isCurrentSong ,togglePlayPause, handleMusicSlider, updateTime, playNextPrev, isPlaying, currentTime, sliderValue, duration, audioUrl , id, image , name, artist, currentSongId}
