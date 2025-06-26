@@ -19,3 +19,15 @@ export const routes = {
 export const stopPropagation = (event:React.MouseEvent<any>)=>event.stopPropagation();
 
 export const loadArray = new Array(15).fill(0);
+
+export const localStorageKeys = {
+    volume : 'volume'
+};
+
+export const indexDbUtils = {
+  dbName : 'musicApp',
+  
+  storeNames : {
+    volume:'volume'
+  }
+}

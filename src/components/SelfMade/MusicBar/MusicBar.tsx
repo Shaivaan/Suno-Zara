@@ -3,12 +3,13 @@ import { memo, useCallback, useEffect, useMemo, useRef, type ComponentProps, typ
 import { LazyAvatar } from "../LazyAvatar/LazyAvatar";
 import { AlignJustify, Pause, Play, Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume2, VolumeOff } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
-import { cn } from "@/lib/utils";
+import { cn, localStorageKeys } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import useZustandStore from "@/Zustand/store";
 import Queue from "@/Screens/Queue/Queue";
 import { formatTime } from "./utils";
 import useMusicBar from "@/hooks/use-musicbar";
+import useLocalStorage from "@/hooks/use-localstorage";
 
 const MusicBarComp = () => {
   const queue = useZustandStore((state) => state.queueSongs);
@@ -190,13 +191,15 @@ const VolumeAdjustComp = () => {
   const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
   const {volume} = useZustandStore((state)=>state.musicPlayerData);
   const volumeRef = useRef<HTMLDivElement>(null);
+  const {setData} = useLocalStorage(localStorageKeys.volume);
   
   useEffect(()=>{
     const audio = document.querySelector('audio') as HTMLAudioElement;
     if (audio) audio.volume = volume / 100;
+    setData(volume);
   },[volume]);
 
-  const handleVolumeChange = useCallback((value: number[]) => {
+  const handleVolumeChange = useCallback(async(value: number[]) => {
     const newVolume = value[0];
     handleMusicPlayer({volume: newVolume});
   }, [handleMusicPlayer]);
