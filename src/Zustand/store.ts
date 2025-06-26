@@ -52,7 +52,6 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
   isVolumeAdjustOpen : false,
   
   toggleMobileMenu: () =>set((state) => ({ isSidebarVisible: !state.isSidebarVisible })),
-  toggleVolume: () =>set((state) => ({ isVolumeAdjustOpen: !state.isVolumeAdjustOpen })),
 
   isQueueVisible:false,
   toggleQueue:() =>set((state) => ({ isQueueVisible: !state.isQueueVisible })),

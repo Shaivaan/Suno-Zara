@@ -1,12 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { memo, useCallback, useEffect, useMemo, useRef, type ComponentProps, type ReactNode } from "react";
 import { LazyAvatar } from "../LazyAvatar/LazyAvatar";
-import { AlignJustify, Pause, Play, Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import { AlignJustify, Pause, Play, Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume2, VolumeOff } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import useZustandStore from "@/Zustand/store";
-import useClickOutside from "@/CustomHook/useClickOutside";
 import Queue from "@/Screens/Queue/Queue";
 import { formatTime } from "./utils";
 import useMusicBar from "@/hooks/use-musicbar";
@@ -50,6 +49,8 @@ const PlayPauseReWindComp = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const togglePlayer = () => togglePlayPause(!isPlaying);
   const handleSlider = (value: number[]) => handleMusicSlider(audioRef.current, value);
+  const repeatMode = useZustandStore((state)=>state.repeatMode);
+  const handleRepeatMode = useZustandStore((state)=>state.handleRepeatMode);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -85,6 +86,22 @@ const PlayPauseReWindComp = () => {
     if(currentSongId) handleMusicPlayer({isLastSongPlayed:false});
   },[currentSongId])
 
+    const handleMode = useCallback(()=>{
+    switch(repeatMode){
+      case 'normal' : handleRepeatMode('repeatOne'); break;
+      case 'repeatOne' : handleRepeatMode('repeat'); break;
+      case 'repeat' : handleRepeatMode('normal'); break;
+    }
+  },[repeatMode]);
+
+  const getModeToolTip = useCallback(()=>{
+    switch(repeatMode){
+      case 'normal' : return 'Repeat off';
+      case 'repeatOne' : return 'Repeat One';
+      default : return 'Repeat on';
+    }
+  },[repeatMode]);
+
 
   return (
     <div className="flex flex-col gap-y-[0.5rem] items-center justify-center">
@@ -94,11 +111,13 @@ const PlayPauseReWindComp = () => {
         preload="metadata"
       />
       <div className="flex gap-5 items-center">
+        <MusicBarButton tooltip="Shuffle"><Shuffle /></MusicBarButton>
         <MusicBarButton tooltip="Prev" onClick={()=>playNextPrev(true)}><SkipBack /></MusicBarButton>
         <MusicBarButton onClick={togglePlayer} tooltip="Play" className="!px-[1.25rem] py-[1.25rem] gradient-bg">
           {isPlaying ? <Pause /> : <Play />}
         </MusicBarButton>
         <MusicBarButton tooltip="Next" onClick={()=>playNextPrev()}><SkipForward /></MusicBarButton>
+        <MusicBarButton tooltip={getModeToolTip()} onClick={handleMode}><SongModeHandlerComp/></MusicBarButton>
       </div>
 
       <div className="flex gap-4 items-center label-text">
@@ -131,34 +150,32 @@ export const MusicBarButton = ({ children, tooltip, className, ...props }: Music
 
 const MusicBarButtonComp = () => {
   const toggleQueue = useZustandStore((state)=>state.toggleQueue);
-  const repeatMode = useZustandStore((state)=>state.repeatMode);
-  const handleRepeatMode = useZustandStore((state)=>state.handleRepeatMode);
-  
-  const handleMode = useCallback(()=>{
-    switch(repeatMode){
-      case 'normal' : handleRepeatMode('repeatOne'); break;
-      case 'repeatOne' : handleRepeatMode('repeat'); break;
-      case 'repeat' : handleRepeatMode('normal'); break;
-    }
-  },[repeatMode]);
-
-  const getModeToolTip = useCallback(()=>{
-    switch(repeatMode){
-      case 'normal' : return 'Repeat off';
-      case 'repeatOne' : return 'Repeat One';
-      default : return 'Repeat on';
-    }
-  },[repeatMode]);
 
   return <div className="flex gap-4 items-center">
     <Separator orientation="vertical" className="text-sm !h-[3rem]" />
-    <MusicBarButton tooltip="Shuffle"><Shuffle /></MusicBarButton>
-    <MusicBarButton tooltip={getModeToolTip()} onClick={handleMode}><SongModeHandlerComp/></MusicBarButton>
     <MusicBarButton tooltip="Queue" onClick={toggleQueue}><AlignJustify /></MusicBarButton>
     <Queue />
+    <VolumeIconHandler/>
     <VolumeAdjust />
   </div>
 };
+
+const VolumeIconHandlerComp = ()=>{
+  const {volume} = useZustandStore((state)=>state.musicPlayerData);
+  const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
+  const isNoSound = useMemo(()=>volume === 0,[volume]);
+
+  const handleClick = ()=>{
+    let finVolume = 0;
+    if(volume) finVolume = 0;
+    else finVolume = 100;
+    handleMusicPlayer({volume:finVolume});
+  }
+
+  return <MusicBarButton tooltip="Volume" onClick={handleClick}>
+    {isNoSound ? <VolumeOff/> : <Volume2 /> }
+  </MusicBarButton>
+}
 
 const SongModeHandlerComp = ()=>{
   const repeatMode = useZustandStore((state)=>state.repeatMode);
@@ -170,35 +187,31 @@ const SongModeHandlerComp = ()=>{
 }
 
 const VolumeAdjustComp = () => {
-  const isVolumeAdjustOpen = useZustandStore((state)=>state.isVolumeAdjustOpen);
-  const toggleVolume = useZustandStore((state)=>state.toggleVolume);
   const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
   const {volume} = useZustandStore((state)=>state.musicPlayerData);
   const volumeRef = useRef<HTMLDivElement>(null);
   
-
+  useEffect(()=>{
+    const audio = document.querySelector('audio') as HTMLAudioElement;
+    if (audio) audio.volume = volume / 100;
+  },[volume]);
 
   const handleVolumeChange = useCallback((value: number[]) => {
     const newVolume = value[0];
     handleMusicPlayer({volume: newVolume});
-    const audio = document.querySelector('audio') as HTMLAudioElement;
-    if (audio) audio.volume = newVolume / 100;
   }, [handleMusicPlayer]);
 
-  useClickOutside(volumeRef as any, toggleVolume, isVolumeAdjustOpen);
   return <div className="relative" ref={volumeRef}>
-    <MusicBarButton onClick={toggleVolume} tooltip="Volume"><Volume2 /></MusicBarButton>
-    {isVolumeAdjustOpen && <div className="cursor-pointer absolute top-[-9rem] left-[0.7rem] z-20" onClick={(e) => e.stopPropagation()}>
+    <div className="cursor-pointer z-20" onClick={(e) => e.stopPropagation()}>
       <Slider
         max={100}
         min={0}
         value={[volume]}
         step={1}
         onValueChange={handleVolumeChange}
-        className="!min-h-[8rem]"
-        orientation="vertical"
+        className="!min-w-[8rem]"
       />
-    </div>}
+    </div>
   </div>
 }
 
@@ -208,4 +221,5 @@ const PlayPausRewind = memo(PlayPauseReWindComp);
 const MusicBarButtons = memo(MusicBarButtonComp);
 const VolumeAdjust = memo(VolumeAdjustComp);
 const SongNameWithAvatar = memo(SongNameWithAvatarComp);
+const VolumeIconHandler = memo(VolumeIconHandlerComp);
 export default MusicBar;
