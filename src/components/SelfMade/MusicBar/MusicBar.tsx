@@ -170,16 +170,31 @@ const SongModeHandlerComp = ()=>{
 }
 
 const VolumeAdjustComp = () => {
-  const { isVolumeAdjustOpen, toggleVolume } = useZustandStore();
+  const isVolumeAdjustOpen = useZustandStore((state)=>state.isVolumeAdjustOpen);
+  const toggleVolume = useZustandStore((state)=>state.toggleVolume);
+  const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
+  const {volume} = useZustandStore((state)=>state.musicPlayerData);
   const volumeRef = useRef<HTMLDivElement>(null);
+  
+
+
+  const handleVolumeChange = useCallback((value: number[]) => {
+    const newVolume = value[0];
+    handleMusicPlayer({volume: newVolume});
+    const audio = document.querySelector('audio') as HTMLAudioElement;
+    if (audio) audio.volume = newVolume / 100;
+  }, [handleMusicPlayer]);
+
   useClickOutside(volumeRef as any, toggleVolume, isVolumeAdjustOpen);
   return <div className="relative" ref={volumeRef}>
-    <MusicBarButton onClick={toggleVolume} tooltip="Prev"><Volume2 /></MusicBarButton>
+    <MusicBarButton onClick={toggleVolume} tooltip="Volume"><Volume2 /></MusicBarButton>
     {isVolumeAdjustOpen && <div className="cursor-pointer absolute top-[-9rem] left-[0.7rem] z-20" onClick={(e) => e.stopPropagation()}>
       <Slider
-        defaultValue={[20]}
         max={100}
+        min={0}
+        value={[volume]}
         step={1}
+        onValueChange={handleVolumeChange}
         className="!min-h-[8rem]"
         orientation="vertical"
       />

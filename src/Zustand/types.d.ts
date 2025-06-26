@@ -62,6 +62,7 @@ interface MusicBarType{
     currentSongId : string | null
     duration : null | number
     isLastSongPlayed: boolean
+    volume : number
 }
 
 
