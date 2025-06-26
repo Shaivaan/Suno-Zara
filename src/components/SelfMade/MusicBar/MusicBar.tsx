@@ -81,6 +81,10 @@ const PlayPauseReWindComp = () => {
     else audio?.pause();
   }, [isPlaying, currentSongId]);
 
+  useEffect(()=>{
+    if(currentSongId) handleMusicPlayer({isLastSongPlayed:false});
+  },[currentSongId])
+
 
   return (
     <div className="flex flex-col gap-y-[0.5rem] items-center justify-center">

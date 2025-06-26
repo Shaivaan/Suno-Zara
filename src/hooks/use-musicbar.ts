@@ -24,12 +24,23 @@ const useMusicBar = ()=>{
     const updateTime = useCallback((current:number): void => {
       const progress = (current / duration) * 100;
       handleMusicPlayer({currentTime:current,sliderValue:[progress]});
-    },[repeatMode,duration]);
+    },[repeatMode,duration,isLastSongPlayed]);
 
     const handleNextSongAsPerMode = (audio : HTMLAudioElement )=> {
-      if(repeatMode === 'repeat') audio.play();
-      else if(repeatMode === 'normal') playNextPrev();
+      switch (repeatMode){
+        case 'repeat' : audio.play(); break;
+        case 'normal' : playNextPrev(); break;
+        case 'repeatOne' : handleRepeatOneLogic(audio); break;
+      }
     }
+
+    const handleRepeatOneLogic = (audio : HTMLAudioElement) => {    
+      if (!isLastSongPlayed) {
+        audio.play();
+        handleMusicPlayer({isLastSongPlayed: true});
+      }
+      else playNextPrev();
+    };
 
 
     const playNextPrev = useCallback((isPrev = false) => {
