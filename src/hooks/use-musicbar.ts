@@ -6,7 +6,7 @@ const useMusicBar = ()=>{
     const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
     const duration = useZustandStore((state)=>state.musicPlayerData).duration as number;
     const repeatMode = useZustandStore((state)=>state.repeatMode);
-    const {isPlaying,currentTime,sliderValue} = useZustandStore((state)=>state.musicPlayerData);
+    const {isPlaying,currentTime,sliderValue, isLastSongPlayed} = useZustandStore((state)=>state.musicPlayerData);
     const currentSongId = useZustandStore((state)=>state.musicPlayerData.currentSongId);
     const queueSongs = useZustandStore((state)=>state.queueSongs);
     const currentSong = queueSongs.find(({id})=> id === currentSongId ) as SongListType;
@@ -23,14 +23,14 @@ const useMusicBar = ()=>{
 
     const updateTime = useCallback((current:number): void => {
       const progress = (current / duration) * 100;
-      if(progress >= 100) handleNextSongAsPerMode(repeatMode);
       handleMusicPlayer({currentTime:current,sliderValue:[progress]});
     },[repeatMode,duration]);
 
-    const handleNextSongAsPerMode = (repeatMode : RepeatModeType)=> {
-      if(repeatMode === 'repeat') playCurrentSongAgain();
-      else playNextPrev();
+    const handleNextSongAsPerMode = (audio : HTMLAudioElement )=> {
+      if(repeatMode === 'repeat') audio.play();
+      else if(repeatMode === 'normal') playNextPrev();
     }
+
 
     const playNextPrev = useCallback((isPrev = false) => {
       const currIndex = queueSongs.findIndex(({id}) => id === currentSongId);
@@ -41,14 +41,9 @@ const useMusicBar = ()=>{
       if (newSongId) handleMusicPlayer({currentSongId: newSongId});
     }, [queueSongs, currentSongId, handleMusicPlayer]);
 
-const playCurrentSongAgain = ()=>{
-    const originalId = currentSongId;
-    handleMusicPlayer({currentSongId: null, isPlaying: false,currentTime: 0,sliderValue: [0]});
-    setTimeout(() => handleMusicPlayer({currentSongId: originalId, isPlaying: true,currentTime: 0,sliderValue: [0]}), 0);
-}
 
     const isCurrentSong = useCallback((id : string)=> currentSongId === id,[currentSongId]);
-    return {isCurrentSong ,togglePlayPause, handleMusicSlider, updateTime, playNextPrev, isPlaying, currentTime, sliderValue, duration, audioUrl , image , name, artist, currentSongId}
+    return {isLastSongPlayed ,repeatMode,isCurrentSong ,togglePlayPause, handleMusicSlider, updateTime, playNextPrev, isPlaying, currentTime, sliderValue, duration, audioUrl , image , name, artist, currentSongId, handleNextSongAsPerMode}
 }
 
 
