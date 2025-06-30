@@ -8,14 +8,14 @@ import {
   Sheet,
   SheetContent,
 } from "@/components/ui/sheet"
-  <DeleteIcon/>
+  // <DeleteIcon/>
 import { LazyAvatar } from "@/components/SelfMade/LazyAvatar/LazyAvatar";
 import FavIcon, { DeleteIcon } from "@/components/SelfMade/Icons/FavIcon";
 import { CirclePause, Play, XIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, stopPropagation } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import useZustandStore from "@/Zustand/store";
-import useMusicBar, { usePlaySong, useQueue } from "@/hooks/use-musicbar";
+import useMusicBar, { useCurrentSongCheck, usePlaySong, useQueue } from "@/hooks/use-musicbar";
 
 const queue_button_data = ["all", "recently added", "recently played"];
 
@@ -74,9 +74,18 @@ const QueueSongsListComp = ()=>{
 
 
 const QueueCardComp = ({id,image,name,artists,index}: SongListType & IndexType)=>{
-  const {handleSongWithQueueUntouched,isCurrentSongPlaying} = usePlaySong(id);
+  const {handleSongWithQueueUntouched} = usePlaySong(id);
+  const isCurrentSongPlaying = useCurrentSongCheck(id);
   const {isPlaying} = useMusicBar();
+  const {deleteSongFromQueue} = useQueue();
+  const deleteSong = (event:React.MouseEvent)=> {
+    stopPropagation(event)
+    deleteSongFromQueue(id);
+  }
+  
+  
   return <div onClick={handleSongWithQueueUntouched} className={cn("w-full border-1 px-3 py-1 border-b-glass-border rounded-[var(--border-radius-all)] flex gap-4 items-center group/queue-song cursor-pointer hover:border-1 hover:bg-glass-bg",isCurrentSongPlaying && 'playing')}>
+    {id}
     <div className="text-[0.7rem] rounded-[50%] border-1 p-2 py-[0.15rem]">{index}</div>
     <div className="relative">
         <LazyAvatar className={cn("rounded-[var(--border-radius-all)] !h-[2.7rem] !w-[2.7rem] group-hover/queue-song:opacity-40",isCurrentSongPlaying && 'opacity-40')} image={image}/>
@@ -91,7 +100,7 @@ const QueueCardComp = ({id,image,name,artists,index}: SongListType & IndexType)=
     </div>
     <div className="flex gap-4">
       <div className="group-hover/queue-song:opacity-100 opacity-0"><FavIcon className="size-[1.2rem]"/></div>
-      <div className="group-hover/queue-song:opacity-100 opacity-0"><DeleteIcon className="size-[1.2rem]"/></div>  
+      <div onClick={deleteSong} className="group-hover/queue-song:opacity-100 opacity-0"><DeleteIcon className="size-[1.2rem]"/></div>  
     </div>
   </div>
 }

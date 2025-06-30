@@ -9,8 +9,6 @@ const useMusicBar = ()=>{
     const {isPlaying,currentTime,sliderValue, isLastSongPlayed} = useZustandStore((state)=>state.musicPlayerData);
     const currentSongId = useZustandStore((state)=>state.musicPlayerData.currentSongId);
     const queueSongs = useZustandStore((state)=>state.queueSongs);
-    const currentSong = queueSongs.find(({id})=> id === currentSongId ) as SongListType;
-    const [audioUrl, image, artist, name] = [currentSong?.url, currentSong?.image, currentSong?.artists, currentSong?.name];
     const togglePlayPause = (isPlaying=false):void=>handleMusicPlayer({isPlaying});
     
 
@@ -49,12 +47,16 @@ const useMusicBar = ()=>{
       const nextSongIndex = isPrev ? currIndex - 1 : currIndex + 1;
       let newSongId = queueSongs[nextSongIndex]?.id;
       if (newSongId === undefined) newSongId = queueSongs[isPrev ? queueSongs.length - 1 : 0]?.id;
+      if(newSongId === currentSongId) { //if only song if queue stop playing
+        handleMusicPlayer({isPlaying:false}); 
+        return;
+      } 
       if (newSongId) handleMusicPlayer({currentSongId: newSongId});
     }, [queueSongs, currentSongId, handleMusicPlayer]);
 
 
     const isCurrentSong = useCallback((id : string)=> currentSongId === id,[currentSongId]);
-    return {isLastSongPlayed ,repeatMode,isCurrentSong ,togglePlayPause, handleMusicSlider, updateTime, playNextPrev, isPlaying, currentTime, sliderValue, duration, audioUrl , image , name, artist, currentSongId, handleNextSongAsPerMode}
+    return {isLastSongPlayed ,repeatMode,isCurrentSong ,togglePlayPause, handleMusicSlider, updateTime, playNextPrev, isPlaying, currentTime, sliderValue, duration , name, currentSongId, handleNextSongAsPerMode}
 }
 
 
@@ -66,9 +68,11 @@ const useCurrentSongCheck = (id:string)=>{
 }
 
 const usePlaySong = (songId = '') => {
+  const queueSongs = useZustandStore((state)=>state.queueSongs);
   const isCurrentSongPlaying = useCurrentSongCheck(songId);
-  const { isPlaying, togglePlayPause } = useMusicBar();
+  const { isPlaying, togglePlayPause, currentSongId } = useMusicBar();
   const { data: playlistData } = useZustandStore((state) => state.albumPlayListScreenData);
+  const { songData } = useZustandStore((state) => state.searchScreenData);
   const handleQueueSongs = useZustandStore((state) => state.handleQueueSongs);
   const handleMusicPlayer = useZustandStore((state) => state.handleMusicPlayer);
   const currentScreen = useCurrentScreen();
@@ -87,10 +91,16 @@ const usePlaySong = (songId = '') => {
   /**
    * Handles song playback for Search screen
    */
-  const handleSearchScreenPlayback = useCallback((_targetSongId: string) => {
-    // TODO: Implement search screen logic
-    console.warn('Search screen playback not yet implemented');
-  }, []);
+  const handleSearchScreenPlayback = useCallback((targetSongId: string) => {
+    const songToPlay = songData.find(({id})=>id === targetSongId) as SongListType;
+    const curSongIndex = queueSongs.findIndex(({id})=> id === currentSongId);
+    const prevSongs = queueSongs.filter((_song,index)=>index <= curSongIndex);
+    const nextSongs = queueSongs.filter((_song,index)=>index > curSongIndex);
+    const newQueue = [...prevSongs,songToPlay,...nextSongs];
+    handleQueueSongs(newQueue);
+    handleMusicPlayer({ currentSongId: targetSongId });
+    togglePlayPause(true);
+  }, [currentSongId]);
 
   /**
    * Main handler for song playback logic
@@ -144,10 +154,28 @@ const usePlaySong = (songId = '') => {
 
 const useQueue = ()=>{
   const queueSongs = useZustandStore((state)=>state.queueSongs);  
-  const {currentSongId} = useMusicBar();
+  const handleQueueSongs = useZustandStore((state)=>state.handleQueueSongs);
+  const {currentSongId,playNextPrev} = useMusicBar();
   const currentSongNumber = useMemo(()=> queueSongs.findIndex(({id})=> id === currentSongId) + 1  ,[currentSongId,queueSongs])
-  return {queueLength: queueSongs.length, currentSongNumber, queueSongs}
+
+
+   const deleteSongFromQueue = useCallback( (targetSongId:string)=>{
+      const filteredQueue = queueSongs.filter(({id})=>id !== targetSongId);
+      handleQueueSongs([...filteredQueue]);
+      if(targetSongId === currentSongId) playNextPrev();
+    },[currentSongId]);
+
+  return {queueLength: queueSongs.length, currentSongNumber, queueSongs, deleteSongFromQueue}
+}
+
+
+const useCurrentSongInfo = ()=>{
+  const currentSongId = useZustandStore((state)=>state.musicPlayerData.currentSongId);
+  const queue = useZustandStore((state)=>state.queueSongs);
+  const currentSong = queue.find(({id})=>id === currentSongId);
+  const [audioUrl, image, artist, name] = [currentSong?.url, currentSong?.image, currentSong?.artists, currentSong?.name];
+  return {image,audioUrl,artist,name};
 }
 
 export default useMusicBar;
-export {useCurrentSongCheck , usePlaySong, useQueue};
+export {useCurrentSongCheck , usePlaySong, useQueue ,useCurrentSongInfo};

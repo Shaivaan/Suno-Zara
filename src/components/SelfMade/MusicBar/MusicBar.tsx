@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import useZustandStore from "@/Zustand/store";
 import Queue from "@/Screens/Queue/Queue";
 import { formatTime } from "./utils";
-import useMusicBar from "@/hooks/use-musicbar";
+import useMusicBar, { useCurrentSongInfo } from "@/hooks/use-musicbar";
 import useLocalStorage from "@/hooks/use-localstorage";
 
 const MusicBarComp = () => {
@@ -26,7 +26,7 @@ const MusicBarComp = () => {
 };
 
 const SongNameWithAvatarComp = () => {
-  const { artist, name, image } = useMusicBar();
+  const { artist, name, image } = useCurrentSongInfo();
   return <div className="flex gap-4 items-center">
     <LazyAvatar className="rounded-[var(--border-radius-all)] h-[3rem] w-[3rem]" image={image as string} />
     <div className="max-w-full">
@@ -45,7 +45,8 @@ interface MusicBarButtonType {
 }
 
 const PlayPauseReWindComp = () => {
-  const {handleMusicSlider, togglePlayPause, updateTime, isPlaying, currentTime, sliderValue, audioUrl, playNextPrev, duration, currentSongId, handleNextSongAsPerMode } = useMusicBar();
+  const {handleMusicSlider, togglePlayPause, updateTime, isPlaying, currentTime, sliderValue, playNextPrev, duration, currentSongId, handleNextSongAsPerMode } = useMusicBar();
+  const {audioUrl} = useCurrentSongInfo();
   const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
   const audioRef = useRef<HTMLAudioElement>(null);
   const togglePlayer = () => togglePlayPause(!isPlaying);
