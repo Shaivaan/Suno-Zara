@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import useZustandStore from './Zustand/store';
 import useLocalStorage from './hooks/use-localstorage';
 import { localStorageKeys } from './lib/utils';
+import { Toaster } from './components/ui/sonner';
 
 function App() {
   const {getData} = useLocalStorage(localStorageKeys.volume);
@@ -21,6 +22,7 @@ function App() {
 
   return (
     <BrowserRouter>
+        <Toaster />
         <RouterComp/>
     </BrowserRouter>
   )

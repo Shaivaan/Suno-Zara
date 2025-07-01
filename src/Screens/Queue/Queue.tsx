@@ -15,7 +15,7 @@ import { CirclePause, Play, XIcon } from "lucide-react";
 import { cn, stopPropagation } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import useZustandStore from "@/Zustand/store";
-import useMusicBar, { useCurrentSongCheck, usePlaySong, useQueue } from "@/hooks/use-musicbar";
+import useMusicBar, { useCurrentSongCheck, useLibraryData, useLikeFlag, usePlaySong, useQueue } from "@/hooks/use-musicbar";
 
 const queue_button_data = ["all", "recently added", "recently played"];
 
@@ -82,10 +82,16 @@ const QueueCardComp = ({id,image,name,artists,index}: SongListType & IndexType)=
     stopPropagation(event)
     deleteSongFromQueue(id);
   }
+  const isFlagged = useLikeFlag(id,'song');
+  const {markSongFav} = useLibraryData();
+
+  const likeSong = (event:React.MouseEvent)=>{
+    stopPropagation(event);
+    markSongFav(id,isFlagged,true);
+  };
   
   
   return <div onClick={handleSongWithQueueUntouched} className={cn("w-full border-1 px-3 py-1 border-b-glass-border rounded-[var(--border-radius-all)] flex gap-4 items-center group/queue-song cursor-pointer hover:border-1 hover:bg-glass-bg",isCurrentSongPlaying && 'playing')}>
-    {id}
     <div className="text-[0.7rem] rounded-[50%] border-1 p-2 py-[0.15rem]">{index}</div>
     <div className="relative">
         <LazyAvatar className={cn("rounded-[var(--border-radius-all)] !h-[2.7rem] !w-[2.7rem] group-hover/queue-song:opacity-40",isCurrentSongPlaying && 'opacity-40')} image={image}/>
@@ -99,7 +105,7 @@ const QueueCardComp = ({id,image,name,artists,index}: SongListType & IndexType)=
       <div className="label-text text-[0.8rem]">{artists}</div>
     </div>
     <div className="flex gap-4">
-      <div className="group-hover/queue-song:opacity-100 opacity-0"><FavIcon className="size-[1.2rem]"/></div>
+      <div onClick={likeSong} className="group-hover/queue-song:opacity-100 opacity-0"><FavIcon isFlagged={isFlagged} className="size-[1.2rem]"/></div>
       <div onClick={deleteSong} className="group-hover/queue-song:opacity-100 opacity-0"><DeleteIcon className="size-[1.2rem]"/></div>  
     </div>
   </div>

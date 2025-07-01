@@ -11,6 +11,7 @@ interface LibraryType{
   playlist : []
   album : []
   artist : []
+  songs : SongListType[]
 }
 
 interface StateStoreType {
@@ -51,7 +52,10 @@ interface StateStoreType {
 
     repeatMode : RepeatModeType
     handleRepeatMode : (mode : RepeatModeType) =>void
+
 }
+
+
 
 interface MusicBarType{
     isPlaying : boolean

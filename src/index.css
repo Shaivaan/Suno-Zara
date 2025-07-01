@@ -432,3 +432,12 @@ a,a:hover{
 .underline:hover{
   text-decoration: underline;
 }
+
+.custom-toast [data-close-button] {
+  /* background-color: #f3f4f6 !important;   */
+  background: var(--normal-bg-hover) !important;
+  color: var(--text-gen-color) !important;             /* Dark gray text */
+  border-radius: 10px !important;
+  padding: 2px !important;
+  /* border: 2px solid var(--accent-pink) !important; */
+}

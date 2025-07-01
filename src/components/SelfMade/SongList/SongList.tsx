@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { secondsToMMSS } from "@/Screens/Explore/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
-import useMusicBar, { useCurrentSongCheck, usePlaySong } from "@/hooks/use-musicbar";
+import useMusicBar, { useCurrentSongCheck, useLibraryData, useLikeFlag, usePlaySong } from "@/hooks/use-musicbar";
 const table_columns = ['#','title','artist','album','duration'];
 
 const SongResultsComp = ({songs}:{songs :SongListType[]})=>{
@@ -29,9 +29,15 @@ const SongsHead=()=>{
 const SongItem = ({song,indx}:{song:SongListType} & {indx:number})=>{
     const {album,artists,duration,image,name,artistId,albumId, id} = song;
     const isCurrentSongPlaying = useCurrentSongCheck(id);
+    const {markSongFav} = useLibraryData();
     const {isPlaying} = useMusicBar();
     const {handleSongAndQueue} = usePlaySong(id);
     const playSong = () => handleSongAndQueue(); 
+    const isFlagged = useLikeFlag(song?.id,'song');
+    const likeSong = (event:React.MouseEvent)=>{
+       stopPropagation(event);
+       markSongFav(song.id,isFlagged);
+    };
 
     return <div className={cn("grid-container-songs song_row group/song",isCurrentSongPlaying && 'playing')} onClick={playSong}>
         <div className="label-text text-[0.9rem]">{indx}</div>
@@ -43,7 +49,8 @@ const SongItem = ({song,indx}:{song:SongListType} & {indx:number})=>{
                  <Pause className="absolute top-2 right-2 opacity-0 group-hover/song:opacity-100 icons-hover" size={'1rem'}/>
                 }
                 
-                <FavIcon className="absolute top-2 right-12 opacity-0 group-hover/song:opacity-100" isFlagged/>
+                <div onClick={likeSong} className="absolute top-2 right-12 opacity-0 group-hover/song:opacity-100"><FavIcon isFlagged={isFlagged}/></div>
+                
             </div>
             <div className="text-[0.94rem]">{name}</div>
         </div>

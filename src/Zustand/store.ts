@@ -101,7 +101,8 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
       section:'playlist',
       album : [],
       artist : [],
-      playlist :[]
+      playlist :[],
+      songs : []
     },
     handleLibraryData : (data)=> set((state)=>({libraryData : {...state.libraryData,...data}})),
 
@@ -121,6 +122,8 @@ const useZustandStore = create<StateStoreType & ExploreScreenDataType>((set) => 
 
     repeatMode : 'normal',
     handleRepeatMode : (repeatMode: RepeatModeType)=>set(()=>({repeatMode})),
+    
+
 }));
 
 export default useZustandStore;

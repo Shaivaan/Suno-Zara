@@ -31,3 +31,8 @@ export const indexDbUtils = {
     volume:'volume'
   }
 }
+
+export const toastMessages = {
+  favourited : 'Saved to Favorites!',
+  unfavourited : 'No Longer a Favorite!'
+}

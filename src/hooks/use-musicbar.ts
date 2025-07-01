@@ -1,6 +1,8 @@
 import useZustandStore from "@/Zustand/store"
 import { useCallback, useMemo } from "react";
 import useCurrentScreen from "./use-currentscreen";
+import { toast } from "sonner";
+import { toastMessages } from "@/lib/utils";
 
 const useMusicBar = ()=>{
     const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
@@ -159,12 +161,11 @@ const useQueue = ()=>{
   const currentSongNumber = useMemo(()=> queueSongs.findIndex(({id})=> id === currentSongId) + 1  ,[currentSongId,queueSongs])
 
 
-   const deleteSongFromQueue = useCallback( (targetSongId:string)=>{
+   const deleteSongFromQueue = useCallback((targetSongId:string)=>{
       const filteredQueue = queueSongs.filter(({id})=>id !== targetSongId);
       handleQueueSongs([...filteredQueue]);
       if(targetSongId === currentSongId) playNextPrev();
-    },[currentSongId]);
-
+    },[currentSongId,queueSongs.length,queueSongs]);
   return {queueLength: queueSongs.length, currentSongNumber, queueSongs, deleteSongFromQueue}
 }
 
@@ -177,5 +178,69 @@ const useCurrentSongInfo = ()=>{
   return {image,audioUrl,artist,name};
 }
 
+
+const useLibraryData = () => {
+  const { songData: searchSongs } = useZustandStore((state) => state.searchScreenData);
+  const { data: genreSongs } = useZustandStore((state) => state.albumPlayListScreenData);
+  const { songs: favoriteSongs } = useZustandStore((state) => state.libraryData);
+  const handleLibraryData = useZustandStore((state) => state.handleLibraryData);
+  
+  const { queueSongs } = useQueue();
+  const currentScreen = useCurrentScreen();
+
+  const sourceArray = useMemo(() => {
+    return currentScreen === 'Search' ? searchSongs : genreSongs;
+  }, [currentScreen, searchSongs, genreSongs]);
+
+  const getSongById = useCallback((songId: string, isQueue: boolean): SongListType | undefined => {
+    if (isQueue) {
+      return queueSongs.find(({ id }) => id === songId);
+    }
+    
+    return sourceArray.find(({ id }) => id === songId);
+  }, [queueSongs, sourceArray]);
+
+  const updateFavorites = useCallback((isLiked: boolean, song: SongListType): SongListType[] => {
+    if (isLiked) {
+      return favoriteSongs.filter(({ id }) => id !== song.id);
+    } else {
+      const isAlreadyFavorite = favoriteSongs.some(({ id }) => id === song.id);
+      return isAlreadyFavorite ? favoriteSongs : [...favoriteSongs, song];
+    }
+  }, [favoriteSongs]);
+
+  const markSongFav = useCallback((targetSongId: string, isLiked: boolean, isQueue = false) => {
+    const song = getSongById(targetSongId, isQueue);
+    
+    if (!song) {
+      console.warn(`Song with ID ${targetSongId} not found`);
+      return;
+    }
+
+    // Show toast notification
+    const message = !isLiked ? toastMessages.favourited : toastMessages.unfavourited;
+    toast.success(message);
+
+    // Update favorites
+    const updatedFavorites = updateFavorites(isLiked, song);
+    handleLibraryData({ songs: updatedFavorites });
+  }, [getSongById, updateFavorites, handleLibraryData]);
+
+  return { markSongFav };
+};
+
+const useLikeFlag = (id:string,type:LibrarySectionType | 'song')=>{
+    const {songs} = useZustandStore((state)=>state.libraryData);
+    const favSongsIds = useMemo(()=>songs.map(({id})=>id) ,[songs.length]);
+    const isFlagged = useMemo(()=>{
+      switch(type){
+        case 'song' : return favSongsIds.includes(id);
+        default : return false;
+      }
+    },
+    [songs.length,type, favSongsIds.length]);
+    return isFlagged;   
+};
+
 export default useMusicBar;
-export {useCurrentSongCheck , usePlaySong, useQueue ,useCurrentSongInfo};
+export {useCurrentSongCheck , usePlaySong, useQueue ,useCurrentSongInfo, useLibraryData, useLikeFlag};
