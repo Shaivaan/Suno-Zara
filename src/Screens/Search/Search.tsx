@@ -7,6 +7,7 @@ import { memo, useEffect, useRef, useState } from "react";
 import useSearch from "@/CustomHook/useSearch";
 import AlbumCard, { SkeletonAlbumCard } from "@/components/SelfMade/Cards/AlbumCard";
 import { loadArray } from "@/lib/utils";
+import { v4 } from "uuid";
 
 const placholderText = 'Search for songs, artists, albums...';
 const button_data = ['songs','artists','albums','playlists'];
@@ -80,7 +81,7 @@ const SearchSectionHandleComp = ()=>{
 
 const SongSkeletonParent = ()=>{
     return <div className="flex flex-col gap-2.5">
-        {loadArray.map((elem)=><SongItemSkeleton key={elem}/>)}
+        {loadArray.map((elem)=><SongItemSkeleton key={v4()}/>)}
     </div>
 }
 

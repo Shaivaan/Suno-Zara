@@ -4,6 +4,7 @@ import ArtistCard, { ArtistSkeletonCardComp } from "@/components/SelfMade/Cards/
 import CarouselWrapperWithHead, { CarouselWrapper } from "@/components/SelfMade/CarouselWrapper/CarouselWrapper";
 import useZustandStore from "@/Zustand/store";
 import { memo } from "react";
+import {v4} from 'uuid';
 const {trending_artist} = explore_titles_head;
 
 type keyType = keyof typeof explore_titles_head
@@ -57,8 +58,8 @@ const AlbumArtistCardParentComp = ()=>{
     const artistData = carouselData[trending_artist] as ArtistCardType[];
     const loadArray = new Array(10).fill(10);
     return <CarouselWrapper>
-        {isLoading && loadArray.map((_el,indx)=><ArtistSkeletonCardComp key={indx}/>)}
-        {!isLoading && artistData.map((artist,indx) => <ArtistCard key={indx} {...artist}/>)}
+        {isLoading && loadArray.map((_el)=><ArtistSkeletonCardComp key={v4()}/>)}
+        {!isLoading && artistData.map((artist) => <ArtistCard key={v4()} {...artist}/>)}
     </CarouselWrapper>
 }
 
