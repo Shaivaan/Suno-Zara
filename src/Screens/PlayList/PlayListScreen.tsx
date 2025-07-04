@@ -11,6 +11,7 @@ import AlbumCard from "@/components/SelfMade/Cards/AlbumCard";
 import { ButtonMenu, MenuButton } from "@/components/SelfMade/Wrapper/ButtonMenu";
 import FailedFallBack from "@/components/SelfMade/Cards/FailedFallBack";
 import CarouselWrapperWithHead from "@/components/SelfMade/CarouselWrapper/CarouselWrapper";
+import { useLibraryData } from "@/hooks/use-musicbar";
 
 const getApiAccordingly = (screen:ScreenType)=>{
     switch (screen){
@@ -28,9 +29,10 @@ const PlayListAlbumScreenComp = ()=>{
     const type = searchParams.get('type') as unknown as ScreenType;
     const id = searchParams.get('id');
     const {albumPlayListScreenData:{isLoading,isFailedLoading},handleAlbumPlayListScreenData} = useZustandStore();
+    const {favoriteSongs} = useLibraryData();
     
     const getData = async()=>{
-        const api = getApiAccordingly(type) + id;
+        const api = getApiAccordingly(type) + (id as string);
         try{
             const res = await axios.get(api);
             const {data}:{data : {data : AlbumPlaylistResponse,success:boolean}} = res;
@@ -59,8 +61,18 @@ const PlayListAlbumScreenComp = ()=>{
 
     useEffect(()=>{
         handleAlbumPlayListScreenData({isLoading:true,isFailedLoading:false});
-        getData();
+        if(type !== 'liked_songs') getData();
+        else handlePlaylistScreenForLibrary();
     },[type,id])
+
+    const handlePlaylistScreenForLibrary = ()=>{
+        handleAlbumPlayListScreenData({
+            details:{id:null,name:'Liked Songs',type:'Flagged Songs',image:null,duration:'Static Duration'},
+            artistAlbumData : [], 
+            data:favoriteSongs
+        });
+        handleAlbumPlayListScreenData({isLoading:false});
+    }
     
 
     if(isFailedLoading) return <FailedFallBack/>

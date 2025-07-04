@@ -226,7 +226,7 @@ const useLibraryData = () => {
     handleLibraryData({ songs: updatedFavorites });
   }, [getSongById, updateFavorites, handleLibraryData]);
 
-  return { markSongFav };
+  return { markSongFav, favSongNumber : favoriteSongs.length, favoriteSongs };
 };
 
 const useLikeFlag = (id:string,type:LibrarySectionType | 'song')=>{

@@ -14,7 +14,7 @@ const PlayListHead = ()=>{
     const type = searchParams.get('type') as unknown as ScreenType;
     const isArtist = useMemo(()=>type === 'artist',[type]);
     const {albumPlayListScreenData:{details:{image},isLoading}} = useZustandStore();
-    const imageLink = useMemo(()=>isLoading ? null : image ,[isLoading]);
+    const imageLink = useMemo(()=>isLoading || type === 'liked_songs' ? null : image ,[isLoading]);
     return <div className="flex gap-4">
         <LazyAvatar
           image={imageLink as string}
@@ -26,11 +26,14 @@ const PlayListHead = ()=>{
 
 const PlayListTextComp = ()=>{
     const {albumPlayListScreenData:{details:{name},isLoading}} = useZustandStore();
+    const [searchParams] = useSearchParams();
+    const type = searchParams.get('type') as unknown as ScreenType;
+    const isLikedPlaylistSong = useMemo(()=>type === 'liked_songs',[type]);
     return <div className="flex flex-col gap gap-16 p-4">
             <div className="flex flex-col gap-1">
                 <div className="flex gap-2 items-center">
                     {isLoading ? <Skeleton className="w-[20rem] h-10"/> : <div className="font-bold text-4xl">{name}</div>}
-                    {!isLoading && <FavIcon className="size-8"/>}
+                    {!isLoading && !isLikedPlaylistSong && <FavIcon className="size-8"/>}
                 </div>
                 
                 <PlayListSongsAndTime/>
