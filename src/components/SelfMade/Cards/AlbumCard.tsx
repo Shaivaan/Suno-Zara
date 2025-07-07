@@ -12,7 +12,7 @@ import { useLibraryData } from "@/hooks/use-musicbar";
 const AlbumCardComp = ({image,name,songCount,type,id,isLikedSongsAlbum=false}:AlbumsCardType & IsLikedCardType)=>{
     const imageUrl = image?.[2]?.url;
     const isSong = type === 'song';
-    const label2 = isSong ? secondsToMMSS(songCount) : (songCount + ' Songs');
+    const label2 = isSong ? secondsToMMSS(songCount) : songCount ? (songCount + ' Songs') : '';
     const {favSongNumber} = useLibraryData();
     const urlToNavigate = useMemo(()=> isLikedSongsAlbum ? (favSongNumber ? `${routes.genre}?type=${type}`  : '#')  :  (!isSong ? (routes.genre + `?id=${id}&type=${type}`) : null) ,[type]);
     
