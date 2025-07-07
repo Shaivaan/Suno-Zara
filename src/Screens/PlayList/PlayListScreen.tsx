@@ -29,7 +29,7 @@ const PlayListAlbumScreenComp = ()=>{
     const type = searchParams.get('type') as unknown as ScreenType;
     const id = searchParams.get('id');
     const {albumPlayListScreenData:{isLoading,isFailedLoading},handleAlbumPlayListScreenData} = useZustandStore();
-    const {favoriteSongs} = useLibraryData();
+    const {favoriteSongs,favSongNumber} = useLibraryData();
     
     const getData = async()=>{
         const api = getApiAccordingly(type) + (id as string);
@@ -61,9 +61,13 @@ const PlayListAlbumScreenComp = ()=>{
 
     useEffect(()=>{
         handleAlbumPlayListScreenData({isLoading:true,isFailedLoading:false});
-        if(type !== 'liked_songs') getData();
+        if(type !== 'liked songs') getData();
         else handlePlaylistScreenForLibrary();
     },[type,id])
+
+    useEffect(()=>{
+        if(type === 'liked songs')  handlePlaylistScreenForLibrary();
+    },[favSongNumber]); // More to add
 
     const handlePlaylistScreenForLibrary = ()=>{
         handleAlbumPlayListScreenData({

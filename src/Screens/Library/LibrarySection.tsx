@@ -8,7 +8,7 @@ const FlexWrapParent = ({children}:ChildrenType)=><div className="flex flex-wrap
 const PlaylistSectionComp = ()=>{
     const {favSongNumber} = useLibraryData();
     return <FlexWrapParent>
-        <AlbumCard name="Liked Song" songCount={favSongNumber} type="liked_songs" isLikedSongsAlbum {...{} as any}/>
+        <AlbumCard name="Liked Songs" songCount={favSongNumber} type="liked songs" isLikedSongsAlbum {...{} as any}/>
     </FlexWrapParent>
 }
 

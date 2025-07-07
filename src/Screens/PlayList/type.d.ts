@@ -98,4 +98,4 @@ interface AlbumPlaylistResponse {
   }>
 }
 
-type ScreenType = 'album' | 'playlist' | 'artist' | 'liked_songs'
+type ScreenType = 'album' | 'playlist' | 'artist' | 'liked songs'
