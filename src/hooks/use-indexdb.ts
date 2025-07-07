@@ -1,259 +1,127 @@
-import { indexDbUtils } from '@/lib/utils';
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 
-interface BaseItem {
-  id?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
+export const indexDbUtils = {
+  dbName: 'musicApp',
+  storeNames: {
+    likeSongs: 'likeSongs'
+  }
+};
+
+interface UseIndexedDBResult {
+  addItem: (data: any, key?: string | number) => Promise<void>;
+  removeItem: (key: string | number) => Promise<void>;
+  getItems : () => Promise<any[]>;
 }
 
 interface UseIndexedDBOptions {
-  dbName: string;
   storeName: string;
   version?: number;
-  sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
 }
 
-interface UseIndexedDBReturn<T extends BaseItem> {
-  items: T[];
-  loading: boolean;
-  error: string | null;
-  add: (item: Omit<T, 'id' | 'createdAt' | 'updatedAt'>) => Promise<T>;
-  edit: (id: number, updates: Partial<Omit<T, 'id' | 'createdAt'>>) => Promise<T>;
-  remove: (id: number) => Promise<void>;
-  clear: () => Promise<void>;
-}
-
-export function useIndexedDB<T extends BaseItem>({
-  dbName,
-  storeName,
-  version = 1,
-  sortBy = 'createdAt',
-  sortOrder = 'desc'
-}: UseIndexedDBOptions): UseIndexedDBReturn<T> {
-  const [items, setItems] = useState<T[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [db, setDb] = useState<IDBDatabase | null>(null);
-
-  // Initialize IndexedDB
-  useEffect(() => {
-    const initDB = async () => {
-      try {
-        const request = indexedDB.open(dbName, version);
+export const useIndexedDB = ({ 
+  storeName, 
+  version = 2 
+}: UseIndexedDBOptions): UseIndexedDBResult => {
+  
+  const openDB = useCallback((): Promise<IDBDatabase> => {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(indexDbUtils.dbName, version);
+      
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(request.result);
+      
+      request.onupgradeneeded = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
         
-        request.onerror = () => {
-          setError('Failed to open database');
-          setLoading(false);
-        };
-        
-        request.onsuccess = () => {
-          setDb(request.result);
-          setError(null);
-        };
-        
-        request.onupgradeneeded = () => {
-          const database = request.result;
-          if (!database.objectStoreNames.contains(storeName)) {
-            const store = database.createObjectStore(storeName, { 
-              keyPath: 'id', 
-              autoIncrement: true 
-            });
-            store.createIndex('createdAt', 'createdAt', { unique: false });
-            store.createIndex('updatedAt', 'updatedAt', { unique: false });
+        // Create all possible stores to avoid future issues
+        Object.values(indexDbUtils.storeNames).forEach(store => {
+          if (!db.objectStoreNames.contains(store)) {
+            db.createObjectStore(store, { keyPath: 'id', autoIncrement: true });
           }
-        };
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Database initialization failed');
-        setLoading(false);
-      }
-    };
+        });
+      };
+    });
+  }, [version]);
 
-    initDB();
-  }, [dbName, storeName, version]);
-
-  // Load items when database is ready
-  useEffect(() => {
-    if (db) {
-      loadItems();
-    }
-  }, [db]);
-
-  const loadItems = useCallback(async () => {
-    if (!db) return;
-    
+  const addItem = useCallback(async (data: any, key?: string | number): Promise<void> => {
     try {
-      setLoading(true);
-      const transaction = db.transaction([storeName], 'readonly');
+      const db = await openDB();
+      const transaction = db.transaction([storeName], 'readwrite');
       const store = transaction.objectStore(storeName);
-      const request = store.getAll();
       
-      request.onsuccess = () => {
-        const allItems = request.result as T[];
-        const sortedItems = sortItems(allItems);
-        setItems(sortedItems);
-        setLoading(false);
-      };
+      if (key !== undefined) {
+        await new Promise<void>((resolve, reject) => {
+          const request = store.put({ ...data, id: key });
+          request.onsuccess = () => resolve();
+          request.onerror = () => reject(request.error);
+        });
+      } else {
+        await new Promise<void>((resolve, reject) => {
+          const request = store.add(data);
+          request.onsuccess = () => resolve();
+          request.onerror = () => reject(request.error);
+        });
+      }
       
-      request.onerror = () => {
-        setError('Failed to load items');
-        setLoading(false);
-      };
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load items');
-      setLoading(false);
+      db.close();
+    } catch (error) {
+      console.error('Error adding item to IndexedDB:', error);
+      throw error;
     }
-  }, [db, storeName, sortBy, sortOrder]);
+  }, [openDB, storeName]);
 
-  const sortItems = useCallback((itemsToSort: T[]): T[] => {
-    return [...itemsToSort].sort((a, b) => {
-      const aValue:any = a[sortBy as keyof T];
-      const bValue:any = b[sortBy as keyof T];
-      
-      if (aValue === undefined || bValue === undefined) return 0;
-      
-      let comparison = 0;
-      if (aValue > bValue) comparison = 1;
-      if (aValue < bValue) comparison = -1;
-      
-      return sortOrder === 'desc' ? -comparison : comparison;
-    });
-  }, [sortBy, sortOrder]);
-
-  const add = useCallback(async (item: Omit<T, 'id' | 'createdAt' | 'updatedAt'>): Promise<T> => {
-    if (!db) throw new Error('Database not initialized');
-    
-    const now = new Date();
-    const newItem = {
-      ...item,
-      createdAt: now,
-      updatedAt: now
-    } as T;
-    
-    return new Promise((resolve, reject) => {
+  const removeItem = useCallback(async (key: string | number): Promise<void> => {
+    try {
+      const db = await openDB();
       const transaction = db.transaction([storeName], 'readwrite');
       const store = transaction.objectStore(storeName);
-      const request = store.add(newItem);
       
-      request.onsuccess = () => {
-        const addedItem = { ...newItem, id: request.result as number } as T;
-        setItems(prevItems => sortItems([...prevItems, addedItem]));
-        resolve(addedItem);
-      };
+      await new Promise<void>((resolve, reject) => {
+        const request = store.delete(key);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
       
-      request.onerror = () => {
-        reject(new Error('Failed to add item'));
-      };
-    });
-  }, [db, storeName, sortItems]);
+      db.close();
+    } catch (error) {
+      console.error('Error removing item from IndexedDB:', error);
+      throw error;
+    }
+  }, [openDB, storeName]);
 
-  const edit = useCallback(async (id: number, updates: Partial<Omit<T, 'id' | 'createdAt'>>): Promise<T> => {
-    if (!db) throw new Error('Database not initialized');
-    
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction([storeName], 'readwrite');
-      const store = transaction.objectStore(storeName);
-      const getRequest = store.get(id);
-      
-      getRequest.onsuccess = () => {
-        const existingItem = getRequest.result as T;
-        if (!existingItem) {
-          reject(new Error('Item not found'));
-          return;
-        }
-        
-        const updatedItem = {
-          ...existingItem,
-          ...updates,
-          updatedAt: new Date()
-        } as T;
-        
-        const putRequest = store.put(updatedItem);
-        
-        putRequest.onsuccess = () => {
-          setItems(prevItems => 
-            sortItems(prevItems.map(item => item.id === id ? updatedItem : item))
-          );
-          resolve(updatedItem);
-        };
-        
-        putRequest.onerror = () => {
-          reject(new Error('Failed to update item'));
-        };
-      };
-      
-      getRequest.onerror = () => {
-        reject(new Error('Failed to find item'));
-      };
-    });
-  }, [db, storeName, sortItems]);
 
-  const remove = useCallback(async (id: number): Promise<void> => {
-    if (!db) throw new Error('Database not initialized');
+const getItems = useCallback(async (): Promise<any[]> => {
+  try {
+    const db = await openDB();
+    const transaction = db.transaction([storeName], 'readonly');
+    const store = transaction.objectStore(storeName);
     
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction([storeName], 'readwrite');
-      const store = transaction.objectStore(storeName);
-      const request = store.delete(id);
-      
-      request.onsuccess = () => {
-        setItems(prevItems => prevItems.filter(item => item.id !== id));
-        resolve();
-      };
-      
-      request.onerror = () => {
-        reject(new Error('Failed to delete item'));
-      };
+    const result = await new Promise<any[]>((resolve, reject) => {
+      const request = store.getAll();
+      request.onsuccess = () => resolve(request.result || []);
+      request.onerror = () => reject(request.error);
     });
-  }, [db, storeName]);
-
-  const clear = useCallback(async (): Promise<void> => {
-    if (!db) throw new Error('Database not initialized');
     
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction([storeName], 'readwrite');
-      const store = transaction.objectStore(storeName);
-      const request = store.clear();
-      
-      request.onsuccess = () => {
-        setItems([]);
-        resolve();
-      };
-      
-      request.onerror = () => {
-        reject(new Error('Failed to clear items'));
-      };
-    });
-  }, [db, storeName]);
+    db.close();
+    return result;
+  } catch (error) {
+    console.error('Error getting items from IndexedDB:', error);
+    throw error;
+  }
+}, [openDB, storeName]);
 
   return {
-    items,
-    loading,
-    error,
-    add,
-    edit,
-    remove,
-    clear
+    addItem,
+    removeItem,
+    getItems
   };
+};
+
+const useIndexedDBLibSong = ()=>{
+     const { addItem:addSongToDB, removeItem:removeSongFromDB, getItems:getLikedSongs } = useIndexedDB({ 
+    storeName: indexDbUtils.storeNames.likeSongs 
+  });
+  return {addSongToDB,removeSongFromDB, getLikedSongs};
 }
 
-
-const useStoreVolume = ()=>{
-    const { add, items, edit } = useIndexedDB<any>({
-        dbName: indexDbUtils.dbName,
-        storeName: indexDbUtils.storeNames.volume
-    });
-
-    const updateVolume = async(volume: number) => {
-        const volumeId = items[0]?.id;
-        if (volumeId) await edit(volumeId, { volume });
-        else await add({ volume });
-    };
-    const volume = items[0]?.volume;
-
-    return {volume, updateVolume};
-}
-
-
-export {useStoreVolume};
+export {useIndexedDBLibSong};

@@ -28,7 +28,7 @@ export const indexDbUtils = {
   dbName : 'musicApp',
   
   storeNames : {
-    volume:'volume'
+    likeSongs:'likeSongs'
   }
 }
 

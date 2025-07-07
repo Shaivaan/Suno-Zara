@@ -10,11 +10,13 @@ import LibraryScreen from "../Library/Library"
 import PlayListAlbumScreen from "../PlayList/PlayListScreen"
 import useScrollToTop from "@/CustomHook/useScroll"
 import { useEffect } from "react"
+import useUILoad from "@/hooks/use-ui-load"
 const {home,library,queue,search, genre} = routes;
 
 export const RouterComp = ()=>{
     const scrollToTop = useScrollToTop();
     const {pathname} = useLocation();
+    useUILoad();
       // Toggle dark mode by adding/removing 'dark' class to document
   // const toggleDarkMode = () => {
   //   const newIsDark = !isDark;

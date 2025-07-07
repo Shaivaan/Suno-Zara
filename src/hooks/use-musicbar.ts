@@ -3,6 +3,7 @@ import { useCallback, useMemo } from "react";
 import useCurrentScreen from "./use-currentscreen";
 import { toast } from "sonner";
 import { toastMessages } from "@/lib/utils";
+import { useIndexedDBLibSong } from "./use-indexdb";
 
 const useMusicBar = ()=>{
     const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
@@ -184,6 +185,7 @@ const useLibraryData = () => {
   const { data: genreSongs } = useZustandStore((state) => state.albumPlayListScreenData);
   const { songs: favoriteSongs } = useZustandStore((state) => state.libraryData);
   const handleLibraryData = useZustandStore((state) => state.handleLibraryData);
+  const {addSongToDB,removeSongFromDB} = useIndexedDBLibSong();
   
   const { queueSongs } = useQueue();
   const currentScreen = useCurrentScreen();
@@ -209,22 +211,31 @@ const useLibraryData = () => {
     }
   }, [favoriteSongs]);
 
-  const markSongFav = useCallback((targetSongId: string, isLiked: boolean, isQueue = false) => {
-    const song = getSongById(targetSongId, isQueue);
-    
-    if (!song) {
-      console.warn(`Song with ID ${targetSongId} not found`);
-      return;
+const markSongFav = useCallback(async (targetSongId: string, isLiked: boolean, isQueue = false) => {
+    try {
+      const song = getSongById(targetSongId, isQueue);
+      
+      if (!song) {
+        console.warn(`Song with ID ${targetSongId} not found`);
+        return;
+      }
+
+      if (isLiked) await removeSongFromDB(song.id);
+      else await addSongToDB(song, song.id);
+
+      const updatedFavorites = updateFavorites(isLiked, song);
+      handleLibraryData({ songs: updatedFavorites });
+
+      const message = !isLiked ? toastMessages.favourited : toastMessages.unfavourited;
+      toast.success(message);
+
+    } catch (error) {
+      const errorMessage = isLiked 
+        ? 'Failed to remove song from favorites' 
+        : 'Failed to add song to favorites';
+      toast.error(errorMessage);
     }
-
-    // Show toast notification
-    const message = !isLiked ? toastMessages.favourited : toastMessages.unfavourited;
-    toast.success(message);
-
-    // Update favorites
-    const updatedFavorites = updateFavorites(isLiked, song);
-    handleLibraryData({ songs: updatedFavorites });
-  }, [getSongById, updateFavorites, handleLibraryData]);
+  }, [getSongById, updateFavorites, handleLibraryData, removeSongFromDB, addSongToDB]);
 
   return { markSongFav, favSongNumber : favoriteSongs.length, favoriteSongs };
 };
