@@ -12,6 +12,7 @@ import { ButtonMenu, MenuButton } from "@/components/SelfMade/Wrapper/ButtonMenu
 import FailedFallBack from "@/components/SelfMade/Cards/FailedFallBack";
 import CarouselWrapperWithHead from "@/components/SelfMade/CarouselWrapper/CarouselWrapper";
 import { useLibraryData } from "@/hooks/use-musicbar";
+import { secondsToHMS } from "@/components/SelfMade/MusicBar/utils";
 
 const getApiAccordingly = (screen:ScreenType)=>{
     switch (screen){
@@ -50,8 +51,9 @@ const PlayListAlbumScreenComp = ()=>{
         const isArtist = type === 'artist'
         const imageLink = image[2]?.url;
         const songList = refactorSongList(!isArtist ? data?.songs : data?.topSongs);
+        const duration = secondsToHMS(songList.reduce((acc,cur)=> acc + cur.duration ,0));
         handleAlbumPlayListScreenData({details:{id,name,type,image:imageLink,
-            duration:type !== 'artist' ? 'Static Duration' : data.dominantType, 
+            duration:type !== 'artist' ? duration : data.dominantType, 
         },
         artistAlbumData : isArtist ? data.topAlbums : [],
         data:songList});

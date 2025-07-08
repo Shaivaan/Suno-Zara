@@ -65,7 +65,7 @@ const PlayListSongsAndTime = ()=>{
               <Dot/>
               <div>{data.length} songs</div>
               <Dot/>
-              <div className="capitalize">{duration}</div>
+              <div>{duration}</div>
             </div>
 }
 
