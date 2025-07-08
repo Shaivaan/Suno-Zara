@@ -11,7 +11,7 @@ const AlbumCardComp = (albumCardProps:AlbumsCardType & IsLikedCardType)=>{
     const {isLikedSongsAlbum = false,...albumCardData} = albumCardProps;
     const {image,name,songCount,type,id} = albumCardData;
     const isFlagged = useLikeFlag(id,type as 'album');
-    const {markAlbumPlaylistFav} = useLibraryData();
+    const {markAlbumPlaylistArtistFav} = useLibraryData();
     const imageUrl = image?.[2]?.url;
     const label2 = songCount ? (songCount + ' Songs') : '';
     const {favSongNumber} = useLibraryData();
@@ -19,7 +19,7 @@ const AlbumCardComp = (albumCardProps:AlbumsCardType & IsLikedCardType)=>{
     const flagAlbum = (event:React.MouseEvent<any>)=>{
         stopPropagation(event);
         preventDefault(event);
-        markAlbumPlaylistFav(albumCardData,type as unknown as 'album',isFlagged);
+        markAlbumPlaylistArtistFav(albumCardData,type as unknown as 'album',isFlagged);
     } 
     
 

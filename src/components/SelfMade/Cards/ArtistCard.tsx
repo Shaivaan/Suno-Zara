@@ -10,12 +10,12 @@ const ArtistCardComp = (artistData: ArtistCardType)=>{
     const {image, name,artistid} = artistData;
     const isFlagged = useLikeFlag(artistid as string,'artist');
     const navigateTo = useMemo(()=> routes.genre + `?id=${artistid}&type=artist`,[artistid]);
-    const {markAlbumPlaylistFav} = useLibraryData();
+    const {markAlbumPlaylistArtistFav} = useLibraryData();
     const flagAlbum = (event:React.MouseEvent<any>)=>{
-            stopPropagation(event);
-            preventDefault(event);
-            markAlbumPlaylistFav(artistData,'artist',isFlagged);
-        } 
+        stopPropagation(event);
+        preventDefault(event);
+        markAlbumPlaylistArtistFav(artistData,'artist',isFlagged);
+    }; 
     return <CardLinkWrapper navigateTo={navigateTo}>
         <div className="w-[10rem] flex-col flex gap-2 artist_card group/album-song hover:shadow-2xl relative">
             <LazyAvatar image={image} className="w-[10rem] h-[10rem] rounded-[50%]  group-hover/album-song:opacity-80 "/>

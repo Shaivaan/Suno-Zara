@@ -2,7 +2,8 @@ import useZustandStore from "@/Zustand/store";
 import useLocalStorage from "./use-localstorage";
 import { localStorageKeys } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
-import { useIndexedDBLibSong } from "./use-indexdb";
+import { indexDbUtils, useIndexedDbLibraryData, useIndexedDBLibSong } from "./use-indexdb";
+const {likeAlbums,likeArtist,likePlaylist} = indexDbUtils.storeNames;
 
 const useUILoad = ()=>{
   const [isLoaded,setIsLoaded] = useState(false);
@@ -10,6 +11,7 @@ const useUILoad = ()=>{
   const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
   const handleLibraryData = useZustandStore((state)=>state.handleLibraryData);
   const {getLikedSongs} = useIndexedDBLibSong();
+  const {getLibraryData} = useIndexedDbLibraryData();
 
   const handleStoreVolume = useCallback(()=> {
     const lsVolume = getData();
@@ -19,8 +21,11 @@ const useUILoad = ()=>{
 
   const getStoredSongs  = useCallback(async()=>{
     try{
-      const likeSongs = await getLikedSongs();
-      handleLibraryData({songs: likeSongs}); 
+      const songs = await getLikedSongs();
+      const album = await getLibraryData(likeAlbums);
+      const artist = await getLibraryData(likeArtist);
+      const playlist = await getLibraryData(likePlaylist);
+      handleLibraryData({songs,album,artist,playlist}); 
     }catch(err){
 
     }

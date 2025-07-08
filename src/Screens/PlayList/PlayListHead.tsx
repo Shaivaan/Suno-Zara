@@ -29,19 +29,19 @@ const PlayListTextComp = ()=>{
     const type = searchParams.get('type') as unknown as ScreenType;
     const id = searchParams.get('id') as unknown as ScreenType;
     const {data, details:{name,image},isLoading} = useZustandStore((state)=>state.albumPlayListScreenData);
-    const {markAlbumPlaylistFav} = useLibraryData();
+    const {markAlbumPlaylistArtistFav} = useLibraryData();
     const isFlagged = useLikeFlag(id as string,type as 'album');
     const isLikedPlaylistSong = useMemo(()=>type === 'liked songs',[type]);
     const albumPlaylist = useMemo(()=>{
         const imageData = {quality:'high',url: image};
         const images = Array(4).fill(0).map(()=>imageData);
-        return {id,image :images,explicitContent:false,language:'',name,songCount:data.length,type,url:''}
-    },[id, type]) as AlbumsCardType;
+        const albumPlayListDetails = {id,image :images,explicitContent:false,language:'',name,songCount:data.length,type,url:''}; 
+        const artistData:ArtistCardType = {image:image as string,name: name as string,artistid:id,follower_count:0,is_followed:false};
+        return type !== 'artist' ? albumPlayListDetails : artistData;
+    },[id, type,image,name]) as AlbumsCardType;
 
-    const flagAlbumPlaylist = ()=> {
-        if(type === 'artist') return;
-        markAlbumPlaylistFav(albumPlaylist ,type as 'album',isFlagged);
-    } 
+    const flagAlbumPlaylist = ()=> markAlbumPlaylistArtistFav(albumPlaylist ,type as 'album',isFlagged);
+    
     return <div className="flex flex-col gap gap-16 p-4">
             <div className="flex flex-col gap-1">
                 <div className="flex gap-2 items-center">

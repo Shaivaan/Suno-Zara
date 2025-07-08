@@ -49,7 +49,7 @@ const SongItem = ({song,indx}:{song:SongListType} & {indx:number})=>{
                  <Pause className="absolute top-2 right-2 opacity-0 group-hover/song:opacity-100 icons-hover" size={'1rem'}/>
                 }
                 
-                <div onClick={likeSong} className="absolute top-2 right-12 opacity-0 group-hover/song:opacity-100"><FavIcon isFlagged={isFlagged}/></div>
+                <div onClick={likeSong} className="absolute top-2 right-12 opacity-0 group-hover/song:opacity-100"><FavIcon className="size-[1.2rem]" isFlagged={isFlagged}/></div>
                 
             </div>
             <div className="text-[0.94rem]">{name}</div>

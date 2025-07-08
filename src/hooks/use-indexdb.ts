@@ -3,14 +3,17 @@ import { useCallback } from 'react';
 export const indexDbUtils = {
   dbName: 'musicApp',
   storeNames: {
-    likeSongs: 'likeSongs'
+    likeSongs: 'likeSongs',
+    likeAlbums : 'likeAlbums',
+    likePlaylist : 'likePlaylist',
+    likeArtist : 'likeArtist',
   }
 };
 
 interface UseIndexedDBResult {
-  addItem: (data: any, key?: string | number) => Promise<void>;
-  removeItem: (key: string | number) => Promise<void>;
-  getItems : () => Promise<any[]>;
+  addItem: (data: any, key?: string | number,storeName?:string) => Promise<void>;
+  removeItem: (key: string | number,storeName?:string) => Promise<void>;
+  getItems : (storeName?:string) => Promise<any[]>;
 }
 
 interface UseIndexedDBOptions {
@@ -43,11 +46,11 @@ export const useIndexedDB = ({
     });
   }, [version]);
 
-  const addItem = useCallback(async (data: any, key?: string | number): Promise<void> => {
+  const addItem = useCallback(async (data: any, key?: string | number,targetStoreName=storeName): Promise<void> => {
     try {
       const db = await openDB();
-      const transaction = db.transaction([storeName], 'readwrite');
-      const store = transaction.objectStore(storeName);
+      const transaction = db.transaction([targetStoreName], 'readwrite');
+      const store = transaction.objectStore(targetStoreName);
       
       if (key !== undefined) {
         await new Promise<void>((resolve, reject) => {
@@ -70,11 +73,11 @@ export const useIndexedDB = ({
     }
   }, [openDB, storeName]);
 
-  const removeItem = useCallback(async (key: string | number): Promise<void> => {
+  const removeItem = useCallback(async (key: string | number, targetStoreName=storeName): Promise<void> => {
     try {
       const db = await openDB();
-      const transaction = db.transaction([storeName], 'readwrite');
-      const store = transaction.objectStore(storeName);
+      const transaction = db.transaction([targetStoreName], 'readwrite');
+      const store = transaction.objectStore(targetStoreName);
       
       await new Promise<void>((resolve, reject) => {
         const request = store.delete(key);
@@ -90,11 +93,11 @@ export const useIndexedDB = ({
   }, [openDB, storeName]);
 
 
-const getItems = useCallback(async (): Promise<any[]> => {
+const getItems = useCallback(async (targetStoreName=storeName): Promise<any[]> => {
   try {
     const db = await openDB();
-    const transaction = db.transaction([storeName], 'readonly');
-    const store = transaction.objectStore(storeName);
+    const transaction = db.transaction([targetStoreName], 'readonly');
+    const store = transaction.objectStore(targetStoreName);
     
     const result = await new Promise<any[]>((resolve, reject) => {
       const request = store.getAll();
@@ -124,4 +127,11 @@ const useIndexedDBLibSong = ()=>{
   return {addSongToDB,removeSongFromDB, getLikedSongs};
 }
 
-export {useIndexedDBLibSong};
+const useIndexedDbLibraryData = ()=>{
+   const { addItem: addToLibrary, removeItem:removeFromLibrary, getItems:getLibraryData } = useIndexedDB({ 
+    storeName: indexDbUtils.storeNames.likePlaylist 
+  });
+  return {addToLibrary, removeFromLibrary, getLibraryData};
+};
+
+export {useIndexedDBLibSong, useIndexedDbLibraryData};

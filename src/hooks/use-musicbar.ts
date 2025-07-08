@@ -1,7 +1,7 @@
 import useZustandStore from "@/Zustand/store"
 import { useCallback, useMemo } from "react";
 import useCurrentScreen from "./use-currentscreen";
-import { useIndexedDBLibSong } from "./use-indexdb";
+import { indexDbUtils, useIndexedDbLibraryData, useIndexedDBLibSong } from "./use-indexdb";
 import useToast from "./use-toast";
 
 const useMusicBar = ()=>{
@@ -185,6 +185,7 @@ const useLibraryData = () => {
   const { songs: favoriteSongs, album:favAlbums , playlist:favPlaylist, artist : favArtist } = useZustandStore((state) => state.libraryData);
   const handleLibraryData = useZustandStore((state) => state.handleLibraryData);
   const {addSongToDB,removeSongFromDB} = useIndexedDBLibSong();
+  const {addToLibrary, removeFromLibrary} = useIndexedDbLibraryData();
   const {triggerFlagMessage, triggerMessage} = useToast();
   
   const { queueSongs } = useQueue();
@@ -236,14 +237,36 @@ const markSongFav = useCallback(async (targetSongId: string, isLiked: boolean, i
   }, [getSongById, updateFavorites, handleLibraryData, removeSongFromDB, addSongToDB]);
 
 
-  const markAlbumPlaylistFav=(albumPlaylistData : AlbumsCardType | ArtistCardType,type :LibrarySectionType,isLiked:boolean)=>{
-    const isAlbum = type === 'album';
-    const favData =  isAlbum ?  favAlbums : type === 'playlist' ? favPlaylist : favArtist;  
-    const data = updateFavorites(isLiked,albumPlaylistData as AlbumsCardType, favData as AlbumsCardType[],type === 'artist'  ? 'artistid' : undefined);
-    handleLibraryData({[type] : [...data]});
-    triggerFlagMessage(isLiked);
+  const markAlbumPlaylistArtistFav=async(albumPlaylistData : AlbumsCardType | ArtistCardType,type :LibrarySectionType,isLiked:boolean)=>{
+    try {
+      const isAlbum = type === 'album';
+      const favData =  isAlbum ?  favAlbums : type === 'playlist' ? favPlaylist : favArtist;  
+      const idKey = type === 'artist' ? 'artistid' : 'id';
+      const idValue = (albumPlaylistData as AlbumsCardType)[idKey as 'id'] as string;
+      if (isLiked) await removeFromLibrary(idValue,getStoreName(type));
+      else await addToLibrary(albumPlaylistData , idValue , getStoreName(type));
+
+      const data = updateFavorites(isLiked,albumPlaylistData as AlbumsCardType, favData as AlbumsCardType[],type === 'artist'  ? 'artistid' : undefined);
+      handleLibraryData({[type] : [...data]});
+      triggerFlagMessage(isLiked);
+
+    }catch(err){
+        const errorMessage = isLiked 
+        ? 'Failed to remove song from favorites' 
+        : 'Failed to add song to favorites';
+      triggerMessage(errorMessage,'error');
+    }
   };
-  return { markSongFav, favSongNumber : favoriteSongs.length, favoriteSongs, markAlbumPlaylistFav, favAlbums, favPlaylist, favArtist };
+  return { markSongFav, favSongNumber : favoriteSongs.length, favoriteSongs, markAlbumPlaylistArtistFav, favAlbums, favPlaylist, favArtist };
+};
+
+const getStoreName = (type : LibrarySectionType)=>{
+  const {storeNames : {likeArtist,likeAlbums,likePlaylist}} = indexDbUtils;
+  switch(type){
+    case 'album' : return likeAlbums;
+    case 'artist' : return likeArtist;
+    case 'playlist' : return likePlaylist;
+  }
 };
 
 const useLikeFlag = (id:string,type:LibrarySectionType | 'song')=>{
@@ -261,7 +284,9 @@ const useLikeFlag = (id:string,type:LibrarySectionType | 'song')=>{
         default : return false;
       }
     },
-    [songs.length,type, favSongsIds.length,favAlbums.length,album.length,favPlaylist.length,album.length, favArtist.length,artist.length]);
+    [type,favSongsIds,favAlbums,favPlaylist,favArtist,id]
+    // [songs.length,type, favSongsIds.length,favAlbums.length,album.length,favPlaylist.length,album.length, favArtist.length,artist.length]
+  );
     return isFlagged;   
 };
 
