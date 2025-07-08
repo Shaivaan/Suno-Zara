@@ -2,7 +2,7 @@ import { ButtonMenu, MenuButton } from "@/components/SelfMade/Wrapper/ButtonMenu
 import useZustandStore from "@/Zustand/store";
 import { memo } from "react"
 import { AlbumSection, ArtistSection, PlaylistSection } from "./LibrarySection";
-const library_cat_data = ['playlist','artist','album'];
+const library_cat_data = ['playlist','album','artist'];
 
 const Library = ()=>{
     return <div className="flex flex-col col-gap-val">

@@ -1,9 +1,8 @@
 import useZustandStore from "@/Zustand/store"
 import { useCallback, useMemo } from "react";
 import useCurrentScreen from "./use-currentscreen";
-import { toast } from "sonner";
-import { toastMessages } from "@/lib/utils";
 import { useIndexedDBLibSong } from "./use-indexdb";
+import useToast from "./use-toast";
 
 const useMusicBar = ()=>{
     const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
@@ -183,9 +182,10 @@ const useCurrentSongInfo = ()=>{
 const useLibraryData = () => {
   const { songData: searchSongs } = useZustandStore((state) => state.searchScreenData);
   const { data: genreSongs } = useZustandStore((state) => state.albumPlayListScreenData);
-  const { songs: favoriteSongs } = useZustandStore((state) => state.libraryData);
+  const { songs: favoriteSongs, album:favAlbums , playlist:favPlaylist } = useZustandStore((state) => state.libraryData);
   const handleLibraryData = useZustandStore((state) => state.handleLibraryData);
   const {addSongToDB,removeSongFromDB} = useIndexedDBLibSong();
+  const {triggerFlagMessage, triggerMessage} = useToast();
   
   const { queueSongs } = useQueue();
   const currentScreen = useCurrentScreen();
@@ -202,14 +202,14 @@ const useLibraryData = () => {
     return sourceArray.find(({ id }) => id === songId);
   }, [queueSongs, sourceArray]);
 
-  const updateFavorites = useCallback((isLiked: boolean, song: SongListType): SongListType[] => {
+  const updateFavorites = <T extends {id:string}>(isLiked: boolean, song: T,favList: T[]): T[] => {
     if (isLiked) {
-      return favoriteSongs.filter(({ id }) => id !== song.id);
+      return favList.filter(({ id }) => id !== song.id);
     } else {
-      const isAlreadyFavorite = favoriteSongs.some(({ id }) => id === song.id);
-      return isAlreadyFavorite ? favoriteSongs : [...favoriteSongs, song];
+      const isAlreadyFavorite = favList.some(({ id }) => id === song.id);
+      return isAlreadyFavorite ? favList : [...favList, song];
     }
-  }, [favoriteSongs]);
+  };
 
 const markSongFav = useCallback(async (targetSongId: string, isLiked: boolean, isQueue = false) => {
     try {
@@ -223,33 +223,43 @@ const markSongFav = useCallback(async (targetSongId: string, isLiked: boolean, i
       if (isLiked) await removeSongFromDB(song.id);
       else await addSongToDB(song, song.id);
 
-      const updatedFavorites = updateFavorites(isLiked, song);
+      const updatedFavorites = updateFavorites(isLiked, song, favoriteSongs);
       handleLibraryData({ songs: updatedFavorites });
-
-      const message = !isLiked ? toastMessages.favourited : toastMessages.unfavourited;
-      toast.success(message);
+      triggerFlagMessage(isLiked);
 
     } catch (error) {
       const errorMessage = isLiked 
         ? 'Failed to remove song from favorites' 
         : 'Failed to add song to favorites';
-      toast.error(errorMessage);
+      triggerMessage(errorMessage,'error');
     }
   }, [getSongById, updateFavorites, handleLibraryData, removeSongFromDB, addSongToDB]);
 
-  return { markSongFav, favSongNumber : favoriteSongs.length, favoriteSongs };
+  const markAlbumPlaylistFav=(albumPlaylistData : AlbumsCardType,type : 'album' | 'playlist',isLiked:boolean)=>{
+    const isAlbum = type === 'album';
+    const favData = isAlbum ? favAlbums : favPlaylist;
+    const keyName = isAlbum ? 'album' : 'playlist';
+    const data = updateFavorites(isLiked,albumPlaylistData , favData);
+    handleLibraryData({[keyName] : [...data]});
+    triggerFlagMessage(isLiked);
+  };
+  return { markSongFav, favSongNumber : favoriteSongs.length, favoriteSongs, markAlbumPlaylistFav, favAlbums, favPlaylist };
 };
 
 const useLikeFlag = (id:string,type:LibrarySectionType | 'song')=>{
-    const {songs} = useZustandStore((state)=>state.libraryData);
+    const {songs,album, playlist} = useZustandStore((state)=>state.libraryData);
     const favSongsIds = useMemo(()=>songs.map(({id})=>id) ,[songs.length]);
+    const favAlbums = useMemo(()=>album.map(({id})=>id) ,[album.length]);
+    const favPlaylist = useMemo(()=>playlist.map(({id})=>id) ,[playlist.length]);
     const isFlagged = useMemo(()=>{
       switch(type){
         case 'song' : return favSongsIds.includes(id);
+        case 'album' : return favAlbums.includes(id);
+        case 'playlist' : return favPlaylist.includes(id);
         default : return false;
       }
     },
-    [songs.length,type, favSongsIds.length]);
+    [songs.length,type, favSongsIds.length,favAlbums.length,album.length,favPlaylist.length,album.length]);
     return isFlagged;   
 };
 

@@ -8,8 +8,8 @@ interface IndexType{
 
 interface LibraryType{
   section: LibrarySectionType
-  playlist : []
-  album : []
+  playlist : AlbumsCardType[]
+  album : AlbumsCardType[]
   artist : []
   songs : SongListType[]
 }

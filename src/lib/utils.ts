@@ -17,6 +17,7 @@ export const routes = {
 
 
 export const stopPropagation = (event:React.MouseEvent<any>)=>event.stopPropagation();
+export const preventDefault = (event:React.MouseEvent<any>) => event.preventDefault();
 
 export const loadArray = new Array(15).fill(0);
 
