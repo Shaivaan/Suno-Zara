@@ -54,7 +54,7 @@ const AlbumArtistCarouselComp = ()=>{
     </div>
 }
 const AlbumArtistCardParentComp = ()=>{
-    const {exploreScreenData:{carouselData,isLoading}} = useZustandStore();
+    const {carouselData,isLoading} = useZustandStore((state)=>state.exploreScreenData);
     const artistData = carouselData[trending_artist] as ArtistCardType[];
     const loadArray = new Array(10).fill(10);
     return <CarouselWrapper>

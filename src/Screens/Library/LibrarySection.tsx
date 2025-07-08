@@ -1,4 +1,5 @@
 import AlbumCard from "@/components/SelfMade/Cards/AlbumCard"
+import ArtistCard from "@/components/SelfMade/Cards/ArtistCard";
 import { useLibraryData } from "@/hooks/use-musicbar";
 import { memo } from "react"
 
@@ -16,7 +17,11 @@ const PlaylistSectionComp = ()=>{
 }
 
 const ArtistSectionComp = ()=>{
-    return <div>Artist Section</div>
+    const {favArtist} = useLibraryData();
+    if(!favArtist.length) return <FallBackEmptyUI title="Artists"/>
+    return  <div className="flex flex-wrap gap-4">
+        {favArtist.map((data)=><ArtistCard {...data} key={data.artistid}/>)}
+    </div>
 }
 
 const AlbumSectionComp = ()=>{
@@ -28,7 +33,7 @@ const AlbumSectionComp = ()=>{
     </div>
 }
 
-const FallBackEmptyUI = ({title}:{title: "Albums" | 'Playlist'})=>{
+const FallBackEmptyUI = ({title}:{title: string})=>{
     return <div>No {title} Saved Yet — Start Collecting Your Favorites!</div>
 }
 

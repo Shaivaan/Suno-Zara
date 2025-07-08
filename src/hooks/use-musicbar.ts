@@ -182,7 +182,7 @@ const useCurrentSongInfo = ()=>{
 const useLibraryData = () => {
   const { songData: searchSongs } = useZustandStore((state) => state.searchScreenData);
   const { data: genreSongs } = useZustandStore((state) => state.albumPlayListScreenData);
-  const { songs: favoriteSongs, album:favAlbums , playlist:favPlaylist } = useZustandStore((state) => state.libraryData);
+  const { songs: favoriteSongs, album:favAlbums , playlist:favPlaylist, artist : favArtist } = useZustandStore((state) => state.libraryData);
   const handleLibraryData = useZustandStore((state) => state.handleLibraryData);
   const {addSongToDB,removeSongFromDB} = useIndexedDBLibSong();
   const {triggerFlagMessage, triggerMessage} = useToast();
@@ -202,11 +202,11 @@ const useLibraryData = () => {
     return sourceArray.find(({ id }) => id === songId);
   }, [queueSongs, sourceArray]);
 
-  const updateFavorites = <T extends {id:string}>(isLiked: boolean, song: T,favList: T[]): T[] => {
+  const updateFavorites = <T extends {id:string}>(isLiked: boolean, song: T,favList: T[],keyName = 'id'): T[] => {
     if (isLiked) {
-      return favList.filter(({ id }) => id !== song.id);
+      return favList.filter(({ [keyName as 'id']:id }) => id !== song[keyName as 'id']);
     } else {
-      const isAlreadyFavorite = favList.some(({ id }) => id === song.id);
+      const isAlreadyFavorite = favList.some(({ [keyName as 'id']:id }) => id === song.id);
       return isAlreadyFavorite ? favList : [...favList, song];
     }
   };
@@ -235,31 +235,33 @@ const markSongFav = useCallback(async (targetSongId: string, isLiked: boolean, i
     }
   }, [getSongById, updateFavorites, handleLibraryData, removeSongFromDB, addSongToDB]);
 
-  const markAlbumPlaylistFav=(albumPlaylistData : AlbumsCardType,type : 'album' | 'playlist',isLiked:boolean)=>{
+
+  const markAlbumPlaylistFav=(albumPlaylistData : AlbumsCardType | ArtistCardType,type :LibrarySectionType,isLiked:boolean)=>{
     const isAlbum = type === 'album';
-    const favData = isAlbum ? favAlbums : favPlaylist;
-    const keyName = isAlbum ? 'album' : 'playlist';
-    const data = updateFavorites(isLiked,albumPlaylistData , favData);
-    handleLibraryData({[keyName] : [...data]});
+    const favData =  isAlbum ?  favAlbums : type === 'playlist' ? favPlaylist : favArtist;  
+    const data = updateFavorites(isLiked,albumPlaylistData as AlbumsCardType, favData as AlbumsCardType[],type === 'artist'  ? 'artistid' : undefined);
+    handleLibraryData({[type] : [...data]});
     triggerFlagMessage(isLiked);
   };
-  return { markSongFav, favSongNumber : favoriteSongs.length, favoriteSongs, markAlbumPlaylistFav, favAlbums, favPlaylist };
+  return { markSongFav, favSongNumber : favoriteSongs.length, favoriteSongs, markAlbumPlaylistFav, favAlbums, favPlaylist, favArtist };
 };
 
 const useLikeFlag = (id:string,type:LibrarySectionType | 'song')=>{
-    const {songs,album, playlist} = useZustandStore((state)=>state.libraryData);
+    const {songs,album, playlist, artist} = useZustandStore((state)=>state.libraryData);
     const favSongsIds = useMemo(()=>songs.map(({id})=>id) ,[songs.length]);
     const favAlbums = useMemo(()=>album.map(({id})=>id) ,[album.length]);
     const favPlaylist = useMemo(()=>playlist.map(({id})=>id) ,[playlist.length]);
+    const favArtist = useMemo(()=>artist.map(({artistid})=>artistid) ,[artist.length]);
     const isFlagged = useMemo(()=>{
       switch(type){
         case 'song' : return favSongsIds.includes(id);
         case 'album' : return favAlbums.includes(id);
         case 'playlist' : return favPlaylist.includes(id);
+        case 'artist' : return favArtist.includes(id);
         default : return false;
       }
     },
-    [songs.length,type, favSongsIds.length,favAlbums.length,album.length,favPlaylist.length,album.length]);
+    [songs.length,type, favSongsIds.length,favAlbums.length,album.length,favPlaylist.length,album.length, favArtist.length,artist.length]);
     return isFlagged;   
 };
 

@@ -10,7 +10,7 @@ interface LibraryType{
   section: LibrarySectionType
   playlist : AlbumsCardType[]
   album : AlbumsCardType[]
-  artist : []
+  artist : ArtistCardType[]
   songs : SongListType[]
 }
 
