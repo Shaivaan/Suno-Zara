@@ -7,6 +7,7 @@ export const indexDbUtils = {
     likeAlbums : 'likeAlbums',
     likePlaylist : 'likePlaylist',
     likeArtist : 'likeArtist',
+    queueSongs : 'queueSongs'
   }
 };
 
@@ -14,6 +15,7 @@ interface UseIndexedDBResult {
   addItem: (data: any, key?: string | number,storeName?:string) => Promise<void>;
   removeItem: (key: string | number,storeName?:string) => Promise<void>;
   getItems : (storeName?:string) => Promise<any[]>;
+  addMultipleItems : (items:any[],storeName?:string)=> Promise<void>;
 }
 
 interface UseIndexedDBOptions {
@@ -113,25 +115,71 @@ const getItems = useCallback(async (targetStoreName=storeName): Promise<any[]> =
   }
 }, [openDB, storeName]);
 
+const addMultipleItems = useCallback(async (items: any[], targetStoreName = storeName): Promise<void> => {
+  try {
+    const db = await openDB();
+    const transaction = db.transaction([targetStoreName], 'readwrite');
+    const store = transaction.objectStore(targetStoreName);
+    
+    // First, clear all existing items
+    await new Promise<void>((resolve, reject) => {
+      const clearRequest = store.clear();
+      clearRequest.onsuccess = () => resolve();
+      clearRequest.onerror = () => reject(clearRequest.error);
+    });
+    
+    // Then add all new items
+    for (const item of items) {
+      await new Promise<void>((resolve, reject) => {
+        const request = store.put({ ...item, id: item.id });
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
+    }
+    
+    db.close();
+  } catch (error) {
+    console.error('Error adding multiple items to IndexedDB:', error);
+    throw error;
+  }
+}, [openDB, storeName]);
+
   return {
     addItem,
     removeItem,
-    getItems
+    getItems,
+    addMultipleItems
   };
 };
 
 const useIndexedDBLibSong = ()=>{
-     const { addItem:addSongToDB, removeItem:removeSongFromDB, getItems:getLikedSongs } = useIndexedDB({ 
+     const { addItem:addSongToDB, removeItem:removeSongFromDB } = useIndexedDB({ 
     storeName: indexDbUtils.storeNames.likeSongs 
   });
-  return {addSongToDB,removeSongFromDB, getLikedSongs};
+  return {addSongToDB,removeSongFromDB};
 }
 
 const useIndexedDbLibraryData = ()=>{
-   const { addItem: addToLibrary, removeItem:removeFromLibrary, getItems:getLibraryData } = useIndexedDB({ 
+   const { addItem: addToLibrary, removeItem:removeFromLibrary } = useIndexedDB({ 
     storeName: indexDbUtils.storeNames.likePlaylist 
   });
-  return {addToLibrary, removeFromLibrary, getLibraryData};
+  return {addToLibrary, removeFromLibrary};
 };
 
-export {useIndexedDBLibSong, useIndexedDbLibraryData};
+const useIndexDbQueueSongs = ()=>{
+  const {addMultipleItems:addQueueSongsToDB} = useIndexedDB({
+    storeName : indexDbUtils.storeNames.queueSongs
+  })
+  return {addQueueSongsToDB};
+}
+
+const useGetDBDataHook = ()=>{
+  const {likeSongs, likePlaylist, queueSongs} = indexDbUtils.storeNames;
+  const { getItems:getLikedSongs } = useIndexedDB({ storeName: likeSongs});
+  const { getItems:getLibraryData } = useIndexedDB({ storeName: likePlaylist});
+  const {getItems:getQueueData} = useIndexedDB({ storeName: queueSongs});
+
+  return {getLibraryData, getLikedSongs, getQueueData}
+}
+
+export {useIndexedDBLibSong, useIndexedDbLibraryData, useIndexDbQueueSongs, useGetDBDataHook};

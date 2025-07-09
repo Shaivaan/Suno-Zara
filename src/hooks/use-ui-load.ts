@@ -2,7 +2,7 @@ import useZustandStore from "@/Zustand/store";
 import useLocalStorage from "./use-localstorage";
 import { localStorageKeys } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
-import { indexDbUtils, useIndexedDbLibraryData, useIndexedDBLibSong } from "./use-indexdb";
+import { indexDbUtils, useGetDBDataHook } from "./use-indexdb";
 const {likeAlbums,likeArtist,likePlaylist} = indexDbUtils.storeNames;
 
 const useUILoad = ()=>{
@@ -10,8 +10,8 @@ const useUILoad = ()=>{
   const {getData} = useLocalStorage(localStorageKeys.volume);
   const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
   const handleLibraryData = useZustandStore((state)=>state.handleLibraryData);
-  const {getLikedSongs} = useIndexedDBLibSong();
-  const {getLibraryData} = useIndexedDbLibraryData();
+  const handleQueueSongs = useZustandStore((state)=>state.handleQueueSongs);
+  const {getLikedSongs,getLibraryData,getQueueData} = useGetDBDataHook();
 
   const handleStoreVolume = useCallback(()=> {
     const lsVolume = getData();
@@ -25,7 +25,9 @@ const useUILoad = ()=>{
       const album = await getLibraryData(likeAlbums);
       const artist = await getLibraryData(likeArtist);
       const playlist = await getLibraryData(likePlaylist);
+      const queueSongs = await getQueueData();
       handleLibraryData({songs,album,artist,playlist}); 
+      handleQueueSongs(queueSongs);
     }catch(err){
 
     }

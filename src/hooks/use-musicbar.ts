@@ -1,7 +1,7 @@
 import useZustandStore from "@/Zustand/store"
 import { useCallback, useMemo } from "react";
 import useCurrentScreen from "./use-currentscreen";
-import { indexDbUtils, useIndexedDbLibraryData, useIndexedDBLibSong } from "./use-indexdb";
+import { indexDbUtils, useIndexDbQueueSongs, useIndexedDbLibraryData, useIndexedDBLibSong } from "./use-indexdb";
 import useToast from "./use-toast";
 
 const useMusicBar = ()=>{
@@ -78,6 +78,7 @@ const usePlaySong = (songId = '') => {
   const handleQueueSongs = useZustandStore((state) => state.handleQueueSongs);
   const handleMusicPlayer = useZustandStore((state) => state.handleMusicPlayer);
   const currentScreen = useCurrentScreen();
+  const {handleQueueStateAndDB} = useQueue();
 
 
   const handleGenreScreenPlayback = useCallback((targetSongId: string) => {
@@ -85,7 +86,7 @@ const usePlaySong = (songId = '') => {
     const songToPlay = targetSongId || playlistData[0]?.id;
     if (!songToPlay) return;
     const queue = playlistData;
-    handleQueueSongs(queue);
+    handleQueueStateAndDB(queue)
     handleMusicPlayer({ currentSongId: songToPlay });
     togglePlayPause(true);
   }, [playlistData, handleQueueSongs, handleMusicPlayer, togglePlayPause]);
@@ -101,7 +102,7 @@ const usePlaySong = (songId = '') => {
     const prevSongs = queueSongs.filter((_song,index)=>index <= curSongIndex);
     const nextSongs = queueSongs.filter((_song,index)=>index > curSongIndex);
     const newQueue = [...prevSongs,...newSong,...nextSongs];
-    handleQueueSongs(newQueue);
+    handleQueueStateAndDB(newQueue);
     handleMusicPlayer({ currentSongId: targetSongId });
     togglePlayPause(true);
   }, [currentSongId]);
@@ -161,14 +162,21 @@ const useQueue = ()=>{
   const handleQueueSongs = useZustandStore((state)=>state.handleQueueSongs);
   const {currentSongId,playNextPrev} = useMusicBar();
   const currentSongNumber = useMemo(()=> queueSongs.findIndex(({id})=> id === currentSongId) + 1  ,[currentSongId,queueSongs])
+  const {addQueueSongsToDB} = useIndexDbQueueSongs();
 
 
    const deleteSongFromQueue = useCallback((targetSongId:string)=>{
       const filteredQueue = queueSongs.filter(({id})=>id !== targetSongId);
-      handleQueueSongs([...filteredQueue]);
+      handleQueueStateAndDB([...filteredQueue]);
       if(targetSongId === currentSongId) playNextPrev();
     },[currentSongId,queueSongs.length,queueSongs]);
-  return {queueLength: queueSongs.length, currentSongNumber, queueSongs, deleteSongFromQueue}
+
+    const handleQueueStateAndDB = async(songs:SongListType[])=>{
+      handleQueueSongs(songs);
+      await addQueueSongsToDB(songs);
+    };
+
+  return {queueLength: queueSongs.length, currentSongNumber, queueSongs, deleteSongFromQueue, handleQueueStateAndDB}
 }
 
 

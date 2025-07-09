@@ -87,6 +87,7 @@ const QueueSongsListComp = ()=>{
 
 const QueueCardComp = ({id,image,name,artists,index}: SongListType & IndexType)=>{
   const {handleSongWithQueueUntouched} = usePlaySong(id);
+  const queueSection = useZustandStore((state)=>state.queueSection);
   const isCurrentSongPlaying = useCurrentSongCheck(id);
   const {isPlaying} = useMusicBar();
   const {deleteSongFromQueue} = useQueue();
@@ -118,7 +119,7 @@ const QueueCardComp = ({id,image,name,artists,index}: SongListType & IndexType)=
     </div>
     <div className="flex gap-4">
       <div onClick={likeSong} className="group-hover/queue-song:opacity-100 opacity-0"><FavIcon isFlagged={isFlagged} className="size-[1.2rem]"/></div>
-      <div onClick={deleteSong} className="group-hover/queue-song:opacity-100 opacity-0"><DeleteIcon className="size-[1.2rem]"/></div>  
+      {queueSection !== 'recently played' && <div onClick={deleteSong} className="group-hover/queue-song:opacity-100 opacity-0"><DeleteIcon className="size-[1.2rem]"/></div>}
     </div>
   </div>
 }
