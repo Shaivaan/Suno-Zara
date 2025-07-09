@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import useZustandStore from "@/Zustand/store";
 import Queue from "@/Screens/Queue/Queue";
 import { formatTime } from "./utils";
-import useMusicBar, { useCurrentSongInfo } from "@/hooks/use-musicbar";
+import useMusicBar, { useCurrentSongInfo, useRecentlyPlayed } from "@/hooks/use-musicbar";
 import useLocalStorage from "@/hooks/use-localstorage";
 
 const MusicBarComp = () => {
@@ -53,6 +53,7 @@ const PlayPauseReWindComp = () => {
   const handleSlider = (value: number[]) => handleMusicSlider(audioRef.current, value);
   const repeatMode = useZustandStore((state)=>state.repeatMode);
   const handleRepeatMode = useZustandStore((state)=>state.handleRepeatMode);
+  const {addToRecentPlayed} = useRecentlyPlayed();
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -85,7 +86,11 @@ const PlayPauseReWindComp = () => {
   }, [isPlaying, currentSongId]);
 
   useEffect(()=>{
-    if(currentSongId) handleMusicPlayer({isLastSongPlayed:false});
+    if(currentSongId){
+      handleMusicPlayer({isLastSongPlayed:false});
+      addToRecentPlayed(currentSongId);
+    } 
+    
   },[currentSongId])
 
     const handleMode = useCallback(()=>{

@@ -1,3 +1,5 @@
+type QueueSectionType = "all" | "recently added" | "recently played"
+
 interface IsLoadedTypes{
     explore : boolean
 }
@@ -50,9 +52,14 @@ interface StateStoreType {
     queueSongs : SongListType[]
     handleQueueSongs : (data : SongListType[])=>void
 
+    queueSection : QueueSectionType
+    handleQueueSection : (section : QueueSectionType) => void
+
     repeatMode : RepeatModeType
     handleRepeatMode : (mode : RepeatModeType) =>void
 
+    recentlyPlayedSongs : SongListType[]
+    handleRecentlyPlayedSongs : (data : SongListType[])=>void
 }
 
 

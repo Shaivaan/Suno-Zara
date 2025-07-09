@@ -95,10 +95,12 @@ const usePlaySong = (songId = '') => {
    */
   const handleSearchScreenPlayback = useCallback((targetSongId: string) => {
     const songToPlay = songData.find(({id})=>id === targetSongId) as SongListType;
+    const isSongAlreadyEXists = queueSongs.findIndex(({id})=>id === songToPlay.id) !== -1;
+    const newSong = isSongAlreadyEXists ? [] : [songToPlay];
     const curSongIndex = queueSongs.findIndex(({id})=> id === currentSongId);
     const prevSongs = queueSongs.filter((_song,index)=>index <= curSongIndex);
     const nextSongs = queueSongs.filter((_song,index)=>index > curSongIndex);
-    const newQueue = [...prevSongs,songToPlay,...nextSongs];
+    const newQueue = [...prevSongs,...newSong,...nextSongs];
     handleQueueSongs(newQueue);
     handleMusicPlayer({ currentSongId: targetSongId });
     togglePlayPause(true);
@@ -290,5 +292,22 @@ const useLikeFlag = (id:string,type:LibrarySectionType | 'song')=>{
     return isFlagged;   
 };
 
+const useRecentlyPlayed = ()=>{
+  const handleRecentlyPlayedSongs = useZustandStore((state)=>state.handleRecentlyPlayedSongs);
+  const recentlyPlayedSongs = useZustandStore((state)=>state.recentlyPlayedSongs);
+  const {queueSongs} = useQueue();
+  const addToRecentPlayed = (songId:string)=>{
+    const isAlreadyInRecentlyPlayed = recentlyPlayedSongs.findIndex(({id})=>id === songId) !== -1;
+    const song = queueSongs.find(({id})=>id === songId) as SongListType;
+    if(!isAlreadyInRecentlyPlayed) handleRecentlyPlayedSongs([song,...recentlyPlayedSongs]);
+    else {
+      const otherRecentlyPlayedSong = recentlyPlayedSongs.filter(({id})=>id !== songId);
+      handleRecentlyPlayedSongs([song,...otherRecentlyPlayedSong]);
+    }
+  };
+
+  return {addToRecentPlayed};
+}
+
 export default useMusicBar;
-export {useCurrentSongCheck , usePlaySong, useQueue ,useCurrentSongInfo, useLibraryData, useLikeFlag};
+export {useCurrentSongCheck , usePlaySong, useQueue ,useCurrentSongInfo, useLibraryData, useLikeFlag, useRecentlyPlayed};

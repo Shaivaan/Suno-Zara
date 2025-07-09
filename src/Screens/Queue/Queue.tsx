@@ -2,7 +2,7 @@ import {
   ButtonMenu,
   MenuButton,
 } from "@/components/SelfMade/Wrapper/ButtonMenu";
-import { memo, useState } from "react";
+import { memo } from "react";
 import { MusicBarButton } from "@/components/SelfMade/MusicBar/MusicBar"
 import {
   Sheet,
@@ -17,17 +17,18 @@ import { Badge } from "@/components/ui/badge";
 import useZustandStore from "@/Zustand/store";
 import useMusicBar, { useCurrentSongCheck, useLibraryData, useLikeFlag, usePlaySong, useQueue } from "@/hooks/use-musicbar";
 
-const queue_button_data = ["all", "recently added", "recently played"];
+const queue_button_data = ["all",  "recently played", "recently added"];
 
 const QueueButtonContainerComp = () => {
-  const [queueOption, setQueueOption] = useState(queue_button_data[0]);
+  const queueSection = useZustandStore((state=>state.queueSection));
+  const handleQueueSection = useZustandStore((state=>state.handleQueueSection));
   const {queueLength,currentSongNumber} = useQueue();
   
   return (
     <div className="flex justify-between">
       <ButtonMenu>
         {queue_button_data.map((el) => (
-          <MenuButton isActive={queueOption === el} onClick={() => setQueueOption(el)} key={el}>{el}</MenuButton>
+          <MenuButton isActive={queueSection === el} onClick={() => handleQueueSection(el as 'all')} key={el}>{el}</MenuButton>
         ))}
       </ButtonMenu>
       {queueLength !== 0 && <Badge variant={'secondary'}>{currentSongNumber} of {queueLength}</Badge>}
@@ -50,7 +51,7 @@ function QueueDrawerComp() {
 }
 
 const QueueComp = ({isScreen=false}:QueueType)=>{
-  const {toggleQueue} = useZustandStore();
+  const toggleQueue = useZustandStore((state)=>state.toggleQueue);
   return <div className={cn("flex flex-col col-gap-val",!isScreen && ' bg-inherit')}>
           <div className= {cn("",!isScreen && '!top-[-1.2rem] sticky-elem z-1 bg-inherit')}>
             <div className="flex flex-row justify-between items-center w-full">
@@ -65,10 +66,21 @@ const QueueComp = ({isScreen=false}:QueueType)=>{
   
 }
 
-const QueueSongsListComp = ()=>{
+const getQueueDataSection = ()=>{
   const queue_songs = useZustandStore((state)=>state.queueSongs);
+  const recently_played = useZustandStore((state)=>state.recentlyPlayedSongs);
+  const queueSection = useZustandStore((state)=>state.queueSection);
+  switch(queueSection){
+    case 'all' : return  queue_songs;
+    case 'recently played' : return recently_played;
+    case 'recently added' : return [];
+  }
+};
+
+const QueueSongsListComp = ()=>{
+  const queue_songs = getQueueDataSection();
   return <>
-      {queue_songs.map((song,index)=><QueueSongCard key={song.id} {...song} index={index+1}/>)}   
+      {queue_songs?.map((song,index)=><QueueSongCard key={song.id} {...song} index={index+1}/>)}   
   </>
 }
 

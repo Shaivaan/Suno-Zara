@@ -5,15 +5,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { preventDefault, routes, stopPropagation } from "@/lib/utils";
 import CardLinkWrapper from "./CardLinkWrapper";
 import { useLibraryData, useLikeFlag } from "@/hooks/use-musicbar";
+import { Button } from "@/components/ui/button";
+import { Play } from "lucide-react";
+import { formatTime } from "../MusicBar/utils";
 
 const AlbumCardComp = (albumCardProps:AlbumsCardType & IsLikedCardType)=>{
-    if(albumCardProps.type === 'song') return null;
+    // if(albumCardProps.type === 'song') return null;
     const {isLikedSongsAlbum = false,...albumCardData} = albumCardProps;
     const {image,name,songCount,type,id} = albumCardData;
+    const isSong = type === 'song'
     const isFlagged = useLikeFlag(id,type as 'album');
     const {markAlbumPlaylistArtistFav} = useLibraryData();
     const imageUrl = image?.[2]?.url;
-    const label2 = songCount ? (songCount + ' Songs') : '';
+    const label2 = !isSong ? songCount ? (songCount + ' Songs') : '' : formatTime(albumCardData.songCount);
     const {favSongNumber} = useLibraryData();
     const urlToNavigate = useMemo(()=> isLikedSongsAlbum ? (favSongNumber ? `${routes.genre}?type=${type}`  : '#')  :  (routes.genre + `?id=${id}&type=${type}`) ,[type]);
     const flagAlbum = (event:React.MouseEvent<any>)=>{
@@ -29,9 +33,9 @@ const AlbumCardComp = (albumCardProps:AlbumsCardType & IsLikedCardType)=>{
             <div className="w-full font-bold text-[1.1rem] threeDot">{name}</div>
             <CardLabelSection label1={type} label2={label2 + ''}/>
             {!isLikedSongsAlbum && <div onClick={flagAlbum} className="absolute top-2 right-2 group-hover/album-song:opacity-160 opacity-0">
-                <FavIcon isFlagged={isFlagged} className="size-[1.5rem]"/>
+                {!isSong && <FavIcon isFlagged={isFlagged} className="size-[1.5rem]"/>}
             </div>}
-            {/* {isSong && <Button variant={'ghost'} className="cursor-pointer bg-[var(--accent-purple)] rounded-[var(--border-radius-all)] absolute bottom-17 right-4 hover:bg-glass-borde opacity-0 icons-hover  group-hover/album-song:opacity-100"><Play className="fill-[var(--text-gen-color)] text-[var(--accent-purple)] size-5"/></Button>} */}
+            {isSong && <Button variant={'ghost'} className="cursor-pointer bg-[var(--accent-purple)] rounded-[var(--border-radius-all)] absolute bottom-17 right-4 hover:bg-glass-borde opacity-0 icons-hover  group-hover/album-song:opacity-100"><Play className="fill-[var(--text-gen-color)] text-[var(--accent-purple)] size-5"/></Button>}
         </div>
     </CardLinkWrapper>
 }
