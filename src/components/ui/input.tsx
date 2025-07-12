@@ -7,7 +7,7 @@ import useZustandStore, { init_search_data, init_search_loading } from "@/Zustan
 
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   const {handleSearchScreenData,searchScreenData:{searchQuery}} = useZustandStore();
-  const clearInputAndData = ()=>handleSearchScreenData({searchQuery:'',...init_search_data,...init_search_loading});
+  const clearInputAndData = ()=>handleSearchScreenData({searchQuery:'',...init_search_data,isLoading:init_search_loading});
   const isSearchEmtpy = React.useMemo(()=>searchQuery.trim().length ===  0,[searchQuery]);
   return (
     <div className="relative">
