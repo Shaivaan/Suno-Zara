@@ -22,7 +22,8 @@ export const preventDefault = (event:React.MouseEvent<any>) => event.preventDefa
 export const loadArray = new Array(15).fill(0);
 
 export const localStorageKeys = {
-    volume : 'volume'
+    volume : 'volume',
+    lastPlayedSongId : 'lastPlayedSongId'
 };
 
 export const indexDbUtils = {

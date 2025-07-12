@@ -54,6 +54,7 @@ const PlayPauseReWindComp = () => {
   const repeatMode = useZustandStore((state)=>state.repeatMode);
   const handleRepeatMode = useZustandStore((state)=>state.handleRepeatMode);
   const {addToRecentPlayed} = useRecentlyPlayed();
+  const {setData:setLastPlayedToLS} = useLocalStorage(localStorageKeys.lastPlayedSongId);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -89,6 +90,7 @@ const PlayPauseReWindComp = () => {
     if(currentSongId){
       handleMusicPlayer({isLastSongPlayed:false});
       addToRecentPlayed(currentSongId);
+      setLastPlayedToLS(currentSongId);
     } 
     
   },[currentSongId])

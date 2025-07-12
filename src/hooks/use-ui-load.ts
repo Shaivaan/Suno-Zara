@@ -8,6 +8,7 @@ const {likeAlbums,likeArtist,likePlaylist} = indexDbUtils.storeNames;
 const useUILoad = ()=>{
   const [isLoaded,setIsLoaded] = useState(false);
   const {getData} = useLocalStorage(localStorageKeys.volume);
+  const {getData:getLastSongPlayed} = useLocalStorage(localStorageKeys.lastPlayedSongId);
   const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
   const handleLibraryData = useZustandStore((state)=>state.handleLibraryData);
   const handleQueueSongs = useZustandStore((state)=>state.handleQueueSongs);
@@ -33,9 +34,15 @@ const useUILoad = ()=>{
     }
   },[])
 
+  const handleLastSongPlayed = useCallback(()=>{
+    const lastSongId = getLastSongPlayed();
+    if(lastSongId) handleMusicPlayer({currentSongId:lastSongId});
+  },[])
+
   const handleFirstLoad = useCallback(()=>{
     getStoredSongs();
     handleStoreVolume();
+    handleLastSongPlayed();
     setIsLoaded(true);
   },[])
 
