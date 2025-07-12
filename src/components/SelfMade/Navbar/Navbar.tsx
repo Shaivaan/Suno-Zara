@@ -3,6 +3,8 @@ import { AppName, cn } from "@/lib/utils";
 import useZustandStore from "@/Zustand/store";
 import { Menu, Music } from "lucide-react";
 import { memo } from "react";
+import { LazyAvatar } from "../LazyAvatar/LazyAvatar";
+const shadCnImage = "https://github.com/shadcn.png";
 
 const NavbarComp = ()=>{
     const {toggleMobileMenu} = useZustandStore();
@@ -12,8 +14,7 @@ const NavbarComp = ()=>{
         <Logo/>
         </div>
         <div className="flex gap-4" >
-            <div>{AppName}</div>
-            <div>{AppName}</div>
+            <LazyAvatar image={shadCnImage}/>
         </div>
     </div>
 }
