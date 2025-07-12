@@ -17,7 +17,9 @@ import { Badge } from "@/components/ui/badge";
 import useZustandStore from "@/Zustand/store";
 import useMusicBar, { useCurrentSongCheck, useLibraryData, useLikeFlag, usePlaySong, useQueue } from "@/hooks/use-musicbar";
 
-const queue_button_data = ["all",  "recently played", "recently added"];
+const queue_button_data = ["all",  "recently played", 
+  // "recently added"
+];
 
 const QueueButtonContainerComp = () => {
   const queueSection = useZustandStore((state=>state.queueSection));
@@ -31,7 +33,7 @@ const QueueButtonContainerComp = () => {
           <MenuButton isActive={queueSection === el} onClick={() => handleQueueSection(el as 'all')} key={el}>{el}</MenuButton>
         ))}
       </ButtonMenu>
-      {queueLength !== 0 && <Badge variant={'secondary'}>{currentSongNumber} of {queueLength}</Badge>}
+      {queueSection === 'all' && queueLength !== 0 && <Badge variant={'secondary'}>{currentSongNumber} of {queueLength}</Badge>}
     </div>
   );
 };
@@ -104,7 +106,7 @@ const QueueCardComp = ({id,image,name,artists,index}: SongListType & IndexType)=
   };
   
   
-  return <div onClick={handleSongWithQueueUntouched} className={cn("w-full border-1 px-3 py-1 border-b-glass-border rounded-[var(--border-radius-all)] flex gap-4 items-center group/queue-song cursor-pointer hover:border-1 hover:bg-glass-bg",isCurrentSongPlaying && 'playing')}>
+  return <div onClick={()=>handleSongWithQueueUntouched(queueSection === 'recently played')} className={cn("w-full border-1 px-3 py-1 border-b-glass-border rounded-[var(--border-radius-all)] flex gap-4 items-center group/queue-song cursor-pointer hover:border-1 hover:bg-glass-bg",isCurrentSongPlaying && 'playing')}>
     <div className="text-[0.7rem] rounded-[50%] border-1 p-2 py-[0.15rem]">{index}</div>
     <div className="relative">
         <LazyAvatar className={cn("rounded-[var(--border-radius-all)] !h-[2.7rem] !w-[2.7rem] group-hover/queue-song:opacity-40",isCurrentSongPlaying && 'opacity-40')} image={image}/>

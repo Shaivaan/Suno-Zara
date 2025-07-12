@@ -37,3 +37,5 @@ export const toastMessages = {
   favourited : 'Saved to Favorites!',
   unfavourited : 'No Longer a Favorite!'
 }
+
+export const maxRecentlyPayedCount = 20;

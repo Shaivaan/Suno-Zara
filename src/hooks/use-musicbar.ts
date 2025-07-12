@@ -3,6 +3,7 @@ import { useCallback, useMemo } from "react";
 import useCurrentScreen from "./use-currentscreen";
 import { indexDbUtils, useIndexDbQueueSongs, useIndexedDbLibraryData, useIndexedDBLibSong } from "./use-indexdb";
 import useToast from "./use-toast";
+import { maxRecentlyPayedCount } from "@/lib/utils";
 
 const useMusicBar = ()=>{
     const handleMusicPlayer = useZustandStore((state)=>state.handleMusicPlayer);
@@ -71,6 +72,7 @@ const useCurrentSongCheck = (id:string)=>{
 
 const usePlaySong = (songId = '') => {
   const queueSongs = useZustandStore((state)=>state.queueSongs);
+  const recentlyPlayedSongs = useZustandStore((state)=>state.recentlyPlayedSongs);
   const isCurrentSongPlaying = useCurrentSongCheck(songId);
   const { isPlaying, togglePlayPause, currentSongId } = useMusicBar();
   const { data: playlistData } = useZustandStore((state) => state.albumPlayListScreenData);
@@ -94,8 +96,9 @@ const usePlaySong = (songId = '') => {
   /**
    * Handles song playback for Search screen
    */
-  const handleSearchScreenPlayback = useCallback((targetSongId: string) => {
-    const songToPlay = songData.find(({id})=>id === targetSongId) as SongListType;
+  const handleSearchScreenPlayback = useCallback((targetSongId: string,isSearchScreen=true) => {
+    const songsDataArray = isSearchScreen ? songData : recentlyPlayedSongs; //eiter search or recently 
+    const songToPlay = songsDataArray.find(({id})=>id === targetSongId) as SongListType;
     const isSongAlreadyEXists = queueSongs.findIndex(({id})=>id === songToPlay.id) !== -1;
     const newSong = isSongAlreadyEXists ? [] : [songToPlay];
     const curSongIndex = queueSongs.findIndex(({id})=> id === currentSongId);
@@ -140,12 +143,13 @@ const usePlaySong = (songId = '') => {
   ]);
 
 
-  const handleSongWithQueueUntouched = ()=>{
+  const handleSongWithQueueUntouched = (isRecentlyPlayed:boolean)=>{
     if(isCurrentSongPlaying) {
       togglePlayPause(!isPlaying);
       return;
     }
     handleMusicPlayer({currentSongId:songId,isPlaying:true});
+    if(isRecentlyPlayed) handleSearchScreenPlayback(songId,false);
   }
 
   return {
@@ -307,7 +311,12 @@ const useRecentlyPlayed = ()=>{
   const addToRecentPlayed = (songId:string)=>{
     const isAlreadyInRecentlyPlayed = recentlyPlayedSongs.findIndex(({id})=>id === songId) !== -1;
     const song = queueSongs.find(({id})=>id === songId) as SongListType;
-    if(!isAlreadyInRecentlyPlayed) handleRecentlyPlayedSongs([song,...recentlyPlayedSongs]);
+    if(!isAlreadyInRecentlyPlayed) {
+        let newRecentlyPlayedData = [song,...recentlyPlayedSongs];
+        const recentSongsLength = newRecentlyPlayedData.length;
+        if(recentSongsLength > maxRecentlyPayedCount) newRecentlyPlayedData = newRecentlyPlayedData.filter((_elem,index)=> index <= maxRecentlyPayedCount-1);
+        handleRecentlyPlayedSongs(newRecentlyPlayedData);
+    }   
     else {
       const otherRecentlyPlayedSong = recentlyPlayedSongs.filter(({id})=>id !== songId);
       handleRecentlyPlayedSongs([song,...otherRecentlyPlayedSong]);
