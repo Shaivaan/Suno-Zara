@@ -18,17 +18,6 @@ export const RouterComp = ()=>{
     const scrollToTop = useScrollToTop();
     const {pathname} = useLocation();
     useUILoad();
-      // Toggle dark mode by adding/removing 'dark' class to document
-  // const toggleDarkMode = () => {
-  //   const newIsDark = !isDark;
-  //   setIsDark(newIsDark);
-  //   if (newIsDark) {
-  //     document.documentElement.classList.add('dark');
-  //   } else {
-  //     document.documentElement.classList.remove('dark');
-  //   }
-  // };
-
     useEffect(()=>{
         scrollToTop();
     },[pathname])

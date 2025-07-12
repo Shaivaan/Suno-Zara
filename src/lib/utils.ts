@@ -24,7 +24,8 @@ export const loadArray = new Array(15).fill(0);
 
 export const localStorageKeys = {
     volume : 'volume',
-    lastPlayedSongId : 'lastPlayedSongId'
+    lastPlayedSongId : 'lastPlayedSongId',
+    theme : 'theme'
 };
 
 export const indexDbUtils = {
