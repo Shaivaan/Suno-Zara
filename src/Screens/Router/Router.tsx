@@ -11,7 +11,8 @@ import PlayListAlbumScreen from "../PlayList/PlayListScreen"
 import useScrollToTop from "@/CustomHook/useScroll"
 import { useEffect } from "react"
 import useUILoad from "@/hooks/use-ui-load"
-const {home,library,queue,search, genre} = routes;
+import RandomRoute from "../RandomRoute/RandomRoute"
+const {home,library,queue,search, genre,random} = routes;
 
 export const RouterComp = ()=>{
     const scrollToTop = useScrollToTop();
@@ -48,6 +49,7 @@ const DynamicRoute = ()=>{
             <Route path={queue} element={<Queue isScreen/>}/>
             <Route path={library} element={<LibraryScreen/>}/>
             <Route path={genre} element={<PlayListAlbumScreen/>} />
+            <Route path={random} element={<RandomRoute/>}/>
         </Routes>
     </div>
 }

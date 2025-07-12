@@ -12,7 +12,8 @@ export const routes = {
   search : '/search',
   library : '/library',
   queue : '/queue',
-  genre : '/genre'
+  genre : '/genre',
+  random : '*'
 };
 
 
