@@ -10,7 +10,7 @@ import { Play } from "lucide-react";
 import { formatTime } from "../MusicBar/utils";
 
 const AlbumCardComp = (albumCardProps:AlbumsCardType & IsLikedCardType)=>{
-    // if(albumCardProps.type === 'song') return null;
+    if(albumCardProps.type === 'song') return null;
     const {isLikedSongsAlbum = false,...albumCardData} = albumCardProps;
     const {image,name,songCount,type,id} = albumCardData;
     const isSong = type === 'song'
