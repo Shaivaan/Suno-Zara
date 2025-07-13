@@ -12,6 +12,7 @@ import useScrollToTop from "@/CustomHook/useScroll"
 import { useEffect } from "react"
 import useUILoad from "@/hooks/use-ui-load"
 import RandomRoute from "../RandomRoute/RandomRoute"
+import ReactTitle from "../ReactTitle/ReactTitle"
 const {home,library,queue,search, genre,random} = routes;
 
 export const RouterComp = ()=>{
@@ -27,6 +28,7 @@ export const RouterComp = ()=>{
         <Sidebar/>
         <MusicBar/>
         <DynamicRoute/>
+        <ReactTitle/>
     </>
 }
 

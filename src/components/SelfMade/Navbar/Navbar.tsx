@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { AppName, cn, localStorageKeys } from "@/lib/utils";
 import useZustandStore from "@/Zustand/store";
-import { Menu, Moon, Music, Sun } from "lucide-react";
+import { AudioWaveform, Menu, Moon, Sun } from "lucide-react";
 import { memo, useEffect, useMemo, useState } from "react";
 import { LazyAvatar } from "../LazyAvatar/LazyAvatar";
 import { MusicBarButton } from "../MusicBar/MusicBar";
@@ -48,7 +48,7 @@ const ThemeHandlerComp = ()=>{
 
 const Logo = ()=>{
     return <div className="flex gap-3 items-center">
-        <div className="gradient-bg rounded-[var(--border-radius-all)] p-1.5 border-1"><Music size={'1rem'}/></div>
+        <div className="gradient-bg rounded-[var(--border-radius-all)] p-1.5 border-1"><AudioWaveform size={'1rem'}/></div>
         <div className="gradient-bg text-clip text-[1.3rem] font-bold">{AppName}</div>
     </div>
 }

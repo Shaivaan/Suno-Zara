@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
-export const AppName = 'Sunte Ho';
+export const AppName = 'Suno Zara';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
