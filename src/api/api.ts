@@ -11,7 +11,7 @@ const get_album_using_id = 'https://saavn.dev/api/albums?id=';
 const get_playlist_using_id = 'https://jiosavan-api2.vercel.app/api/playlists?id=';
 const get_artist_using_id = 'https://jiosavan-api2.vercel.app/api/artists?id=';
 
-const cors_fix = 'https://proxy.corsfix.com/?';
+const cors_fix = 'https://thingproxy.freeboard.io/fetch/';
 
 const trending_now_api = cors_fix + trending_now_api_cors;
 const trending_artist_api = cors_fix + trending_artist_api_cors;
