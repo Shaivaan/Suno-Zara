@@ -25,20 +25,20 @@ const fetchAllPlaylists = async () => {
 
   try {
     // Fetch playlists sequentially
-    // for (const { title, query } of SECTIONS_PART) {
-    //   playlistData[title] = await fetchSafe(async () => {
-    //     const res = await axios.get(`${search_playlist_api}${encodeURIComponent(query)}`);
-    //     return res.data?.data?.results || [];
-    //   });
-    //   updateData();
-    // }
+    for (const { title, query } of SECTIONS_PART) {
+      playlistData[title] = await fetchSafe(async () => {
+        const res = await axios.get(`${search_playlist_api}${encodeURIComponent(query)}`);
+        return res.data?.data?.results || [];
+      });
+      updateData();
+    }
 
     await fetchSafe(async () => {
       const {data} = await axios.get(trending_stuff);
       playlistData[trending_now] = refactorTrendingData(data?.trending_songs);
       playlistData[trending_artist] =  data?.trending_artists;
     });
-    updateData();
+    // updateData();
 
   } catch (err) {
     console.error('Critical error:', err);
