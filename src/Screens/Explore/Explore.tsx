@@ -1,6 +1,5 @@
-import { search_playlist_api, trending_artist_api, trending_now_api } from "@/api/api";
+import { search_playlist_api, trending_stuff } from "@/api/api";
 import { explore_titles_head, SECTIONS_PART } from "@/api/query";
-// import ArtistCard from "@/components/SelfMade/Cards/ArtistCard";
 import useZustandStore from "@/Zustand/store";
 import { memo, useEffect } from "react";
 import ExploreParentCarousels from "./ExploreContent";
@@ -34,20 +33,12 @@ const fetchAllPlaylists = async () => {
       updateData();
     }
 
-    // Fetch trending data
-    playlistData[trending_now] = await fetchSafe(async () => {
-      const res = await axios.get(trending_now_api);
-      const data = res?.data?.new_trending || [];
-      return refactorTrendingData(data);
+    await fetchSafe(async () => {
+      const {data} = await axios.get(trending_stuff);
+      playlistData[trending_now] = refactorTrendingData(data?.trending_songs);
+      playlistData[trending_artist] =  data?.trending_artists;
     });
-    updateData();
-
-    // Fetch trending artists
-    playlistData[trending_artist] = await fetchSafe(async () => {
-      const res = await axios.get(trending_artist_api);
-      const data = res?.data?.top_artists || [];
-      return data;
-    });
+    // updateData();
 
   } catch (err) {
     console.error('Critical error:', err);
