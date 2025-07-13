@@ -1,4 +1,4 @@
-import { allOriginsProxy, search_playlist_api, trending_artist_api, trending_now_api } from "@/api/api";
+import { search_playlist_api, trending_artist_api, trending_now_api } from "@/api/api";
 import { explore_titles_head, SECTIONS_PART } from "@/api/query";
 // import ArtistCard from "@/components/SelfMade/Cards/ArtistCard";
 import useZustandStore from "@/Zustand/store";
