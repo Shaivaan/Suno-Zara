@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { AppName, cn, localStorageKeys } from "@/lib/utils";
+import { AppName, cn, localStorageKeys, routes } from "@/lib/utils";
 import useZustandStore from "@/Zustand/store";
 import { AudioWaveform, Menu, Moon, Sun } from "lucide-react";
 import { memo, useEffect, useMemo, useState } from "react";
 import { LazyAvatar } from "../LazyAvatar/LazyAvatar";
 import { MusicBarButton } from "../MusicBar/MusicBar";
 import useLocalStorage from "@/hooks/use-localstorage";
+import { useNavigate } from "react-router-dom";
 const shadCnImage = "https://github.com/shadcn.png";
 
 const NavbarComp = ()=>{
@@ -47,7 +48,9 @@ const ThemeHandlerComp = ()=>{
 }
 
 const Logo = ()=>{
-    return <div className="flex gap-3 items-center">
+    const navigate = useNavigate();
+    const navigateToHome = ()=>navigate(routes.home);
+    return <div className="flex gap-3 items-center cursor-pointer" onClick={navigateToHome}>
         <div className="gradient-bg rounded-[var(--border-radius-all)] p-1.5 border-1"><AudioWaveform size={'1rem'}/></div>
         <div className="gradient-bg text-clip text-[1.3rem] font-bold">{AppName}</div>
     </div>
