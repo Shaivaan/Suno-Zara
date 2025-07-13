@@ -36,17 +36,17 @@ const fetchAllPlaylists = async () => {
 
     // Fetch trending data
     playlistData[trending_now] = await fetchSafe(async () => {
-      const res = await axios.get(`${allOriginsProxy}${encodeURIComponent(trending_now_api)}`);
-      const data = JSON.parse(res.data.contents);
-      return refactorTrendingData(data?.new_trending || []);
+      const res = await axios.get(trending_now_api);
+      const data = res?.data?.new_trending || [];
+      return refactorTrendingData(data);
     });
     updateData();
 
     // Fetch trending artists
     playlistData[trending_artist] = await fetchSafe(async () => {
-      const res = await axios.get(`${allOriginsProxy}${encodeURIComponent(trending_artist_api)}`);
-      const data = JSON.parse(res.data.contents);
-      return data?.top_artists || [];
+      const res = await axios.get(trending_artist_api);
+      const data = res?.data?.top_artists || [];
+      return data;
     });
 
   } catch (err) {
