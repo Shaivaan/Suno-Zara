@@ -1,3 +1,5 @@
+import { decode } from "he";
+
 function refactorSongList (data: SongResType[]):SongListType[]{
     const songList:SongListType[] = data.map((song)=>{
         const {id,name,image,album,artists,duration, downloadUrl} = song;
@@ -13,7 +15,7 @@ function refactorSongList (data: SongResType[]):SongListType[]{
             artists:artistName,
             duration,
             image:imageLink,
-            name,
+            name:decode(name || ''),
             url,
             artistId,
             albumId
@@ -28,7 +30,7 @@ function refactorArtistList(data:ArtistResType[]):ArtistCardType[] {
         const imageLink = image[2].url;
         return {
             image:imageLink,
-            name,
+            name:decode(name || ''),
             artistid:id,
             follower_count:0,
             is_followed:true
@@ -44,7 +46,7 @@ function refactorAlbumList(data: AlbumResType[]):AlbumsCardType[]{
             explicitContent,
             image,
             language,
-            name,
+            name:decode(name || ''),
             songCount:0,
             type,
             url
