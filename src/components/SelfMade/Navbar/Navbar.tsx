@@ -11,7 +11,7 @@ const shadCnImage = "https://github.com/shadcn.png";
 
 const NavbarComp = ()=>{
     const {toggleMobileMenu} = useZustandStore();    
-    return <div className={cn(`px-4 bg-glass-bg border-glass-border border-b-1 flex justify-between backdrop-blur-[40px] sm:z-[41] lg:z-[var(--navbar-z-index)] fixed top-0 w-full items-center h-[var(--navbar-height)]`)}>
+    return <div className={cn(`px-4 bg-glass-bg border-glass-border border-b-1 flex justify-between backdrop-blur-[40px] z-10 sm:z-[41] lg:z-[var(--navbar-z-index)] fixed top-0 w-full items-center h-[var(--navbar-height)]`)}>
         <div className="flex gap-2">
         <Button onClick={toggleMobileMenu} variant={"ghost"} className="cursor-pointer lg:hidden"><Menu/></Button>
         <Logo/>
