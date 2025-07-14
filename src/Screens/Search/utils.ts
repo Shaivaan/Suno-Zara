@@ -11,8 +11,8 @@ function refactorSongList (data: SongResType[]):SongListType[]{
         const url = downloadUrl?.[2]?.url
         return {
             id,
-            album:albumName,
-            artists:artistName,
+            album:decode(albumName || ''),
+            artists:decode(artistName || ''),
             duration,
             image:imageLink,
             name:decode(name || ''),
