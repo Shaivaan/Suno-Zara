@@ -353,6 +353,19 @@ h1 {
   border-radius: var(--border-radius-all);
 }
 
+@media (max-width: 640px) {
+  .grid-container-songs {
+    grid-template-columns: 0.1fr 1fr;
+  }
+  
+  /* Hide the 3rd, 4th, and 5th child elements */
+  .grid-container-songs > *:nth-child(3),
+  .grid-container-songs > *:nth-child(4),
+  .grid-container-songs > *:nth-child(5) {
+    display: none;
+  }
+}
+
 /* .play-icon-song{
   display: none;
 } */

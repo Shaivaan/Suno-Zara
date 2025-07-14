@@ -18,7 +18,7 @@ const PlayListHead = ()=>{
     return <div className="flex gap-4">
         <LazyAvatar
           image={imageLink as string}
-          className={cn(!isArtist ? "rounded-[var(--border-radius-all)]" : "rounded-[50%]" ,'!h-[14rem] !w-[14rem]')} 
+          className={cn(!isArtist ? "rounded-[var(--border-radius-all)]" : "rounded-[50%]" ,'!h-[14rem] !w-[14rem] hidden sm:block')} 
         />
         <PlayListText/>  
     </div>

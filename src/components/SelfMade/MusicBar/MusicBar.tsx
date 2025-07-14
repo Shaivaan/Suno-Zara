@@ -15,28 +15,27 @@ const MusicBarComp = () => {
   const queue = useZustandStore((state) => state.queueSongs);
   if (!queue.length) return <></>;
   return <div
-    className={`p-4 fixed bottom-0 w-full border-t-1 border-glass-border bg-glass-bg backdrop-blur-[40px] z-[var(--navbar-z-index)]
-       grid grid-cols-5 items-center
+    className={`p-2 sm:p-4 fixed bottom-0 w-full border-t-1 border-glass-border bg-glass-bg backdrop-blur-[40px] z-[var(--navbar-z-index)]
+       grid grid-cols-3 sm:grid-cols-5 items-center gap-1 sm:gap-0
     `}
   >
     <div className="col-span-1"><SongNameWithAvatar/></div>
-    <div className="col-span-3"><PlayPausRewind /></div>
-    <div className="col-span-1 justify-end flex"><MusicBarButtons /></div>
+    <div className="col-span-2 sm:col-span-3"><PlayPausRewind /></div>
+    <div className="hidden sm:flex sm:col-span-1 justify-end"><MusicBarButtons /></div>
   </div>;
 };
 
 const SongNameWithAvatarComp = () => {
   const { artist, name, image } = useCurrentSongInfo();
-  return <div className="flex gap-4 items-center">
-    <LazyAvatar className="rounded-[var(--border-radius-all)] h-[3rem] w-[3rem]" image={image as string} />
+  return <div className="flex gap-2 sm:gap-4 items-center">
+    <LazyAvatar className="rounded-[var(--border-radius-all)] h-[2.5rem] w-[2.5rem] sm:h-[3rem] sm:w-[3rem]" image={image as string} />
     <div className="max-w-full">
-      <div className="sm:hidden md:block threeDot text-[0.95rem] font-medium">{name}</div>
-      <div className="sm:hidden md:block threeDot text-[0.7rem] label-text">{artist}</div>
+      <div className="threeDot text-[0.8rem] sm:text-[0.95rem] font-medium">{name}</div>
+      <div className="hidden sm:block threeDot text-[0.7rem] label-text">{artist}</div>
     </div>
-    <Separator orientation="vertical" className="text-sm !h-[3rem]" />
+    <Separator orientation="vertical" className="text-sm !h-[2.5rem] sm:!h-[3rem] hidden sm:block" />
   </div>
 }
-
 
 interface MusicBarButtonType {
   children: ReactNode;
@@ -111,15 +110,29 @@ const PlayPauseReWindComp = () => {
     }
   },[repeatMode]);
 
-
   return (
-    <div className="flex flex-col gap-y-[0.5rem] items-center justify-center">
+    <div className="flex flex-col gap-y-[0.3rem] sm:gap-y-[0.5rem] items-center justify-center w-full">
       <audio
         ref={audioRef}
         src={audioUrl as string}
         preload="metadata"
       />
-      <div className="flex gap-5 items-center">
+      
+      {/* Mobile: Simplified controls */}
+      <div className="flex sm:hidden gap-3 items-center justify-center w-full">
+        <MusicBarButton tooltip="Prev" onClick={()=>playNextPrev(true)} className="!w-[1.5rem] !h-[1.5rem]">
+          <SkipBack size={16} />
+        </MusicBarButton>
+        <MusicBarButton onClick={togglePlayer} tooltip="Play" className="!px-[1rem] !py-[1rem] gradient-bg">
+          {isPlaying ? <Pause size={18} /> : <Play size={18} />}
+        </MusicBarButton>
+        <MusicBarButton tooltip="Next" onClick={()=>playNextPrev()} className="!w-[1.5rem] !h-[1.5rem]">
+          <SkipForward size={16} />
+        </MusicBarButton>
+      </div>
+
+      {/* Desktop: Full controls */}
+      <div className="hidden sm:flex gap-5 items-center">
         <MusicBarButton tooltip="Shuffle"><Shuffle /></MusicBarButton>
         <MusicBarButton tooltip="Prev" onClick={()=>playNextPrev(true)}><SkipBack /></MusicBarButton>
         <MusicBarButton onClick={togglePlayer} tooltip="Play" className="!px-[1.25rem] py-[1.25rem] gradient-bg">
@@ -129,16 +142,17 @@ const PlayPauseReWindComp = () => {
         <MusicBarButton tooltip={getModeToolTip()} onClick={handleMode}><SongModeHandlerComp/></MusicBarButton>
       </div>
 
-      <div className="flex gap-4 items-center label-text">
-        <div className="text-[0.8rem] label-text">{formatTime(currentTime)}</div>
+      {/* Progress bar - responsive width */}
+      <div className="flex gap-2 sm:gap-4 items-center label-text w-full sm:w-auto">
+        <div className="text-[0.7rem] sm:text-[0.8rem] label-text">{formatTime(currentTime)}</div>
         <Slider
           value={sliderValue}
           onValueChange={handleSlider}
           max={100}
           step={0.1}
-          className="cursor-pointer w-[25rem] relative mt-[0.2rem]"
+          className="cursor-pointer w-full sm:w-[25rem] relative mt-[0.2rem]"
         />
-        <div className="text-[0.8rem] label-text">{formatTime(duration)}</div>
+        <div className="text-[0.7rem] sm:text-[0.8rem] label-text">{formatTime(duration)}</div>
       </div>
     </div>
   );
@@ -225,7 +239,6 @@ const VolumeAdjustComp = () => {
     </div>
   </div>
 }
-
 
 const MusicBar = memo(MusicBarComp);
 const PlayPausRewind = memo(PlayPauseReWindComp);

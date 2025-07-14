@@ -45,7 +45,7 @@ function QueueDrawerComp() {
   const {isQueueVisible, toggleQueue} = useZustandStore();
   return (
     <Sheet open={isQueueVisible}>
-      <SheetContent className="!w-[31rem] p-4 overflow-y-auto" onInteractOutside={toggleQueue}>
+      <SheetContent className="!w-full sm:!w-[31rem] p-4 overflow-y-auto" onInteractOutside={toggleQueue}>
         <Queue />
       </SheetContent>
     </Sheet>
