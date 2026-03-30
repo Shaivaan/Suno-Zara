@@ -16,9 +16,10 @@ const ExploreParentCarousels = ()=>{
 }
 
 const ExploreCarouselMapperComp = ({title}:{title : keyType})=>{
-    const {exploreScreenData:{carouselData}} = useZustandStore();
+    const {exploreScreenData:{carouselData,isLoading}} = useZustandStore();
     const type = explore_titles_head[title as keyType];
     const carouselArrayData = carouselData[type];
+    if(carouselArrayData === undefined && !isLoading) return null;
     if(!carouselArrayData?.length) return <ExploreLoadingCarousels title={title}/>
     if(type === trending_artist) return <AlbumArtistCarousel/>;
 
