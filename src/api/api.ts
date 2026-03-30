@@ -12,6 +12,6 @@ const get_artist_using_id = 'https://jiosavan-api2.vercel.app/api/artists?id=';
 
 const cors_fix = 'https://thingproxy.freeboard.io/fetch/';
 
-const trending_stuff = 'https://jiosaavn-trend.dustbin.me/trending';
+const trending_stuff = 'https://jiosaavn-trending.arnab-xd.workers.dev/trending';
 
 export {cors_fix, search_albums_api,search_artists_api,search_playlist_api,search_songs_api,trending_stuff, allOriginsProxy,get_album_using_id, get_playlist_using_id,get_artist_using_id};
